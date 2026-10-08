@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5...3.30)
+cmake_minimum_required(VERSION 3.31)
 
 # Policy configuration; this *MUST* be specified before project is defined
 if(POLICY CMP0091)
@@ -106,15 +106,6 @@ if (NOT DEFINED CMAKE_MSVC_RUNTIME_LIBRARY)
     MultiThreaded$<$<CONFIG:Debug>:Debug>$<$<NOT:$<BOOL:${PUGIXML_STATIC_CRT}>>:DLL>)
 endif()
 
-# Set the default C++ standard to C++17 if not set; CMake will automatically downgrade this if the compiler does not support it
-# When CMAKE_CXX_STANDARD_REQUIRED is set, we fall back to C++11 to avoid breaking older compilers
-if (NOT DEFINED CMAKE_CXX_STANDARD_REQUIRED AND NOT DEFINED CMAKE_CXX_STANDARD AND NOT CMAKE_VERSION VERSION_LESS 3.8)
-
-  set(CMAKE_CXX_STANDARD 17)
-  set(CMAKE_CXX_STANDARD_REQUIRED OFF)
-elseif (NOT DEFINED CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 11)
-endif()
 
 if (PUGIXML_USE_POSTFIX)
   set(CMAKE_RELWITHDEBINFO_POSTFIX _r)
@@ -172,7 +163,7 @@ if (BUILD_SHARED_LIBS)
       ${msvc-rt-mt-static})
   target_compile_features(pugixml-shared
     PRIVATE
-      $<$<BOOL:${PUGIXML_CHARCONV_FLOAT}>:cxx_std_17>
+     cxx_std_23
   )
 endif()
 
@@ -198,8 +189,8 @@ if (NOT BUILD_SHARED_LIBS OR PUGIXML_BUILD_SHARED_AND_STATIC_LIBS)
       ${msvc-rt-mt-shared}
       ${msvc-rt-mt-static})
   target_compile_features(pugixml-static
-    PRIVATE
-      $<$<BOOL:${PUGIXML_CHARCONV_FLOAT}>:cxx_std_17>
+    PRIVATE 
+        cxx_std_23
   )
 endif()
 
