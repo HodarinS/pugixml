@@ -59,7 +59,7 @@ using string_view_t = std::basic_string_view< char >;
 export namespace pugi
 {
 // Tree node types
-enum xml_node_type
+enum XmlNodeType
 {
   node_null,        // Empty (null) node handle
   node_document,    // A document tree's absolute root
@@ -164,7 +164,7 @@ inline const unsigned int parse_full = parse_default | parse_pi |
                                        parse_doctype;
 
 // These flags determine the encoding of input data for XML document
-enum xml_encoding
+enum XmlEncoding
 {
   encoding_auto, // Auto-detect input encoding using BOM or < / <? detection;
                  // use UTF8 if BOM is not found
@@ -231,33 +231,33 @@ inline const int default_double_precision = 17;
 inline const int default_float_precision = 9;
 
 // Forward declarations
-struct xml_attribute_struct;
-struct xml_node_struct;
+struct XmlAttributeStruct;
+struct XmlNodeStruct;
 
-class xml_node_iterator;
-class xml_attribute_iterator;
-class xml_named_node_iterator;
+class XmlNodeIterator;
+class XmlAttributeIterator;
+class XmlNamedNodeIterator;
 
-class xml_tree_walker;
+class XmlTreeWalker;
 
-struct xml_parse_result;
+struct XmlParseResult;
 
-class xml_node;
+class XmlNode;
 
-class xml_text;
-class xpath_node;
-class xpath_node_set;
-class xpath_query;
-class xpath_variable_set;
+class XmlText;
+class XPathNode;
+class XPathNodeSet;
+class XPathQuery;
+class XPathVariableSet;
 
 // Range-based for loop support
-template < typename It > class xml_object_range
+template < typename It > class XmlObjectRange
 {
 public:
   typedef It const_iterator;
   typedef It iterator;
 
-  xml_object_range(It b, It e)
+  XmlObjectRange(It b, It e)
       : _begin(b),
         _end(e)
   {
@@ -281,23 +281,23 @@ private:
   It _begin, _end;
 };
 
-// Writer interface for node printing (see xml_node::print)
-class PUGIXML_CLASS xml_writer
+// Writer interface for node printing (see XmlNode::print)
+class PUGIXML_CLASS XmlWriter
 {
 public:
-  virtual ~xml_writer();
+  virtual ~XmlWriter();
 
   // Write memory chunk into stream/file/whatever
   virtual void write(const void *data, size_t size) = 0;
 };
 
-// xml_writer implementation for FILE*
-class PUGIXML_CLASS xml_writer_file : public xml_writer
+// XmlWriter implementation for FILE*
+class PUGIXML_CLASS XmlWriterFile : public XmlWriter
 {
 public:
   // Construct writer from a FILE* object; void* is used to avoid header
   // dependencies on stdio
-  xml_writer_file(void *file);
+  XmlWriterFile(void *file);
 
   virtual void write(const void *data, size_t size) override;
 
@@ -305,13 +305,13 @@ private:
   void *file;
 };
 
-// xml_writer implementation for streams
-class PUGIXML_CLASS xml_writer_stream : public xml_writer
+// XmlWriter implementation for streams
+class PUGIXML_CLASS XmlWriterStream : public XmlWriter
 {
 public:
   // Construct writer from an output stream object
-  xml_writer_stream(std::basic_ostream< char > &stream);
-  xml_writer_stream(std::basic_ostream< wchar_t > &stream);
+  XmlWriterStream(std::basic_ostream< char > &stream);
+  XmlWriterStream(std::basic_ostream< wchar_t > &stream);
 
   virtual void write(const void *data, size_t size) override;
 
@@ -323,11 +323,11 @@ private:
 // A light-weight handle for manipulating attributes in DOM tree
 class PUGIXML_CLASS xml_attribute
 {
-  friend class xml_attribute_iterator;
-  friend class xml_node;
+  friend class XmlAttributeIterator;
+  friend class XmlNode;
 
 private:
-  xml_attribute_struct *_attr;
+  XmlAttributeStruct *_attr;
 
   typedef void (*unspecified_bool_type)(xml_attribute ***);
 
@@ -336,7 +336,7 @@ public:
   xml_attribute();
 
   // Constructs attribute from internal pointer
-  explicit xml_attribute(xml_attribute_struct *attr);
+  explicit xml_attribute(XmlAttributeStruct *attr);
 
   // Safe bool conversion operator
   operator unspecified_bool_type() const;
@@ -419,27 +419,27 @@ public:
   size_t hash_value() const;
 
   // Get internal pointer
-  xml_attribute_struct *internal_object() const;
+  XmlAttributeStruct *internal_object() const;
 };
 
 // A light-weight handle for manipulating nodes in DOM tree
-class PUGIXML_CLASS xml_node
+class PUGIXML_CLASS XmlNode
 {
-  friend class xml_attribute_iterator;
-  friend class xml_node_iterator;
-  friend class xml_named_node_iterator;
+  friend class XmlAttributeIterator;
+  friend class XmlNodeIterator;
+  friend class XmlNamedNodeIterator;
 
 protected:
-  xml_node_struct *_root;
+  XmlNodeStruct *_root;
 
-  typedef void (*unspecified_bool_type)(xml_node ***);
+  typedef void (*unspecified_bool_type)(XmlNode ***);
 
 public:
   // Default constructor. Constructs an empty node.
-  xml_node();
+  XmlNode();
 
   // Constructs node from internal pointer
-  explicit xml_node(xml_node_struct *p);
+  explicit XmlNode(XmlNodeStruct *p);
 
   // Safe bool conversion operator
   operator unspecified_bool_type() const;
@@ -448,18 +448,18 @@ public:
   bool operator!() const;
 
   // Comparison operators (compares wrapped node pointers)
-  bool operator==(const xml_node &r) const;
-  bool operator!=(const xml_node &r) const;
-  bool operator<(const xml_node &r) const;
-  bool operator>(const xml_node &r) const;
-  bool operator<=(const xml_node &r) const;
-  bool operator>=(const xml_node &r) const;
+  bool operator==(const XmlNode &r) const;
+  bool operator!=(const XmlNode &r) const;
+  bool operator<(const XmlNode &r) const;
+  bool operator>(const XmlNode &r) const;
+  bool operator<=(const XmlNode &r) const;
+  bool operator>=(const XmlNode &r) const;
 
   // Check if node is empty (null)
   bool empty() const;
 
   // Get node type
-  xml_node_type type() const;
+  XmlNodeType type() const;
 
   // Get node name, or "" if node is empty or it has no name
   const char_t *name() const;
@@ -474,31 +474,31 @@ public:
   xml_attribute last_attribute() const;
 
   // Get children list
-  xml_node first_child() const;
-  xml_node last_child() const;
+  XmlNode first_child() const;
+  XmlNode last_child() const;
 
   // Get next/previous sibling in the children list of the parent node
-  xml_node next_sibling() const;
-  xml_node previous_sibling() const;
+  XmlNode next_sibling() const;
+  XmlNode previous_sibling() const;
 
   // Get parent node
-  xml_node parent() const;
+  XmlNode parent() const;
 
   // Get root of DOM tree this node belongs to
-  xml_node root() const;
+  XmlNode root() const;
 
   // Get text object for the current node
-  xml_text text() const;
+  XmlText text() const;
 
   // Get child, attribute or next/previous sibling with the specified name
-  xml_node child(const char_t *name) const;
+  XmlNode child(const char_t *name) const;
   xml_attribute attribute(const char_t *name) const;
-  xml_node next_sibling(const char_t *name) const;
-  xml_node previous_sibling(const char_t *name) const;
-  xml_node child(string_view_t name) const;
+  XmlNode next_sibling(const char_t *name) const;
+  XmlNode previous_sibling(const char_t *name) const;
+  XmlNode child(string_view_t name) const;
   xml_attribute attribute(string_view_t name) const;
-  xml_node next_sibling(string_view_t name) const;
-  xml_node previous_sibling(string_view_t name) const;
+  XmlNode next_sibling(string_view_t name) const;
+  XmlNode previous_sibling(string_view_t name) const;
 
   // Get attribute, starting the search from a hint (and updating hint so that
   // searching for a sequence of attributes is fast)
@@ -553,40 +553,40 @@ public:
 
   // Add child node with specified type. Returns added node, or empty node on
   // errors.
-  xml_node append_child(xml_node_type type = node_element);
-  xml_node prepend_child(xml_node_type type = node_element);
-  xml_node insert_child_after(xml_node_type type, const xml_node &node);
-  xml_node insert_child_before(xml_node_type type, const xml_node &node);
+  XmlNode append_child(XmlNodeType type = node_element);
+  XmlNode prepend_child(XmlNodeType type = node_element);
+  XmlNode insert_child_after(XmlNodeType type, const XmlNode &node);
+  XmlNode insert_child_before(XmlNodeType type, const XmlNode &node);
 
   // Add child element with specified name. Returns added node, or empty node
   // on errors.
-  xml_node append_child(const char_t *name);
-  xml_node prepend_child(const char_t *name);
-  xml_node insert_child_after(const char_t *name, const xml_node &node);
-  xml_node insert_child_before(const char_t *name, const xml_node &node);
-  xml_node append_child(string_view_t name);
-  xml_node prepend_child(string_view_t name);
-  xml_node insert_child_after(string_view_t name, const xml_node &node);
-  xml_node insert_child_before(string_view_t name, const xml_node &node);
+  XmlNode append_child(const char_t *name);
+  XmlNode prepend_child(const char_t *name);
+  XmlNode insert_child_after(const char_t *name, const XmlNode &node);
+  XmlNode insert_child_before(const char_t *name, const XmlNode &node);
+  XmlNode append_child(string_view_t name);
+  XmlNode prepend_child(string_view_t name);
+  XmlNode insert_child_after(string_view_t name, const XmlNode &node);
+  XmlNode insert_child_before(string_view_t name, const XmlNode &node);
 
   // Get child with specified name, adding one if it does not exist. Returns
   // the existing or added node, or empty node on errors.
-  xml_node ensure_child(const char_t *name);
-  xml_node ensure_child(string_view_t name);
+  XmlNode ensure_child(const char_t *name);
+  XmlNode ensure_child(string_view_t name);
 
   // Add a copy of the specified node as a child. Returns added node, or empty
   // node on errors.
-  xml_node append_copy(const xml_node &proto);
-  xml_node prepend_copy(const xml_node &proto);
-  xml_node insert_copy_after(const xml_node &proto, const xml_node &node);
-  xml_node insert_copy_before(const xml_node &proto, const xml_node &node);
+  XmlNode append_copy(const XmlNode &proto);
+  XmlNode prepend_copy(const XmlNode &proto);
+  XmlNode insert_copy_after(const XmlNode &proto, const XmlNode &node);
+  XmlNode insert_copy_before(const XmlNode &proto, const XmlNode &node);
 
   // Move the specified node to become a child of this node. Returns moved
   // node, or empty node on errors.
-  xml_node append_move(const xml_node &moved);
-  xml_node prepend_move(const xml_node &moved);
-  xml_node insert_move_after(const xml_node &moved, const xml_node &node);
-  xml_node insert_move_before(const xml_node &moved, const xml_node &node);
+  XmlNode append_move(const XmlNode &moved);
+  XmlNode prepend_move(const XmlNode &moved);
+  XmlNode insert_move_after(const XmlNode &moved, const XmlNode &node);
+  XmlNode insert_move_before(const XmlNode &moved, const XmlNode &node);
 
   // Remove specified attribute
   bool remove_attribute(const xml_attribute &a);
@@ -597,7 +597,7 @@ public:
   bool remove_attributes();
 
   // Remove specified child
-  bool remove_child(const xml_node &n);
+  bool remove_child(const XmlNode &n);
   bool remove_child(const char_t *name);
   bool remove_child(string_view_t name);
 
@@ -609,9 +609,9 @@ public:
   // deleted or changed after the function returns. Note: append_buffer
   // allocates memory that has the lifetime of the owning document; removing
   // the appended nodes does not immediately reclaim that memory.
-  xml_parse_result append_buffer(const void *contents, size_t size,
+  XmlParseResult append_buffer(const void *contents, size_t size,
                                  unsigned int options = parse_default,
-                                 xml_encoding encoding = encoding_auto);
+                                 XmlEncoding encoding = encoding_auto);
 
   // Find attribute using predicate. Returns first attribute for which
   // predicate returned true.
@@ -631,26 +631,26 @@ public:
 
   // Find child node using predicate. Returns first child for which predicate
   // returned true.
-  template < typename Predicate > xml_node find_child(Predicate pred) const
+  template < typename Predicate > XmlNode find_child(Predicate pred) const
   {
     if (!_root)
-      return xml_node();
+      return XmlNode();
 
-    for (xml_node node = first_child(); node; node = node.next_sibling())
+    for (XmlNode node = first_child(); node; node = node.next_sibling())
       if (pred(node))
         return node;
 
-    return xml_node();
+    return XmlNode();
   }
 
   // Find node from subtree using predicate. Returns first node from subtree
   // (depth-first), for which predicate returned true.
-  template < typename Predicate > xml_node find_node(Predicate pred) const
+  template < typename Predicate > XmlNode find_node(Predicate pred) const
   {
     if (!_root)
-      return xml_node();
+      return XmlNode();
 
-    xml_node cur = first_child();
+    XmlNode cur = first_child();
 
     while (cur._root && cur._root != _root)
     {
@@ -671,70 +671,70 @@ public:
       }
     }
 
-    return xml_node();
+    return XmlNode();
   }
 
   // Find child node by attribute name/value
-  xml_node find_child_by_attribute(const char_t *name, const char_t *attr_name,
+  XmlNode find_child_by_attribute(const char_t *name, const char_t *attr_name,
                                    const char_t *attr_value) const;
-  xml_node find_child_by_attribute(const char_t *attr_name,
+  XmlNode find_child_by_attribute(const char_t *attr_name,
                                    const char_t *attr_value) const;
 
   // Get the absolute node path from root as a text string.
   string_t path(char_t delimiter = '/') const;
 
   // Search for a node by path consisting of node names and . or .. elements.
-  xml_node first_element_by_path(const char_t *path,
+  XmlNode first_element_by_path(const char_t *path,
                                  char_t delimiter = '/') const;
 
-  // Recursively traverse subtree with xml_tree_walker
-  bool traverse(xml_tree_walker &walker);
+  // Recursively traverse subtree with XmlTreeWalker
+  bool traverse(XmlTreeWalker &walker);
 
   // Select single node by evaluating XPath query. Returns first node from the
   // resulting node set.
-  xpath_node select_node(const char_t *query,
-                         xpath_variable_set *variables = nullptr) const;
-  xpath_node select_node(const xpath_query &query) const;
+  XPathNode select_node(const char_t *query,
+                         XPathVariableSet *variables = nullptr) const;
+  XPathNode select_node(const XPathQuery &query) const;
 
   // Select node set by evaluating XPath query
-  xpath_node_set select_nodes(const char_t *query,
-                              xpath_variable_set *variables = nullptr) const;
-  xpath_node_set select_nodes(const xpath_query &query) const;
+  XPathNodeSet select_nodes(const char_t *query,
+                              XPathVariableSet *variables = nullptr) const;
+  XPathNodeSet select_nodes(const XPathQuery &query) const;
 
   // Print subtree using a writer object
-  void print(xml_writer &writer, const char_t *indent = "\t",
+  void print(XmlWriter &writer, const char_t *indent = "\t",
              unsigned int flags = format_default,
-             xml_encoding encoding = encoding_auto,
+             XmlEncoding encoding = encoding_auto,
              unsigned int depth = 0) const;
 
   // Print subtree to stream
   void print(std::basic_ostream< char > &os, const char_t *indent = "\t",
              unsigned int flags = format_default,
-             xml_encoding encoding = encoding_auto,
+             XmlEncoding encoding = encoding_auto,
              unsigned int depth = 0) const;
   void print(std::basic_ostream< wchar_t > &os, const char_t *indent = "\t",
              unsigned int flags = format_default, unsigned int depth = 0) const;
 
   // Child nodes iterators
-  typedef xml_node_iterator iterator;
+  typedef XmlNodeIterator iterator;
 
   iterator begin() const;
   iterator end() const;
 
   // Attribute iterators
-  typedef xml_attribute_iterator attribute_iterator;
+  typedef XmlAttributeIterator attribute_iterator;
 
   attribute_iterator attributes_begin() const;
   attribute_iterator attributes_end() const;
 
   // Range-based for support
-  xml_object_range< xml_node_iterator > children() const;
-  xml_object_range< xml_attribute_iterator > attributes() const;
+  XmlObjectRange< XmlNodeIterator > children() const;
+  XmlObjectRange< XmlAttributeIterator > attributes() const;
 
   // Range-based for support for all children with the specified name
   // Note: name pointer must have a longer lifetime than the returned object;
   // be careful with passing temporaries!
-  xml_object_range< xml_named_node_iterator >
+  XmlObjectRange< XmlNamedNodeIterator >
   children(const char_t *name) const;
 
   // Get node offset in parsed file/string (in char_t units) for debugging
@@ -745,26 +745,26 @@ public:
   size_t hash_value() const;
 
   // Get internal pointer
-  xml_node_struct *internal_object() const;
+  XmlNodeStruct *internal_object() const;
 };
 
 // A helper for working with text inside PCDATA nodes
-class PUGIXML_CLASS xml_text
+class PUGIXML_CLASS XmlText
 {
-  friend class xml_node;
+  friend class XmlNode;
 
-  xml_node_struct *_root;
+  XmlNodeStruct *_root;
 
-  typedef void (*unspecified_bool_type)(xml_text ***);
+  typedef void (*unspecified_bool_type)(XmlText ***);
 
-  explicit xml_text(xml_node_struct *root);
+  explicit XmlText(XmlNodeStruct *root);
 
-  xml_node_struct *_data_new();
-  xml_node_struct *_data() const;
+  XmlNodeStruct *_data_new();
+  XmlNodeStruct *_data() const;
 
 public:
   // Default constructor. Constructs an empty object.
-  xml_text();
+  XmlText();
 
   // Safe bool conversion operator
   operator unspecified_bool_type() const;
@@ -814,73 +814,73 @@ public:
   bool set(unsigned long long rhs);
 
   // Set text (equivalent to set without error checking)
-  xml_text &operator=(const char_t *rhs);
-  xml_text &operator=(int rhs);
-  xml_text &operator=(unsigned int rhs);
-  xml_text &operator=(long rhs);
-  xml_text &operator=(unsigned long rhs);
-  xml_text &operator=(double rhs);
-  xml_text &operator=(float rhs);
-  xml_text &operator=(bool rhs);
-  xml_text &operator=(string_view_t rhs);
-  xml_text &operator=(long long rhs);
-  xml_text &operator=(unsigned long long rhs);
+  XmlText &operator=(const char_t *rhs);
+  XmlText &operator=(int rhs);
+  XmlText &operator=(unsigned int rhs);
+  XmlText &operator=(long rhs);
+  XmlText &operator=(unsigned long rhs);
+  XmlText &operator=(double rhs);
+  XmlText &operator=(float rhs);
+  XmlText &operator=(bool rhs);
+  XmlText &operator=(string_view_t rhs);
+  XmlText &operator=(long long rhs);
+  XmlText &operator=(unsigned long long rhs);
 
   // Get the data node (node_pcdata or node_cdata) for this object
-  xml_node data() const;
+  XmlNode data() const;
 };
 
 // Child node iterator (a bidirectional iterator over a collection of
-// xml_node)
-class PUGIXML_CLASS xml_node_iterator
+// XmlNode)
+class PUGIXML_CLASS XmlNodeIterator
 {
-  friend class xml_node;
+  friend class XmlNode;
 
 private:
-  mutable xml_node _wrap;
-  xml_node _parent;
+  mutable XmlNode _wrap;
+  XmlNode _parent;
 
-  xml_node_iterator(xml_node_struct *ref, xml_node_struct *parent);
+  XmlNodeIterator(XmlNodeStruct *ref, XmlNodeStruct *parent);
 
 public:
   // Iterator traits
   typedef ptrdiff_t difference_type;
-  typedef xml_node value_type;
-  typedef xml_node *pointer;
-  typedef xml_node &reference;
+  typedef XmlNode value_type;
+  typedef XmlNode *pointer;
+  typedef XmlNode &reference;
   typedef std::bidirectional_iterator_tag iterator_category;
 
   // Default constructor
-  xml_node_iterator();
+  XmlNodeIterator();
 
   // Construct an iterator which points to the specified node
-  xml_node_iterator(const xml_node &node);
+  XmlNodeIterator(const XmlNode &node);
 
   // Iterator operators
-  bool operator==(const xml_node_iterator &rhs) const;
-  bool operator!=(const xml_node_iterator &rhs) const;
+  bool operator==(const XmlNodeIterator &rhs) const;
+  bool operator!=(const XmlNodeIterator &rhs) const;
 
-  xml_node &operator*() const;
-  xml_node *operator->() const;
+  XmlNode &operator*() const;
+  XmlNode *operator->() const;
 
-  xml_node_iterator &operator++();
-  xml_node_iterator operator++(int);
+  XmlNodeIterator &operator++();
+  XmlNodeIterator operator++(int);
 
-  xml_node_iterator &operator--();
-  xml_node_iterator operator--(int);
+  XmlNodeIterator &operator--();
+  XmlNodeIterator operator--(int);
 };
 
 // Attribute iterator (a bidirectional iterator over a collection of
 // xml_attribute)
-class PUGIXML_CLASS xml_attribute_iterator
+class PUGIXML_CLASS XmlAttributeIterator
 {
-  friend class xml_node;
+  friend class XmlNode;
 
 private:
   mutable xml_attribute _wrap;
-  xml_node _parent;
+  XmlNode _parent;
 
-  xml_attribute_iterator(xml_attribute_struct *ref, xml_node_struct *parent);
+  XmlAttributeIterator(XmlAttributeStruct *ref, XmlNodeStruct *parent);
 
 public:
   // Iterator traits
@@ -891,72 +891,72 @@ public:
   typedef std::bidirectional_iterator_tag iterator_category;
 
   // Default constructor
-  xml_attribute_iterator();
+  XmlAttributeIterator();
 
   // Construct an iterator which points to the specified attribute
-  xml_attribute_iterator(const xml_attribute &attr, const xml_node &parent);
+  XmlAttributeIterator(const xml_attribute &attr, const XmlNode &parent);
 
   // Iterator operators
-  bool operator==(const xml_attribute_iterator &rhs) const;
-  bool operator!=(const xml_attribute_iterator &rhs) const;
+  bool operator==(const XmlAttributeIterator &rhs) const;
+  bool operator!=(const XmlAttributeIterator &rhs) const;
 
   xml_attribute &operator*() const;
   xml_attribute *operator->() const;
 
-  xml_attribute_iterator &operator++();
-  xml_attribute_iterator operator++(int);
+  XmlAttributeIterator &operator++();
+  XmlAttributeIterator operator++(int);
 
-  xml_attribute_iterator &operator--();
-  xml_attribute_iterator operator--(int);
+  XmlAttributeIterator &operator--();
+  XmlAttributeIterator operator--(int);
 };
 
 // Named node range helper
-class PUGIXML_CLASS xml_named_node_iterator
+class PUGIXML_CLASS XmlNamedNodeIterator
 {
-  friend class xml_node;
+  friend class XmlNode;
 
 public:
   // Iterator traits
   typedef ptrdiff_t difference_type;
-  typedef xml_node value_type;
-  typedef xml_node *pointer;
-  typedef xml_node &reference;
+  typedef XmlNode value_type;
+  typedef XmlNode *pointer;
+  typedef XmlNode &reference;
   typedef std::bidirectional_iterator_tag iterator_category;
 
   // Default constructor
-  xml_named_node_iterator();
+  XmlNamedNodeIterator();
 
   // Construct an iterator which points to the specified node
   // Note: name pointer is stored in the iterator and must have a longer
   // lifetime than iterator itself
-  xml_named_node_iterator(const xml_node &node, const char_t *name);
+  XmlNamedNodeIterator(const XmlNode &node, const char_t *name);
 
   // Iterator operators
-  bool operator==(const xml_named_node_iterator &rhs) const;
-  bool operator!=(const xml_named_node_iterator &rhs) const;
+  bool operator==(const XmlNamedNodeIterator &rhs) const;
+  bool operator!=(const XmlNamedNodeIterator &rhs) const;
 
-  xml_node &operator*() const;
-  xml_node *operator->() const;
+  XmlNode &operator*() const;
+  XmlNode *operator->() const;
 
-  xml_named_node_iterator &operator++();
-  xml_named_node_iterator operator++(int);
+  XmlNamedNodeIterator &operator++();
+  XmlNamedNodeIterator operator++(int);
 
-  xml_named_node_iterator &operator--();
-  xml_named_node_iterator operator--(int);
+  XmlNamedNodeIterator &operator--();
+  XmlNamedNodeIterator operator--(int);
 
 private:
-  mutable xml_node _wrap;
-  xml_node _parent;
+  mutable XmlNode _wrap;
+  XmlNode _parent;
   const char_t *_name;
 
-  xml_named_node_iterator(xml_node_struct *ref, xml_node_struct *parent,
+  XmlNamedNodeIterator(XmlNodeStruct *ref, XmlNodeStruct *parent,
                           const char_t *name);
 };
 
-// Abstract tree walker class (see xml_node::traverse)
-class PUGIXML_CLASS xml_tree_walker
+// Abstract tree walker class (see XmlNode::traverse)
+class PUGIXML_CLASS XmlTreeWalker
 {
-  friend class xml_node;
+  friend class XmlNode;
 
 private:
   int _depth;
@@ -966,20 +966,20 @@ protected:
   int depth() const;
 
 public:
-  xml_tree_walker();
-  virtual ~xml_tree_walker();
+  XmlTreeWalker();
+  virtual ~XmlTreeWalker();
 
   // Callback that is called when traversal begins
-  virtual bool begin(xml_node &node);
+  virtual bool begin(XmlNode &node);
 
   // Callback that is called for each node traversed
-  virtual bool for_each(xml_node &node) = 0;
+  virtual bool for_each(XmlNode &node) = 0;
 
   // Callback that is called when traversal ends
-  virtual bool end(xml_node &node);
+  virtual bool end(XmlNode &node);
 };
 
-// Parsing status, returned as part of xml_parse_result object
+// Parsing status, returned as part of XmlParseResult object
 enum xml_parse_status
 {
   status_ok = 0, // No error
@@ -1011,14 +1011,14 @@ enum xml_parse_status
 
   status_append_invalid_root, // Unable to append nodes since root type is not
                               // node_element or node_document (exclusive to
-                              // xml_node::append_buffer)
+                              // XmlNode::append_buffer)
 
   status_no_document_element // Parsing resulted in a document without element
                              // nodes
 };
 
 // Parsing result
-struct PUGIXML_CLASS xml_parse_result
+struct PUGIXML_CLASS XmlParseResult
 {
   // Parsing status (see xml_parse_status)
   xml_parse_status status;
@@ -1027,10 +1027,10 @@ struct PUGIXML_CLASS xml_parse_result
   ptrdiff_t offset;
 
   // Source document encoding
-  xml_encoding encoding;
+  XmlEncoding encoding;
 
   // Default constructor, initializes object to failed state
-  xml_parse_result();
+  XmlParseResult();
 
   // Cast to bool operator
   operator bool() const;
@@ -1040,7 +1040,7 @@ struct PUGIXML_CLASS xml_parse_result
 };
 
 // Document class (DOM tree root)
-class PUGIXML_CLASS xml_document : public xml_node
+class PUGIXML_CLASS xml_document : public XmlNode
 {
 private:
   char_t *_buffer;
@@ -1072,79 +1072,79 @@ public:
   // document
   void reset(const xml_document &proto);
   // Load document from stream.
-  xml_parse_result load(std::basic_istream< char > &stream,
+  XmlParseResult load(std::basic_istream< char > &stream,
                         unsigned int options = parse_default,
-                        xml_encoding encoding = encoding_auto);
-  xml_parse_result load(std::basic_istream< wchar_t > &stream,
+                        XmlEncoding encoding = encoding_auto);
+  XmlParseResult load(std::basic_istream< wchar_t > &stream,
                         unsigned int options = parse_default);
 
   // Load document from zero-terminated string. No encoding conversions are
   // applied.
-  xml_parse_result load_string(const char_t *contents,
+  XmlParseResult load_string(const char_t *contents,
                                unsigned int options = parse_default);
 
   // Load document from file
-  xml_parse_result load_file(const char *path,
+  XmlParseResult load_file(const char *path,
                              unsigned int options = parse_default,
-                             xml_encoding encoding = encoding_auto);
-  xml_parse_result load_file(const wchar_t *path,
+                             XmlEncoding encoding = encoding_auto);
+  XmlParseResult load_file(const wchar_t *path,
                              unsigned int options = parse_default,
-                             xml_encoding encoding = encoding_auto);
+                             XmlEncoding encoding = encoding_auto);
 
   // Load document from buffer. Copies/converts the buffer, so it may be
   // deleted or changed after the function returns.
-  xml_parse_result load_buffer(const void *contents, size_t size,
+  XmlParseResult load_buffer(const void *contents, size_t size,
                                unsigned int options = parse_default,
-                               xml_encoding encoding = encoding_auto);
+                               XmlEncoding encoding = encoding_auto);
 
   // Load document from buffer, using the buffer for in-place parsing (the
   // buffer is modified and used for storage of document data). You should
   // ensure that buffer data will persist throughout the document's lifetime,
   // and free the buffer memory manually once document is destroyed.
-  xml_parse_result load_buffer_inplace(void *contents, size_t size,
+  XmlParseResult load_buffer_inplace(void *contents, size_t size,
                                        unsigned int options = parse_default,
-                                       xml_encoding encoding = encoding_auto);
+                                       XmlEncoding encoding = encoding_auto);
 
   // Load document from buffer, using the buffer for in-place parsing (the
   // buffer is modified and used for storage of document data). You should
   // allocate the buffer with pugixml allocation function; document will free
   // the buffer when it is no longer needed (you can't use it anymore).
-  xml_parse_result
+  XmlParseResult
   load_buffer_inplace_own(void *contents, size_t size,
                           unsigned int options = parse_default,
-                          xml_encoding encoding = encoding_auto);
+                          XmlEncoding encoding = encoding_auto);
 
   // Save XML document to writer (semantics is slightly different from
-  // xml_node::print, see documentation for details).
-  void save(xml_writer &writer, const char_t *indent = "\t",
+  // XmlNode::print, see documentation for details).
+  void save(XmlWriter &writer, const char_t *indent = "\t",
             unsigned int flags = format_default,
-            xml_encoding encoding = encoding_auto) const;
+            XmlEncoding encoding = encoding_auto) const;
 
   // Save XML document to stream (semantics is slightly different from
-  // xml_node::print, see documentation for details).
+  // XmlNode::print, see documentation for details).
   void save(std::basic_ostream< char > &stream, const char_t *indent = "\t",
             unsigned int flags = format_default,
-            xml_encoding encoding = encoding_auto) const;
+            XmlEncoding encoding = encoding_auto) const;
   void save(std::basic_ostream< wchar_t > &stream, const char_t *indent = "\t",
             unsigned int flags = format_default) const;
 
   // Save XML to file
   bool save_file(const char *path, const char_t *indent = "\t",
                  unsigned int flags = format_default,
-                 xml_encoding encoding = encoding_auto) const;
+                 XmlEncoding encoding = encoding_auto) const;
   bool save_file(const wchar_t *path, const char_t *indent = "\t",
                  unsigned int flags = format_default,
-                 xml_encoding encoding = encoding_auto) const;
+                 XmlEncoding encoding = encoding_auto) const;
 
   // Get document element
-  xml_node document_element() const;
+  XmlNode document_element() const;
 };
 
 // XPath query return type
 enum xpath_value_type
 {
   xpath_type_none,     // Unknown type (query failed to compile)
-  xpath_type_node_set, // Node set (xpath_node_set)
+  xpath_type_node_set, // Node set (XPathNodeSet)
   xpath_type_number,   // Number
   xpath_type_string,   // String
   xpath_type_boolean   // Boolean
@@ -1172,7 +1172,7 @@ struct PUGIXML_CLASS xpath_parse_result
 // A single XPath variable
 class PUGIXML_CLASS xpath_variable
 {
-  friend class xpath_variable_set;
+  friend class XPathVariableSet;
 
 protected:
   xpath_value_type _type;
@@ -1197,24 +1197,24 @@ public:
   bool get_boolean() const;
   double get_number() const;
   const char_t *get_string() const;
-  const xpath_node_set &get_node_set() const;
+  const XPathNodeSet &get_node_set() const;
 
   // Set variable value; no type conversion is performed, false is returned on
   // type mismatch error
   bool set(bool value);
   bool set(double value);
   bool set(const char_t *value);
-  bool set(const xpath_node_set &value);
+  bool set(const XPathNodeSet &value);
 };
 
 // A set of XPath variables
-class PUGIXML_CLASS xpath_variable_set
+class PUGIXML_CLASS XPathVariableSet
 {
 private:
   xpath_variable *_data[64];
 
-  void _assign(const xpath_variable_set &rhs);
-  void _swap(xpath_variable_set &rhs);
+  void _assign(const XPathVariableSet &rhs);
+  void _swap(XPathVariableSet &rhs);
 
   xpath_variable *_find(const char_t *name) const;
 
@@ -1223,16 +1223,16 @@ private:
 
 public:
   // Default constructor/destructor
-  xpath_variable_set();
-  ~xpath_variable_set();
+  XPathVariableSet();
+  ~XPathVariableSet();
 
   // Copy constructor/assignment operator
-  xpath_variable_set(const xpath_variable_set &rhs);
-  xpath_variable_set &operator=(const xpath_variable_set &rhs);
+  XPathVariableSet(const XPathVariableSet &rhs);
+  XPathVariableSet &operator=(const XPathVariableSet &rhs);
 
   // Move semantics support
-  xpath_variable_set(xpath_variable_set &&rhs) noexcept;
-  xpath_variable_set &operator=(xpath_variable_set &&rhs) noexcept;
+  XPathVariableSet(XPathVariableSet &&rhs) noexcept;
+  XPathVariableSet &operator=(XPathVariableSet &&rhs) noexcept;
 
   // Add a new variable or get the existing one, if the types match
   xpath_variable *add(const char_t *name, xpath_value_type type);
@@ -1242,7 +1242,7 @@ public:
   bool set(const char_t *name, bool value);
   bool set(const char_t *name, double value);
   bool set(const char_t *name, const char_t *value);
-  bool set(const char_t *name, const xpath_node_set &value);
+  bool set(const char_t *name, const XPathNodeSet &value);
 
   // Get existing variable by name
   xpath_variable *get(const char_t *name);
@@ -1250,33 +1250,33 @@ public:
 };
 
 // A compiled XPath query object
-class PUGIXML_CLASS xpath_query
+class PUGIXML_CLASS XPathQuery
 {
 private:
   void *_impl;
   xpath_parse_result _result;
 
-  typedef void (*unspecified_bool_type)(xpath_query ***);
+  typedef void (*unspecified_bool_type)(XPathQuery ***);
 
   // Non-copyable semantics
-  xpath_query(const xpath_query &);
-  xpath_query &operator=(const xpath_query &);
+  XPathQuery(const XPathQuery &);
+  XPathQuery &operator=(const XPathQuery &);
 
 public:
   // Construct a compiled object from XPath expression.
   // If PUGIXML_NO_EXCEPTIONS is not defined, throws xpath_exception on
   // compilation errors.
-  explicit xpath_query(const char_t *query,
-                       xpath_variable_set *variables = nullptr);
+  explicit XPathQuery(const char_t *query,
+                       XPathVariableSet *variables = nullptr);
 
   // Constructor
-  xpath_query();
+  XPathQuery();
 
   // Destructor
-  ~xpath_query();
+  ~XPathQuery();
   // Move semantics support
-  xpath_query(xpath_query &&rhs) noexcept;
-  xpath_query &operator=(xpath_query &&rhs) noexcept;
+  XPathQuery(XPathQuery &&rhs) noexcept;
+  XPathQuery &operator=(XPathQuery &&rhs) noexcept;
 
   // Get query expression return type
   xpath_value_type return_type() const;
@@ -1284,17 +1284,17 @@ public:
   // Evaluate expression as boolean value in the specified context; performs
   // type conversion if necessary. If PUGIXML_NO_EXCEPTIONS is not defined,
   // throws std::bad_alloc on out of memory errors.
-  bool evaluate_boolean(const xpath_node &n) const;
+  bool evaluate_boolean(const XPathNode &n) const;
 
   // Evaluate expression as double value in the specified context; performs
   // type conversion if necessary. If PUGIXML_NO_EXCEPTIONS is not defined,
   // throws std::bad_alloc on out of memory errors.
-  double evaluate_number(const xpath_node &n) const;
+  double evaluate_number(const XPathNode &n) const;
 
   // Evaluate expression as string value in the specified context; performs
   // type conversion if necessary. If PUGIXML_NO_EXCEPTIONS is not defined,
   // throws std::bad_alloc on out of memory errors.
-  string_t evaluate_string(const xpath_node &n) const;
+  string_t evaluate_string(const XPathNode &n) const;
 
   // Evaluate expression as string value in the specified context; performs
   // type conversion if necessary. At most capacity characters are written to
@@ -1303,20 +1303,20 @@ public:
   // std::bad_alloc on out of memory errors. If PUGIXML_NO_EXCEPTIONS is
   // defined, returns empty string instead.
   size_t evaluate_string(char_t *buffer, size_t capacity,
-                         const xpath_node &n) const;
+                         const XPathNode &n) const;
 
   // Evaluate expression as node set in the specified context.
   // If PUGIXML_NO_EXCEPTIONS is not defined, throws xpath_exception on type
   // mismatch and std::bad_alloc on out of memory errors. If
   // PUGIXML_NO_EXCEPTIONS is defined, returns empty node set instead.
-  xpath_node_set evaluate_node_set(const xpath_node &n) const;
+  XPathNodeSet evaluate_node_set(const XPathNode &n) const;
 
   // Evaluate expression as node set in the specified context.
   // Return first node in document order, or empty node if node set is empty.
   // If PUGIXML_NO_EXCEPTIONS is not defined, throws xpath_exception on type
   // mismatch and std::bad_alloc on out of memory errors. If
   // PUGIXML_NO_EXCEPTIONS is defined, returns empty node instead.
-  xpath_node evaluate_node(const xpath_node &n) const;
+  XPathNode evaluate_node(const XPathNode &n) const;
 
   // Get parsing result (used to get compilation errors in
   // PUGIXML_NO_EXCEPTIONS mode)
@@ -1357,29 +1357,29 @@ public:
 #endif
 #endif
 
-// XPath node class (either xml_node or xml_attribute)
-class PUGIXML_CLASS xpath_node
+// XPath node class (either XmlNode or xml_attribute)
+class PUGIXML_CLASS XPathNode
 {
 private:
-  xml_node _node;
+  XmlNode _node;
   xml_attribute _attribute;
 
-  typedef void (*unspecified_bool_type)(xpath_node ***);
+  typedef void (*unspecified_bool_type)(XPathNode ***);
 
 public:
   // Default constructor; constructs empty XPath node
-  xpath_node();
+  XPathNode();
 
   // Construct XPath node from XML node/attribute
-  xpath_node(const xml_node &node);
-  xpath_node(const xml_attribute &attribute, const xml_node &parent);
+  XPathNode(const XmlNode &node);
+  XPathNode(const xml_attribute &attribute, const XmlNode &parent);
 
   // Get node/attribute, if any
-  xml_node node() const;
+  XmlNode node() const;
   xml_attribute attribute() const;
 
   // Get parent of contained node/attribute
-  xml_node parent() const;
+  XmlNode parent() const;
 
   // Safe bool conversion operator
   operator unspecified_bool_type() const;
@@ -1388,12 +1388,12 @@ public:
   bool operator!() const;
 
   // Comparison operators
-  bool operator==(const xpath_node &n) const;
-  bool operator!=(const xpath_node &n) const;
+  bool operator==(const XPathNode &n) const;
+  bool operator!=(const XPathNode &n) const;
 };
 
 // A fixed-size collection of XPath nodes
-class PUGIXML_CLASS xpath_node_set
+class PUGIXML_CLASS XPathNodeSet
 {
 public:
   // Collection type
@@ -1405,30 +1405,30 @@ public:
   };
 
   // Constant iterator type
-  typedef const xpath_node *const_iterator;
+  typedef const XPathNode *const_iterator;
 
   // We define non-constant iterator to be the same as constant iterator so
   // that various generic algorithms (i.e. boost foreach) work
-  typedef const xpath_node *iterator;
+  typedef const XPathNode *iterator;
 
   // Default constructor. Constructs empty set.
-  xpath_node_set();
+  XPathNodeSet();
 
   // Constructs a set from iterator range; data is not checked for duplicates
   // and is not sorted according to provided type, so be careful
-  xpath_node_set(const_iterator begin, const_iterator end,
+  XPathNodeSet(const_iterator begin, const_iterator end,
                  type_t type = type_unsorted);
 
   // Destructor
-  ~xpath_node_set();
+  ~XPathNodeSet();
 
   // Copy constructor/assignment operator
-  xpath_node_set(const xpath_node_set &ns);
-  xpath_node_set &operator=(const xpath_node_set &ns);
+  XPathNodeSet(const XPathNodeSet &ns);
+  XPathNodeSet &operator=(const XPathNodeSet &ns);
 
   // Move semantics support
-  xpath_node_set(xpath_node_set &&rhs) noexcept;
-  xpath_node_set &operator=(xpath_node_set &&rhs) noexcept;
+  XPathNodeSet(XPathNodeSet &&rhs) noexcept;
+  XPathNodeSet &operator=(XPathNodeSet &&rhs) noexcept;
 
   // Get collection type
   type_t type() const;
@@ -1437,7 +1437,7 @@ public:
   size_t size() const;
 
   // Indexing operator
-  const xpath_node &operator[](size_t index) const;
+  const XPathNode &operator[](size_t index) const;
 
   // Collection iterators
   const_iterator begin() const;
@@ -1447,7 +1447,7 @@ public:
   void sort(bool reverse = false);
 
   // Get first node in the collection by document order
-  xpath_node first() const;
+  XPathNode first() const;
 
   // Check if collection is empty
   bool empty() const;
@@ -1455,13 +1455,13 @@ public:
 private:
   type_t _type;
 
-  xpath_node _storage[1];
+  XPathNode _storage[1];
 
-  xpath_node *_begin;
-  xpath_node *_end;
+  XPathNode *_begin;
+  XPathNode *_end;
 
   void _assign(const_iterator begin, const_iterator end, type_t type);
-  void _move(xpath_node_set &rhs) noexcept;
+  void _move(XPathNodeSet &rhs) noexcept;
 };
 
 // Convert wide string to UTF8

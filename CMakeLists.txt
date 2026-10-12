@@ -84,7 +84,6 @@ option(PUGIXML_CHARCONV_FLOAT "Enable charconv number conversion" OFF)
 
 # Advanced options from pugiconfig.hpp
 
-
 if (APPLE)
   option(PUGIXML_BUILD_APPLE_FRAMEWORK "Build as Apple Frameworks" OFF)
 endif()
