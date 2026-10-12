@@ -6,19 +6,19 @@
 
 using namespace pugi;
 
-TEST(xpath_variables_type_none)
+TEST(XPathVariables_type_none)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 
-	xpath_variable* var = set.add(STR("target"), xpath_type_none);
+	XPathVariable* var = set.add(STR("target"), xpath_type_none);
 	CHECK(!var);
 }
 
-TEST(xpath_variables_type_boolean)
+TEST(XPathVariables_type_boolean)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 
-	xpath_variable* var = set.add(STR("target"), xpath_type_boolean);
+	XPathVariable* var = set.add(STR("target"), xpath_type_boolean);
 	CHECK(var);
 
 	CHECK(var->type() == xpath_type_boolean);
@@ -32,7 +32,7 @@ TEST(xpath_variables_type_boolean)
 	CHECK(var->set(true));
 	CHECK(!var->set(1.0));
 	CHECK(!var->set(STR("abc")));
-	CHECK(!var->set(xpath_node_set()));
+	CHECK(!var->set(XPathNodeSet()));
 
 	CHECK(var->get_boolean() == true);
 	CHECK_DOUBLE_NAN(var->get_number());
@@ -40,11 +40,11 @@ TEST(xpath_variables_type_boolean)
 	CHECK(var->get_node_set().empty());
 }
 
-TEST(xpath_variables_type_number)
+TEST(XPathVariables_type_number)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 
-	xpath_variable* var = set.add(STR("target"), xpath_type_number);
+	XPathVariable* var = set.add(STR("target"), xpath_type_number);
 	CHECK(var);
 
 	CHECK(var->type() == xpath_type_number);
@@ -58,7 +58,7 @@ TEST(xpath_variables_type_number)
 	CHECK(!var->set(true));
 	CHECK(var->set(1.0));
 	CHECK(!var->set(STR("abc")));
-	CHECK(!var->set(xpath_node_set()));
+	CHECK(!var->set(XPathNodeSet()));
 
 	CHECK(var->get_boolean() == false);
 	CHECK_DOUBLE(var->get_number(), 1);
@@ -66,11 +66,11 @@ TEST(xpath_variables_type_number)
 	CHECK(var->get_node_set().empty());
 }
 
-TEST(xpath_variables_type_string)
+TEST(XPathVariables_type_string)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 
-	xpath_variable* var = set.add(STR("target"), xpath_type_string);
+	XPathVariable* var = set.add(STR("target"), xpath_type_string);
 	CHECK(var);
 
 	CHECK(var->type() == xpath_type_string);
@@ -84,7 +84,7 @@ TEST(xpath_variables_type_string)
 	CHECK(!var->set(true));
 	CHECK(!var->set(1.0));
 	CHECK(var->set(STR("abc")));
-	CHECK(!var->set(xpath_node_set()));
+	CHECK(!var->set(XPathNodeSet()));
 
 	CHECK(var->get_boolean() == false);
 	CHECK_DOUBLE_NAN(var->get_number());
@@ -95,11 +95,11 @@ TEST(xpath_variables_type_string)
 	CHECK_STRING(var->get_string(), STR("abcdef"));
 }
 
-TEST_XML(xpath_variables_type_node_set, "<node/>")
+TEST_XML(XPathVariables_type_node_set, "<node/>")
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 
-	xpath_variable* var = set.add(STR("target"), xpath_type_node_set);
+	XPathVariable* var = set.add(STR("target"), xpath_type_node_set);
 	CHECK(var);
 
 	CHECK(var->type() == xpath_type_node_set);
@@ -121,14 +121,14 @@ TEST_XML(xpath_variables_type_node_set, "<node/>")
 	CHECK(var->get_node_set().size() == 1 && var->get_node_set()[0] == doc.first_child());
 }
 
-TEST(xpath_variables_set_operations)
+TEST(XPathVariables_set_operations)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 
-	xpath_variable* v1 = set.add(STR("var1"), xpath_type_number);
+	XPathVariable* v1 = set.add(STR("var1"), xpath_type_number);
 	CHECK(v1);
 
-	xpath_variable* v2 = set.add(STR("var2"), xpath_type_string);
+	XPathVariable* v2 = set.add(STR("var2"), xpath_type_string);
 	CHECK(v2);
 
 	CHECK(v1 != v2);
@@ -142,18 +142,18 @@ TEST(xpath_variables_set_operations)
 	CHECK(set.get(STR("var")) == 0);
 	CHECK(set.get(STR("var11")) == 0);
 
-	CHECK(static_cast<const xpath_variable_set&>(set).get(STR("var1")) == v1);
-	CHECK(static_cast<const xpath_variable_set&>(set).get(STR("var3")) == 0);
+	CHECK(static_cast<const XPathVariableSet&>(set).get(STR("var1")) == v1);
+	CHECK(static_cast<const XPathVariableSet&>(set).get(STR("var3")) == 0);
 }
 
-TEST_XML(xpath_variables_set_operations_set, "<node/>")
+TEST_XML(XPathVariables_set_operations_set, "<node/>")
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 
-	xpath_variable* v1 = set.add(STR("var1"), xpath_type_number);
+	XPathVariable* v1 = set.add(STR("var1"), xpath_type_number);
 	CHECK(v1);
 
-	xpath_variable* v2 = set.add(STR("var2"), xpath_type_string);
+	XPathVariable* v2 = set.add(STR("var2"), xpath_type_string);
 	CHECK(v2);
 
 	CHECK(set.set(STR("var1"), 1.0));
@@ -166,39 +166,39 @@ TEST_XML(xpath_variables_set_operations_set, "<node/>")
 
 	CHECK(set.set(STR("var3"), doc.select_nodes(STR("*"))));
 
-	xpath_variable* v3 = set.get(STR("var3"));
+	XPathVariable* v3 = set.get(STR("var3"));
 
 	CHECK(v3);
 	CHECK(v3->type() == xpath_type_node_set);
 	CHECK(v3->get_node_set().size() == 1);
 }
 
-TEST(xpath_variables_set_out_of_memory)
+TEST(XPathVariables_set_out_of_memory)
 {
 	test_runner::_memory_fail_threshold = 1;
 
-	xpath_variable_set set;
+	XPathVariableSet set;
 
-	xpath_variable* var = 0;
+	XPathVariable* var = 0;
 	CHECK_ALLOC_FAIL(var = set.add(STR("target"), xpath_type_number));
 	CHECK(!var);
 }
 
-TEST(xpath_variables_out_of_memory)
+TEST(XPathVariables_out_of_memory)
 {
 	test_runner::_memory_fail_threshold = 64;
 
-	xpath_variable_set set;
+	XPathVariableSet set;
 
-	xpath_variable* var = set.add(STR("target"), xpath_type_string);
+	XPathVariable* var = set.add(STR("target"), xpath_type_string);
 	CHECK(var);
 
 	CHECK_ALLOC_FAIL(CHECK(!var->set(STR("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"))));
 }
 
-TEST_XML(xpath_variables_evaluate, "<node/>")
+TEST_XML(XPathVariables_evaluate, "<node/>")
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("var1"), true);
 	set.set(STR("var2"), 0.5);
 	set.set(STR("var3"), STR("value"));
@@ -210,9 +210,9 @@ TEST_XML(xpath_variables_evaluate, "<node/>")
 	CHECK_XPATH_NODESET_VAR(doc, STR("$var4"), &set) % 2;
 }
 
-TEST_XML(xpath_variables_evaluate_conversion, "<node>3</node>")
+TEST_XML(XPathVariables_evaluate_conversion, "<node>3</node>")
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("var"), doc.select_nodes(STR("*")));
 
 	CHECK_XPATH_BOOLEAN_VAR(doc, STR("$var"), &set, true);
@@ -221,19 +221,19 @@ TEST_XML(xpath_variables_evaluate_conversion, "<node>3</node>")
 	CHECK_XPATH_NODESET_VAR(doc, STR("$var"), &set) % 2;
 }
 
-TEST(xpath_variables_evaluate_node_set_fail)
+TEST(XPathVariables_evaluate_node_set_fail)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("var"), false);
 
-	xpath_query q(STR("$var"), &set);
+	XPathQuery q(STR("$var"), &set);
 
 #ifdef PUGIXML_NO_EXCEPTIONS
-	CHECK(q.evaluate_node_set(xml_node()).empty());
+	CHECK(q.evaluate_node_set(XmlNode()).empty());
 #else
 	try
 	{
-		q.evaluate_node_set(xml_node());
+		q.evaluate_node_set(XmlNode());
 
 		CHECK_FORCE_FAIL("Expected exception");
 	}
@@ -243,7 +243,7 @@ TEST(xpath_variables_evaluate_node_set_fail)
 #endif
 }
 
-TEST(xpath_variables_multiple_documents)
+TEST(XPathVariables_multiple_documents)
 {
 	xml_document doc;
 	doc.append_child().set_name(STR("node"));
@@ -254,113 +254,113 @@ TEST(xpath_variables_multiple_documents)
 	xml_document doc2;
 	doc2.append_child().set_name(STR("node"));
 
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("var1"), doc1.select_nodes(STR("*")));
 	set.set(STR("var2"), doc2.select_nodes(STR("*")));
 
-	xpath_node_set ns = doc.select_nodes(STR("$var1 | $var2 | node"), &set);
+	XPathNodeSet ns = doc.select_nodes(STR("$var1 | $var2 | node"), &set);
 	ns.sort();
 
 	CHECK(ns.size() == 3);
 	CHECK(ns[0] != ns[1] && ns[0] != ns[2]);
 
-	xml_node n0 = doc.child(STR("node")), n1 = doc1.child(STR("node")), n2 = doc2.child(STR("node"));
+	XmlNode n0 = doc.child(STR("node")), n1 = doc1.child(STR("node")), n2 = doc2.child(STR("node"));
 
 	CHECK(n0 == ns[0].node() || n0 == ns[1].node() || n0 == ns[2].node());
 	CHECK(n1 == ns[0].node() || n1 == ns[1].node() || n1 == ns[2].node());
 	CHECK(n2 == ns[0].node() || n2 == ns[1].node() || n2 == ns[2].node());
 }
 
-TEST(xpath_variables_long_name)
+TEST(XPathVariables_long_name)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), true);
 
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), &set, true);
 }
 
-TEST(xpath_variables_long_name_out_of_memory)
+TEST(XPathVariables_long_name_out_of_memory)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), true);
 
 	test_runner::_memory_fail_threshold = 4096 + 64 + 52 * sizeof(char_t);
 
-	CHECK_ALLOC_FAIL(CHECK(!xpath_query(STR("$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), &set)));
+	CHECK_ALLOC_FAIL(CHECK(!XPathQuery(STR("$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), &set)));
 }
 
-TEST_XML(xpath_variables_select, "<node attr='1'/><node attr='2'/>")
+TEST_XML(XPathVariables_select, "<node attr='1'/><node attr='2'/>")
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("one"), 1.0);
 
-	xpath_node_set ns = doc.select_nodes(STR("node[@attr=$one+1]"), &set);
+	XPathNodeSet ns = doc.select_nodes(STR("node[@attr=$one+1]"), &set);
 	CHECK(ns.size() == 1 && ns[0].node() == doc.last_child());
 
-	xpath_node n = doc.select_node(STR("node[@attr=$one+1]"), &set);
+	XPathNode n = doc.select_node(STR("node[@attr=$one+1]"), &set);
 	CHECK(n == ns[0]);
 }
 
-TEST(xpath_variables_empty_name)
+TEST(XPathVariables_empty_name)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	CHECK(!set.add(STR(""), xpath_type_node_set));
 	CHECK(!set.add(STR(""), xpath_type_number));
 	CHECK(!set.add(STR(""), xpath_type_string));
 	CHECK(!set.add(STR(""), xpath_type_boolean));
 }
 
-TEST(xpath_variables_long_name_out_of_memory_add)
+TEST(XPathVariables_long_name_out_of_memory_add)
 {
 	std::basic_string<char_t> name(1000, 'a');
 
 	test_runner::_memory_fail_threshold = 1000;
 
-	xpath_variable_set set;
+	XPathVariableSet set;
 	CHECK_ALLOC_FAIL(CHECK(!set.add(name.c_str(), xpath_type_node_set)));
 	CHECK_ALLOC_FAIL(CHECK(!set.add(name.c_str(), xpath_type_number)));
 	CHECK_ALLOC_FAIL(CHECK(!set.add(name.c_str(), xpath_type_string)));
 	CHECK_ALLOC_FAIL(CHECK(!set.add(name.c_str(), xpath_type_boolean)));
 }
 
-TEST_XML(xpath_variables_inside_filter, "<node key='1' value='2'/><node key='2' value='1'/><node key='1' value='1'/>")
+TEST_XML(XPathVariables_inside_filter, "<node key='1' value='2'/><node key='2' value='1'/><node key='1' value='1'/>")
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("one"), 1.0);
 
-	xpath_node_set ns = doc.select_nodes(STR("(node[@key = $one])[@value = $one]"), &set);
+	XPathNodeSet ns = doc.select_nodes(STR("(node[@key = $one])[@value = $one]"), &set);
 	CHECK(ns.size() == 1 && ns[0].node() == doc.last_child());
 }
 
-TEST_XML(xpath_variables_step, "<node><child/><child/><child><child/></child></node>")
+TEST_XML(XPathVariables_step, "<node><child/><child/><child><child/></child></node>")
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("root"), doc.select_nodes(STR("node")));
 
-	CHECK_XPATH_NODESET_VAR(xml_node(), STR("$root/child"), &set) % 3 % 4 % 5;
-	CHECK_XPATH_NODESET_VAR(xml_node(), STR("$root//child"), &set) % 3 % 4 % 5 % 6;
+	CHECK_XPATH_NODESET_VAR(XmlNode(), STR("$root/child"), &set) % 3 % 4 % 5;
+	CHECK_XPATH_NODESET_VAR(XmlNode(), STR("$root//child"), &set) % 3 % 4 % 5 % 6;
 }
 
-TEST_XML(xpath_variables_index, "<node><child/><child/><child><child/></child></node>")
+TEST_XML(XPathVariables_index, "<node><child/><child/><child><child/></child></node>")
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("index"), 2.0);
 
 	CHECK_XPATH_NODESET_VAR(doc, STR("node/child[$index]"), &set) % 4;
 	CHECK_XPATH_NODESET_VAR(doc, STR("node/child[position()=$index]"), &set) % 4;
 }
 
-TEST(xpath_variables_qname)
+TEST(XPathVariables_qname)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("foo:bar"), true);
 
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("$foo:bar"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("$foo:bar"), &set, true);
 }
 
-TEST(xpath_variables_name_error)
+TEST(XPathVariables_name_error)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("foo:"), true);
 	set.set(STR(":bar"), true);
 	set.set(STR("foo:*"), true);
@@ -376,32 +376,32 @@ TEST(xpath_variables_name_error)
 	CHECK_XPATH_FAIL_VAR(STR("$3"), &set);
 }
 
-TEST(xpath_variables_empty_string)
+TEST(XPathVariables_empty_string)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.add(STR("empty"), xpath_type_string);
 
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("$empty = substring-before('a', 'z')"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("$empty = substring-before('a', 'z')"), &set, true);
 }
 
-TEST(xpath_variables_name_underscore)
+TEST(XPathVariables_name_underscore)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("_foo_bar"), true);
 
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("$_foo_bar"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("$_foo_bar"), &set, true);
 }
 
-TEST(xpath_variables_name_case)
+TEST(XPathVariables_name_case)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("i"), 5.0);
 	set.set(STR("I"), 2.0);
 
-	CHECK_XPATH_NUMBER_VAR(xml_node(), STR("$i div $I"), &set, 2.5);
+	CHECK_XPATH_NUMBER_VAR(XmlNode(), STR("$i div $I"), &set, 2.5);
 }
 
-TEST(xpath_variables_name_unicode)
+TEST(XPathVariables_name_unicode)
 {
 #ifdef PUGIXML_WCHAR_MODE
 	#ifdef U_LITERALS
@@ -413,81 +413,81 @@ TEST(xpath_variables_name_unicode)
 	const char_t* name = "\xd0\x80\xe2\x80\xbd";
 #endif
 
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(name, STR("value"));
 
 	std::basic_string<char_t> var = STR("$");
 	var += name;
 
-	CHECK_XPATH_STRING_VAR(xml_node(), var.c_str(), &set, STR("value"));
+	CHECK_XPATH_STRING_VAR(XmlNode(), var.c_str(), &set, STR("value"));
 }
 
-TEST_XML(xpath_variables_count_sum, "<node><c1>12</c1><c2>23</c2><c3>34</c3></node>")
+TEST_XML(XPathVariables_count_sum, "<node><c1>12</c1><c2>23</c2><c3>34</c3></node>")
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("c12"), doc.select_nodes(STR("node/c1 | node/c2")));
 	set.set(STR("c3"), doc.select_nodes(STR("node/c3")));
 	set.set(STR("c"), doc.select_nodes(STR("node/*")));
 
-	CHECK_XPATH_NUMBER_VAR(xml_node(), STR("sum($c12) * count($c) - sum($c3)"), &set, 71);
+	CHECK_XPATH_NUMBER_VAR(XmlNode(), STR("sum($c12) * count($c) - sum($c3)"), &set, 71);
 }
 
-TEST_XML(xpath_variables_copy, "<node />")
+TEST_XML(XPathVariables_copy, "<node />")
 {
-	xpath_variable_set set1;
+	XPathVariableSet set1;
 	set1.set(STR("a"), true);
 	set1.set(STR("b"), 2.0);
 	set1.set(STR("c"), STR("string"));
 	set1.set(STR("d"), doc.select_nodes(STR("//*")));
 
-	CHECK_XPATH_STRING_VAR(xml_node(), STR("substring($c, count($d[$a]) + $b)"), &set1, STR("ring"));
+	CHECK_XPATH_STRING_VAR(XmlNode(), STR("substring($c, count($d[$a]) + $b)"), &set1, STR("ring"));
 
-	xpath_variable_set set2 = set1;
+	XPathVariableSet set2 = set1;
 
-	CHECK_XPATH_STRING_VAR(xml_node(), STR("substring($c, count($d[$a]) + $b)"), &set2, STR("ring"));
+	CHECK_XPATH_STRING_VAR(XmlNode(), STR("substring($c, count($d[$a]) + $b)"), &set2, STR("ring"));
 
-	xpath_variable_set set3;
+	XPathVariableSet set3;
 
 	CHECK(!set3.get(STR("a")));
 
 	set3 = set1;
 
-	CHECK_XPATH_STRING_VAR(xml_node(), STR("substring($c, count($d[$a]) + $b)"), &set2, STR("ring"));
+	CHECK_XPATH_STRING_VAR(XmlNode(), STR("substring($c, count($d[$a]) + $b)"), &set2, STR("ring"));
 
-	set3 = xpath_variable_set(set3);
+	set3 = XPathVariableSet(set3);
 
-	CHECK_XPATH_STRING_VAR(xml_node(), STR("substring($c, count($d[$a]) + $b)"), &set2, STR("ring"));
+	CHECK_XPATH_STRING_VAR(XmlNode(), STR("substring($c, count($d[$a]) + $b)"), &set2, STR("ring"));
 
-	set3 = xpath_variable_set();
+	set3 = XPathVariableSet();
 
 	CHECK(!set3.get(STR("a")));
 }
 
-TEST(xpath_variables_copy_unset_string)
+TEST(XPathVariables_copy_unset_string)
 {
-	xpath_variable_set set1;
+	XPathVariableSet set1;
 	CHECK(set1.add(STR("v"), xpath_type_string));
 
-	xpath_variable_set set2 = set1;
+	XPathVariableSet set2 = set1;
 	CHECK(set2.get(STR("v")));
 	CHECK_STRING(set2.get(STR("v"))->get_string(), STR(""));
 }
 
-TEST_XML(xpath_variables_copy_out_of_memory, "<node1 /><node2 />")
+TEST_XML(XPathVariables_copy_out_of_memory, "<node1 /><node2 />")
 {
-	xpath_variable_set set1;
+	XPathVariableSet set1;
 	set1.set(STR("a"), true);
 	set1.set(STR("b"), 2.0);
 	set1.set(STR("c"), STR("string"));
 	set1.set(STR("d"), doc.select_nodes(STR("//*")));
 
-	xpath_variable_set set2 = set1;
+	XPathVariableSet set2 = set1;
 
 	test_runner::_memory_fail_threshold = 32768 + 75 * sizeof(void*);
 
-	CHECK_ALLOC_FAIL(xpath_variable_set set3 = set1);
+	CHECK_ALLOC_FAIL(XPathVariableSet set3 = set1);
 
-	xpath_variable_set set4;
+	XPathVariableSet set4;
 
 	CHECK_ALLOC_FAIL(set4 = set1);
 	CHECK(!set4.get(STR("a")) && !set4.get(STR("b")) && !set4.get(STR("c")) && !set4.get(STR("d")));
@@ -502,33 +502,33 @@ TEST_XML(xpath_variables_copy_out_of_memory, "<node1 /><node2 />")
 	CHECK(set2.get(STR("d"))->get_node_set().size() == 2);
 }
 
-TEST(xpath_variables_copy_out_of_memory_clone)
+TEST(XPathVariables_copy_out_of_memory_clone)
 {
-	xpath_variable_set set1;
+	XPathVariableSet set1;
 	set1.set(STR("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), true);
 
-	xpath_variable_set set2 = set1;
+	XPathVariableSet set2 = set1;
 
 	test_runner::_memory_fail_threshold = 60;
 
-	CHECK_ALLOC_FAIL(xpath_variable_set set3 = set1);
+	CHECK_ALLOC_FAIL(XPathVariableSet set3 = set1);
 }
 
 #ifdef PUGIXML_HAS_MOVE
-TEST_XML(xpath_variables_move, "<node />")
+TEST_XML(XPathVariables_move, "<node />")
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("a"), true);
 	set.set(STR("b"), 2.0);
 	set.set(STR("c"), STR("string"));
 	set.set(STR("d"), doc.select_nodes(STR("//*")));
 
-	xpath_variable_set copy = set;
+	XPathVariableSet copy = set;
 	copy.set(STR("e"), 42.0);
 
 	test_runner::_memory_fail_threshold = 1;
 
-	xpath_variable_set move1 = std::move(set);
+	XPathVariableSet move1 = std::move(set);
 
 	CHECK(!set.get(STR("a")) && !set.get(STR("b")) && !set.get(STR("c")) && !set.get(STR("d")));
 	CHECK(move1.get(STR("a")) && move1.get(STR("b")) && move1.get(STR("c")) && move1.get(STR("d")));
@@ -538,7 +538,7 @@ TEST_XML(xpath_variables_move, "<node />")
 	CHECK_STRING(move1.get(STR("c"))->get_string(), STR("string"));
 	CHECK(move1.get(STR("d"))->get_node_set().size() == 1);
 
-	xpath_variable_set move2;
+	XPathVariableSet move2;
 	move2 = std::move(move1);
 
 	CHECK(!move1.get(STR("a")) && !move1.get(STR("b")) && !move1.get(STR("c")) && !move1.get(STR("d")));
@@ -559,9 +559,9 @@ TEST_XML(xpath_variables_move, "<node />")
 }
 #endif
 
-TEST(xpath_variables_copy_big)
+TEST(XPathVariables_copy_big)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 
 	for (int i = 0; i < 100; ++i)
 	{
@@ -574,7 +574,7 @@ TEST(xpath_variables_copy_big)
 		set.set(name, double(i));
 	}
 
-	xpath_variable_set copy = set;
+	XPathVariableSet copy = set;
 
 	for (int j = 0; j < 100; ++j)
 	{
@@ -588,9 +588,9 @@ TEST(xpath_variables_copy_big)
 	}
 }
 
-TEST(xpath_variables_copy_big_out_of_memory)
+TEST(XPathVariables_copy_big_out_of_memory)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 
 	for (int i = 0; i < 100; ++i)
 	{
@@ -605,7 +605,7 @@ TEST(xpath_variables_copy_big_out_of_memory)
 
 	test_runner::_memory_fail_threshold = 1;
 
-	xpath_variable_set copy;
+	XPathVariableSet copy;
 	CHECK_ALLOC_FAIL(copy = set);
 
 	for (int j = 0; j < 100; ++j)
@@ -620,64 +620,64 @@ TEST(xpath_variables_copy_big_out_of_memory)
 	}
 }
 
-TEST(xpath_variables_copy_big_value_out_of_memory)
+TEST(XPathVariables_copy_big_value_out_of_memory)
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 
 	std::basic_string<char_t> var(10000, 'a');
 	set.set(STR("x"), var.c_str());
 
 	test_runner::_memory_fail_threshold = 15000;
 
-	xpath_variable_set copy;
+	XPathVariableSet copy;
 	CHECK_ALLOC_FAIL(copy = set);
 
 	CHECK(!copy.get(STR("x")));
 }
 
-TEST_XML(xpath_variables_evaluate_node_set_out_of_memory, "<node />")
+TEST_XML(XPathVariables_evaluate_node_set_out_of_memory, "<node />")
 {
 	for (size_t i = 0; i < 600; ++i)
 		doc.append_child(STR("node"));
 
-	xpath_node_set ns = doc.select_nodes(STR("node"));
+	XPathNodeSet ns = doc.select_nodes(STR("node"));
 	CHECK(ns.size() == 601);
 
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("nodes"), ns);
 
-	xpath_query q(STR("$nodes"), &set);
+	XPathQuery q(STR("$nodes"), &set);
 
 	test_runner::_memory_fail_threshold = 1;
 
-	CHECK_ALLOC_FAIL(q.evaluate_node_set(xml_node()).empty());
+	CHECK_ALLOC_FAIL(q.evaluate_node_set(XmlNode()).empty());
 }
 
-TEST_XML(xpath_variables_type_conversion, "<node>15</node>")
+TEST_XML(XPathVariables_type_conversion, "<node>15</node>")
 {
-	xpath_variable_set set;
+	XPathVariableSet set;
 
 	set.set(STR("a"), true);
 	set.set(STR("b"), 42.0);
 	set.set(STR("c"), STR("test"));
 	set.set(STR("d"), doc.select_nodes(STR("node")));
 
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("boolean($a) = true()"), &set, true);
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("number($a) = 1"), &set, true);
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("string($a) = 'true'"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("boolean($a) = true()"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("number($a) = 1"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("string($a) = 'true'"), &set, true);
 
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("boolean($b) = true()"), &set, true);
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("number($b) = 42"), &set, true);
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("string($b) = '42'"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("boolean($b) = true()"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("number($b) = 42"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("string($b) = '42'"), &set, true);
 
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("boolean($c) = true()"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("boolean($c) = true()"), &set, true);
 #ifndef MSVC6_NAN_BUG
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("number($c) = 0"), &set, false);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("number($c) = 0"), &set, false);
 #endif
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("string($c) = 'test'"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("string($c) = 'test'"), &set, true);
 
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("boolean($d) = true()"), &set, true);
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("number($d) = 15"), &set, true);
-	CHECK_XPATH_BOOLEAN_VAR(xml_node(), STR("string($d) = '15'"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("boolean($d) = true()"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("number($d) = 15"), &set, true);
+	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("string($d) = '15'"), &set, true);
 }
 #endif

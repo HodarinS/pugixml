@@ -76,13 +76,6 @@ module;
 #define PUGI_IMPL_UNALIGNED
 #endif
 
-// Branch weight controls
-#if defined(__GNUC__) && !defined(__c2__)
-#define PUGI_IMPL_UNLIKELY(cond) __builtin_expect(cond, 0)
-#else
-#define PUGI_IMPL_UNLIKELY(cond) (cond)
-#endif
-
 // Integer sanitizer workaround; we only apply this for clang since gcc8 has
 // no_sanitize but not unsigned-integer-overflow and produces "attribute
 // directive ignored" warnings
@@ -519,13 +512,7 @@ struct xml_memory_page
 #endif
 };
 
-static const size_t xml_memory_page_size =
-#ifdef PUGIXML_MEMORY_PAGE_SIZE
-    (PUGIXML_MEMORY_PAGE_SIZE)
-#else
-    32768
-#endif
-    - sizeof(xml_memory_page);
+static const size_t xml_memory_page_size = 32768 - sizeof(xml_memory_page);
 
 struct xml_memory_string_header
 {
@@ -572,7 +559,7 @@ struct xml_allocator
 
   void *allocate_memory(size_t size, xml_memory_page *&out_page)
   {
-    if (PUGI_IMPL_UNLIKELY(_busy_size + size > xml_memory_page_size))
+    if (_busy_size + size > xml_memory_page_size) [[unlikely]]
       return allocate_memory_oob(size, out_page);
 
     void *buf = reinterpret_cast< char * >(_root) + sizeof(xml_memory_page) +
@@ -2616,7 +2603,6 @@ PUGI_IMPL_FN void as_utf8_end(char *buffer, size_t size, const wchar_t *str,
   (void)!size;
 }
 
-#ifndef PUGIXML_NO_STL
 PUGI_IMPL_FN std::string as_utf8_impl(const wchar_t *str, size_t length)
 {
   // first pass: get length in utf8 characters
@@ -2659,7 +2645,6 @@ PUGI_IMPL_FN std::basic_string< wchar_t > as_wide_impl(const char *str,
 
   return result;
 }
-#endif
 
 template < typename Header >
 inline bool strcpy_insitu_allow(size_t length, const Header &header,
@@ -2974,24 +2959,24 @@ PUGI_IMPL_FN char_t *strconv_escape(char_t *s, gap &g)
     for (;;)                                                                   \
     {                                                                          \
       char_t ss = s[0];                                                        \
-      if (PUGI_IMPL_UNLIKELY(!(X)))                                            \
+      if (!(X)) [[unlikely]]                                                   \
       {                                                                        \
         break;                                                                 \
       }                                                                        \
       ss = s[1];                                                               \
-      if (PUGI_IMPL_UNLIKELY(!(X)))                                            \
+      if (!(X)) [[unlikely]]                                                   \
       {                                                                        \
         s += 1;                                                                \
         break;                                                                 \
       }                                                                        \
       ss = s[2];                                                               \
-      if (PUGI_IMPL_UNLIKELY(!(X)))                                            \
+      if (!(X)) [[unlikely]]                                                   \
       {                                                                        \
         s += 2;                                                                \
         break;                                                                 \
       }                                                                        \
       ss = s[3];                                                               \
-      if (PUGI_IMPL_UNLIKELY(!(X)))                                            \
+      if (!(X)) [[unlikely]]                                                   \
       {                                                                        \
         s += 3;                                                                \
         break;                                                                 \
@@ -3375,7 +3360,7 @@ PUGI_IMPL_FN strconv_attribute_t get_strconv_attribute(unsigned int optmask)
   }
 }
 
-inline XmlParseResult make_parse_result(xml_parse_status status,
+inline XmlParseResult make_parse_result(XmlParseStatus status,
                                         ptrdiff_t offset = 0)
 {
   XmlParseResult result;
@@ -3389,7 +3374,7 @@ struct xml_parser
 {
   xml_allocator *alloc;
   char_t *error_offset;
-  xml_parse_status error_status;
+  XmlParseStatus error_status;
 
   xml_parser(xml_allocator *alloc_)
       : alloc(alloc_),
@@ -5532,7 +5517,7 @@ load_buffer_impl(xml_document_struct *doc, XmlNodeStruct *root, void *contents,
 }
 
 template < typename T >
-PUGI_IMPL_FN xml_parse_status convert_file_size(T length, size_t &out_result)
+PUGI_IMPL_FN XmlParseStatus convert_file_size(T length, size_t &out_result)
 {
   // check for I/O errors
   if (length < 0)
@@ -5550,7 +5535,7 @@ PUGI_IMPL_FN xml_parse_status convert_file_size(T length, size_t &out_result)
 
 // we need to get length of entire file to load it in memory; the only
 // (relatively) sane way to do it is via seek/tell trick
-PUGI_IMPL_FN xml_parse_status get_file_size(FILE *file, size_t &out_result)
+PUGI_IMPL_FN XmlParseStatus get_file_size(FILE *file, size_t &out_result)
 {
 #if defined(__linux__) || defined(__APPLE__)
   // this simultaneously retrieves the file size and file mode (to guard against
@@ -5563,14 +5548,14 @@ PUGI_IMPL_FN xml_parse_status get_file_size(FILE *file, size_t &out_result)
   if (!S_ISREG(st.st_mode))
     return status_io_error;
 
-  xml_parse_status status = convert_file_size(st.st_size, out_result);
+  XmlParseStatus status = convert_file_size(st.st_size, out_result);
 #elif defined(PUGI_IMPL_MSVC_CRT_VERSION) && PUGI_IMPL_MSVC_CRT_VERSION >= 1400
   // there are 64-bit versions of fseek/ftell, let's use them
   _fseeki64(file, 0, SEEK_END);
   __int64 length = _ftelli64(file);
   _fseeki64(file, 0, SEEK_SET);
 
-  xml_parse_status status = convert_file_size(length, out_result);
+  XmlParseStatus status = convert_file_size(length, out_result);
 #elif defined(__MINGW32__) && !defined(__NO_MINGW_LFS) &&                      \
     (!defined(__STRICT_ANSI__) || defined(__MINGW64_VERSION_MAJOR))
   // there are 64-bit versions of fseek/ftell, let's use them
@@ -5578,7 +5563,7 @@ PUGI_IMPL_FN xml_parse_status get_file_size(FILE *file, size_t &out_result)
   off64_t length = ftello64(file);
   fseeko64(file, 0, SEEK_SET);
 
-  xml_parse_status status = convert_file_size(length, out_result);
+  XmlParseStatus status = convert_file_size(length, out_result);
 #else
   // if this is a 32-bit OS, long is enough; if this is a unix system, long is
   // 64-bit, which is enough; otherwise we can't do anything anyway.
@@ -5586,7 +5571,7 @@ PUGI_IMPL_FN xml_parse_status get_file_size(FILE *file, size_t &out_result)
   long length = ftell(file);
   fseek(file, 0, SEEK_SET);
 
-  xml_parse_status status = convert_file_size(length, out_result);
+  XmlParseStatus status = convert_file_size(length, out_result);
 #endif
 
   return status;
@@ -5630,7 +5615,7 @@ PUGI_IMPL_FN XmlParseResult load_file_impl(xml_document_struct *doc, FILE *file,
 
   // get file size (can result in I/O errors)
   size_t size = 0;
-  xml_parse_status size_status = get_file_size(file, size);
+  XmlParseStatus size_status = get_file_size(file, size);
   if (size_status != status_ok)
     return make_parse_result(size_status);
 
@@ -5703,7 +5688,7 @@ template < typename T > struct xml_stream_chunk
 };
 
 template < typename T >
-PUGI_IMPL_FN xml_parse_status load_stream_data_noseek(
+PUGI_IMPL_FN XmlParseStatus load_stream_data_noseek(
     std::basic_istream< T > &stream, void **out_buffer, size_t *out_size)
 {
   auto_deleter< xml_stream_chunk< T > > chunks(nullptr,
@@ -5772,7 +5757,7 @@ PUGI_IMPL_FN xml_parse_status load_stream_data_noseek(
 }
 
 template < typename T >
-PUGI_IMPL_FN xml_parse_status load_stream_data_seek(
+PUGI_IMPL_FN XmlParseStatus load_stream_data_seek(
     std::basic_istream< T > &stream, void **out_buffer, size_t *out_size)
 {
   // get length of remaining data in stream
@@ -5829,7 +5814,7 @@ PUGI_IMPL_FN XmlParseResult load_stream_impl(xml_document_struct *doc,
 {
   void *buffer = nullptr;
   size_t size = 0;
-  xml_parse_status status = status_ok;
+  XmlParseStatus status = status_ok;
 
   // if stream has an error bit set, bail out (otherwise tellg() can fail and
   // we'll clear error bits)
@@ -8713,17 +8698,15 @@ PUGI_IMPL_FN xml_document::~xml_document()
   _destroy();
 }
 
-#ifdef PUGIXML_HAS_MOVE
 PUGI_IMPL_FN
-xml_document::xml_document(xml_document &&rhs) PUGIXML_NOEXCEPT_IF_NOT_COMPACT
+xml_document::xml_document(xml_document &&rhs) noexcept
     : _buffer(nullptr)
 {
   _create();
   _move(rhs);
 }
 
-PUGI_IMPL_FN xml_document &
-xml_document::operator=(xml_document &&rhs) PUGIXML_NOEXCEPT_IF_NOT_COMPACT
+PUGI_IMPL_FN xml_document &xml_document::operator=(xml_document &&rhs) noexcept
 {
   if (this == &rhs)
     return *this;
@@ -8734,7 +8717,6 @@ xml_document::operator=(xml_document &&rhs) PUGIXML_NOEXCEPT_IF_NOT_COMPACT
 
   return *this;
 }
-#endif
 
 PUGI_IMPL_FN void xml_document::reset()
 {
@@ -8847,9 +8829,7 @@ PUGI_IMPL_FN void xml_document::_destroy()
   _root = nullptr;
 }
 
-#ifdef PUGIXML_HAS_MOVE
-PUGI_IMPL_FN void
-xml_document::_move(xml_document &rhs) PUGIXML_NOEXCEPT_IF_NOT_COMPACT
+PUGI_IMPL_FN void xml_document::_move(xml_document &rhs) noexcept
 {
   impl::xml_document_struct *doc =
       static_cast< impl::xml_document_struct * >(_root);
@@ -8964,9 +8944,7 @@ xml_document::_move(xml_document &rhs) PUGIXML_NOEXCEPT_IF_NOT_COMPACT
   new (other) impl::xml_document_struct(other_page);
   rhs._buffer = nullptr;
 }
-#endif
 
-#ifndef PUGIXML_NO_STL
 PUGI_IMPL_FN
 XmlParseResult xml_document::load(std::basic_istream< char > &stream,
                                   unsigned int options, XmlEncoding encoding)
@@ -8987,7 +8965,6 @@ xml_document::load(std::basic_istream< wchar_t > &stream, unsigned int options)
       static_cast< impl::xml_document_struct * >(_root), stream, options,
       encoding_wchar, &_buffer);
 }
-#endif
 
 PUGI_IMPL_FN XmlParseResult xml_document::load_string(const char_t *contents,
                                                       unsigned int options)
@@ -9096,7 +9073,6 @@ PUGI_IMPL_FN void xml_document::save(XmlWriter &writer, const char_t *indent,
   buffered_writer.flush();
 }
 
-#ifndef PUGIXML_NO_STL
 PUGI_IMPL_FN void xml_document::save(std::basic_ostream< char > &stream,
                                      const char_t *indent, unsigned int flags,
                                      XmlEncoding encoding) const
@@ -9114,7 +9090,6 @@ PUGI_IMPL_FN void xml_document::save(std::basic_ostream< wchar_t > &stream,
 
   save(writer, indent, flags, encoding_wchar);
 }
-#endif
 
 PUGI_IMPL_FN bool xml_document::save_file(const char *path_,
                                           const char_t *indent,
@@ -9156,7 +9131,6 @@ PUGI_IMPL_FN XmlNode xml_document::document_element() const
   return XmlNode();
 }
 
-#ifndef PUGIXML_NO_STL
 PUGI_IMPL_FN std::string as_utf8(const wchar_t *str)
 {
   assert(str);
@@ -9180,7 +9154,6 @@ PUGI_IMPL_FN std::basic_string< wchar_t > as_wide(const std::string &str)
 {
   return impl::as_wide_impl(str.c_str(), str.size());
 }
-#endif
 
 PUGI_IMPL_FN void
 set_memory_management_functions(allocation_function allocate,
@@ -10660,10 +10633,10 @@ inline bool is_xpath_attribute(const char_t *name)
   return !(starts_with(name, "xmlns") && (name[5] == 0 || name[5] == ':'));
 }
 
-struct xpath_variable_boolean : xpath_variable
+struct xpath_variable_boolean : XPathVariable
 {
   xpath_variable_boolean()
-      : xpath_variable(xpath_type_boolean),
+      : XPathVariable(xpath_type_boolean),
         value(false)
   {
   }
@@ -10672,10 +10645,10 @@ struct xpath_variable_boolean : xpath_variable
   char_t name[1];
 };
 
-struct xpath_variable_number : xpath_variable
+struct xpath_variable_number : XPathVariable
 {
   xpath_variable_number()
-      : xpath_variable(xpath_type_number),
+      : XPathVariable(xpath_type_number),
         value(0)
   {
   }
@@ -10684,10 +10657,10 @@ struct xpath_variable_number : xpath_variable
   char_t name[1];
 };
 
-struct xpath_variable_string : xpath_variable
+struct xpath_variable_string : XPathVariable
 {
   xpath_variable_string()
-      : xpath_variable(xpath_type_string),
+      : XPathVariable(xpath_type_string),
         value(nullptr)
   {
   }
@@ -10702,10 +10675,10 @@ struct xpath_variable_string : xpath_variable
   char_t name[1];
 };
 
-struct xpath_variable_node_set : xpath_variable
+struct xpath_variable_node_set : XPathVariable
 {
   xpath_variable_node_set()
-      : xpath_variable(xpath_type_node_set)
+      : XPathVariable(xpath_type_node_set)
   {
   }
 
@@ -10753,8 +10726,8 @@ template < typename T > PUGI_IMPL_FN T *new_xpath_variable(const char_t *name)
   return result;
 }
 
-PUGI_IMPL_FN xpath_variable *new_xpath_variable(xpath_value_type type,
-                                                const char_t *name)
+PUGI_IMPL_FN XPathVariable *new_xpath_variable(XPathValueType type,
+                                               const char_t *name)
 {
   switch (type)
   {
@@ -10781,8 +10754,7 @@ template < typename T > PUGI_IMPL_FN void delete_xpath_variable(T *var)
   xml_memory::deallocate(var);
 }
 
-PUGI_IMPL_FN void delete_xpath_variable(xpath_value_type type,
-                                        xpath_variable *var)
+PUGI_IMPL_FN void delete_xpath_variable(XPathValueType type, XPathVariable *var)
 {
   switch (type)
   {
@@ -10807,8 +10779,8 @@ PUGI_IMPL_FN void delete_xpath_variable(xpath_value_type type,
   }
 }
 
-PUGI_IMPL_FN bool copy_xpath_variable(xpath_variable *lhs,
-                                      const xpath_variable *rhs)
+PUGI_IMPL_FN bool copy_xpath_variable(XPathVariable *lhs,
+                                      const XPathVariable *rhs)
 {
   assert(lhs->type() == rhs->type());
 
@@ -10841,7 +10813,7 @@ PUGI_IMPL_FN bool copy_xpath_variable(xpath_variable *lhs,
 PUGI_IMPL_FN bool get_variable_scratch(char_t (&buffer)[32],
                                        XPathVariableSet *set,
                                        const char_t *begin, const char_t *end,
-                                       xpath_variable **out_result)
+                                       XPathVariable **out_result)
 {
   size_t length = static_cast< size_t >(end - begin);
   char_t *scratch = buffer;
@@ -11635,7 +11607,7 @@ private:
     // value for ast_number_constant
     double number;
     // variable for ast_variable
-    xpath_variable *variable;
+    XPathVariable *variable;
     // node test for ast_step (node name/namespace/node type/pi target)
     const char_t *nodetest;
     // table for ast_opt_translate_table
@@ -11650,7 +11622,7 @@ private:
                          const xpath_context &c, const xpath_stack &stack,
                          const Comp &comp)
   {
-    xpath_value_type lt = lhs->rettype(), rt = rhs->rettype();
+    XPathValueType lt = lhs->rettype(), rt = rhs->rettype();
 
     if (lt != xpath_type_node_set && rt != xpath_type_node_set)
     {
@@ -11749,7 +11721,7 @@ private:
                           const xpath_context &c, const xpath_stack &stack,
                           const Comp &comp)
   {
-    xpath_value_type lt = lhs->rettype(), rt = rhs->rettype();
+    XPathValueType lt = lhs->rettype(), rt = rhs->rettype();
 
     if (lt != xpath_type_node_set && rt != xpath_type_node_set)
       return comp(lhs->eval_number(c, stack), rhs->eval_number(c, stack));
@@ -12463,8 +12435,7 @@ private:
   }
 
 public:
-  xpath_ast_node(ast_type_t type, xpath_value_type rettype_,
-                 const char_t *value)
+  xpath_ast_node(ast_type_t type, XPathValueType rettype_, const char_t *value)
       : _type(static_cast< char >(type)),
         _rettype(static_cast< char >(rettype_)),
         _axis(0),
@@ -12477,7 +12448,7 @@ public:
     _data.string = value;
   }
 
-  xpath_ast_node(ast_type_t type, xpath_value_type rettype_, double value)
+  xpath_ast_node(ast_type_t type, XPathValueType rettype_, double value)
       : _type(static_cast< char >(type)),
         _rettype(static_cast< char >(rettype_)),
         _axis(0),
@@ -12490,8 +12461,7 @@ public:
     _data.number = value;
   }
 
-  xpath_ast_node(ast_type_t type, xpath_value_type rettype_,
-                 xpath_variable *value)
+  xpath_ast_node(ast_type_t type, XPathValueType rettype_, XPathVariable *value)
       : _type(static_cast< char >(type)),
         _rettype(static_cast< char >(rettype_)),
         _axis(0),
@@ -12504,7 +12474,7 @@ public:
     _data.variable = value;
   }
 
-  xpath_ast_node(ast_type_t type, xpath_value_type rettype_,
+  xpath_ast_node(ast_type_t type, XPathValueType rettype_,
                  xpath_ast_node *left = nullptr,
                  xpath_ast_node *right = nullptr)
       : _type(static_cast< char >(type)),
@@ -13490,9 +13460,9 @@ public:
     return true;
   }
 
-  xpath_value_type rettype() const
+  XPathValueType rettype() const
   {
-    return static_cast< xpath_value_type >(_rettype);
+    return static_cast< XPathValueType >(_rettype);
   }
 };
 
@@ -13512,7 +13482,7 @@ struct xpath_parser
   const char_t *_query;
   XPathVariableSet *_variables;
 
-  xpath_parse_result *_result;
+  XPathParseResult *_result;
 
   char_t _scratch[32];
 
@@ -13544,28 +13514,28 @@ struct xpath_parser
     return _alloc->allocate(sizeof(xpath_ast_node));
   }
 
-  xpath_ast_node *alloc_node(ast_type_t type, xpath_value_type rettype,
+  xpath_ast_node *alloc_node(ast_type_t type, XPathValueType rettype,
                              const char_t *value)
   {
     void *memory = alloc_node();
     return memory ? new (memory) xpath_ast_node(type, rettype, value) : nullptr;
   }
 
-  xpath_ast_node *alloc_node(ast_type_t type, xpath_value_type rettype,
+  xpath_ast_node *alloc_node(ast_type_t type, XPathValueType rettype,
                              double value)
   {
     void *memory = alloc_node();
     return memory ? new (memory) xpath_ast_node(type, rettype, value) : nullptr;
   }
 
-  xpath_ast_node *alloc_node(ast_type_t type, xpath_value_type rettype,
-                             xpath_variable *value)
+  xpath_ast_node *alloc_node(ast_type_t type, XPathValueType rettype,
+                             XPathVariable *value)
   {
     void *memory = alloc_node();
     return memory ? new (memory) xpath_ast_node(type, rettype, value) : nullptr;
   }
 
-  xpath_ast_node *alloc_node(ast_type_t type, xpath_value_type rettype,
+  xpath_ast_node *alloc_node(ast_type_t type, XPathValueType rettype,
                              xpath_ast_node *left = nullptr,
                              xpath_ast_node *right = nullptr)
   {
@@ -13869,7 +13839,7 @@ struct xpath_parser
       if (!_variables)
         return error("Unknown variable: variable set is not provided");
 
-      xpath_variable *var = nullptr;
+      XPathVariable *var = nullptr;
       if (!get_variable_scratch(_scratch, _variables, name.begin, name.end,
                                 &var))
         return error_oom();
@@ -14372,7 +14342,7 @@ struct xpath_parser
   struct binary_op_t
   {
     ast_type_t asttype;
-    xpath_value_type rettype;
+    XPathValueType rettype;
     int precedence;
 
     binary_op_t()
@@ -14382,7 +14352,7 @@ struct xpath_parser
     {
     }
 
-    binary_op_t(ast_type_t asttype_, xpath_value_type rettype_, int precedence_)
+    binary_op_t(ast_type_t asttype_, XPathValueType rettype_, int precedence_)
         : asttype(asttype_),
           rettype(rettype_),
           precedence(precedence_)
@@ -14519,7 +14489,7 @@ struct xpath_parser
   }
 
   xpath_parser(const char_t *query, XPathVariableSet *variables,
-               xpath_allocator *alloc, xpath_parse_result *result)
+               xpath_allocator *alloc, XPathParseResult *result)
       : _alloc(alloc),
         _lexer(query),
         _query(query),
@@ -14545,8 +14515,7 @@ struct xpath_parser
   }
 
   static xpath_ast_node *parse(const char_t *query, XPathVariableSet *variables,
-                               xpath_allocator *alloc,
-                               xpath_parse_result *result)
+                               xpath_allocator *alloc, XPathParseResult *result)
   {
     xpath_parser parser(query, variables, alloc, result);
 
@@ -14600,7 +14569,7 @@ evaluate_node_set_prepare(xpath_query_impl *impl)
 #ifdef PUGIXML_NO_EXCEPTIONS
     return 0;
 #else
-    xpath_parse_result res;
+    XPathParseResult res;
     res.error = "Expression does not evaluate to node set";
 
     throw xpath_exception(res);
@@ -14614,7 +14583,7 @@ PUGI_IMPL_NS_END
 namespace pugi
 {
 #ifndef PUGIXML_NO_EXCEPTIONS
-PUGI_IMPL_FN xpath_exception::xpath_exception(const xpath_parse_result &result_)
+PUGI_IMPL_FN xpath_exception::xpath_exception(const XPathParseResult &result_)
     : _result(result_)
 {
   assert(_result.error);
@@ -14625,7 +14594,7 @@ PUGI_IMPL_FN const char *xpath_exception::what() const noexcept
   return _result.error;
 }
 
-PUGI_IMPL_FN const xpath_parse_result &xpath_exception::result() const
+PUGI_IMPL_FN const XPathParseResult &xpath_exception::result() const
 {
   return _result;
 }
@@ -14733,8 +14702,7 @@ PUGI_IMPL_FN void XPathNodeSet::_assign(const_iterator begin_,
   _type = type_;
 }
 
-#ifdef PUGIXML_HAS_MOVE
-PUGI_IMPL_FN void XPathNodeSet::_move(XPathNodeSet &rhs) PUGIXML_NOEXCEPT
+PUGI_IMPL_FN void XPathNodeSet::_move(XPathNodeSet &rhs) noexcept
 {
   _type = rhs._type;
   _storage[0] = rhs._storage[0];
@@ -14745,7 +14713,6 @@ PUGI_IMPL_FN void XPathNodeSet::_move(XPathNodeSet &rhs) PUGIXML_NOEXCEPT
   rhs._begin = rhs._storage;
   rhs._end = rhs._storage;
 }
-#endif
 
 PUGI_IMPL_FN XPathNodeSet::XPathNodeSet()
     : _type(type_unsorted),
@@ -14787,9 +14754,8 @@ PUGI_IMPL_FN XPathNodeSet &XPathNodeSet::operator=(const XPathNodeSet &ns)
   return *this;
 }
 
-#ifdef PUGIXML_HAS_MOVE
 PUGI_IMPL_FN
-XPathNodeSet::XPathNodeSet(XPathNodeSet &&rhs) PUGIXML_NOEXCEPT
+XPathNodeSet::XPathNodeSet(XPathNodeSet &&rhs) noexcept
     : _type(type_unsorted),
       _begin(_storage),
       _end(_storage)
@@ -14797,8 +14763,7 @@ XPathNodeSet::XPathNodeSet(XPathNodeSet &&rhs) PUGIXML_NOEXCEPT
   _move(rhs);
 }
 
-PUGI_IMPL_FN XPathNodeSet &
-XPathNodeSet::operator=(XPathNodeSet &&rhs) PUGIXML_NOEXCEPT
+PUGI_IMPL_FN XPathNodeSet &XPathNodeSet::operator=(XPathNodeSet &&rhs) noexcept
 {
   if (this == &rhs)
     return *this;
@@ -14810,7 +14775,6 @@ XPathNodeSet::operator=(XPathNodeSet &&rhs) PUGIXML_NOEXCEPT
 
   return *this;
 }
-#endif
 
 PUGI_IMPL_FN XPathNodeSet::type_t XPathNodeSet::type() const
 {
@@ -14853,29 +14817,29 @@ PUGI_IMPL_FN XPathNode XPathNodeSet::first() const
   return impl::xpath_first(_begin, _end, _type);
 }
 
-PUGI_IMPL_FN xpath_parse_result::xpath_parse_result()
+PUGI_IMPL_FN XPathParseResult::XPathParseResult()
     : error("Internal error"),
       offset(0)
 {
 }
 
-PUGI_IMPL_FN xpath_parse_result::operator bool() const
+PUGI_IMPL_FN XPathParseResult::operator bool() const
 {
   return error == nullptr;
 }
 
-PUGI_IMPL_FN const char *xpath_parse_result::description() const
+PUGI_IMPL_FN const char *XPathParseResult::description() const
 {
   return error ? error : "No error";
 }
 
-PUGI_IMPL_FN xpath_variable::xpath_variable(xpath_value_type type_)
+PUGI_IMPL_FN XPathVariable::XPathVariable(XPathValueType type_)
     : _type(type_),
       _next(nullptr)
 {
 }
 
-PUGI_IMPL_FN const char_t *xpath_variable::name() const
+PUGI_IMPL_FN const char_t *XPathVariable::name() const
 {
   switch (_type)
   {
@@ -14897,26 +14861,26 @@ PUGI_IMPL_FN const char_t *xpath_variable::name() const
   }
 }
 
-PUGI_IMPL_FN xpath_value_type xpath_variable::type() const
+PUGI_IMPL_FN XPathValueType XPathVariable::type() const
 {
   return _type;
 }
 
-PUGI_IMPL_FN bool xpath_variable::get_boolean() const
+PUGI_IMPL_FN bool XPathVariable::get_boolean() const
 {
   return (_type == xpath_type_boolean)
              ? static_cast< const impl::xpath_variable_boolean * >(this)->value
              : false;
 }
 
-PUGI_IMPL_FN double xpath_variable::get_number() const
+PUGI_IMPL_FN double XPathVariable::get_number() const
 {
   return (_type == xpath_type_number)
              ? static_cast< const impl::xpath_variable_number * >(this)->value
              : impl::gen_nan();
 }
 
-PUGI_IMPL_FN const char_t *xpath_variable::get_string() const
+PUGI_IMPL_FN const char_t *XPathVariable::get_string() const
 {
   const char_t *value =
       (_type == xpath_type_string)
@@ -14925,7 +14889,7 @@ PUGI_IMPL_FN const char_t *xpath_variable::get_string() const
   return value ? value : ("");
 }
 
-PUGI_IMPL_FN const XPathNodeSet &xpath_variable::get_node_set() const
+PUGI_IMPL_FN const XPathNodeSet &XPathVariable::get_node_set() const
 {
   if (_type == xpath_type_node_set)
     return static_cast< const impl::xpath_variable_node_set * >(this)->value;
@@ -14933,7 +14897,7 @@ PUGI_IMPL_FN const XPathNodeSet &xpath_variable::get_node_set() const
   return dummy_node_set;
 }
 
-PUGI_IMPL_FN bool xpath_variable::set(bool value)
+PUGI_IMPL_FN bool XPathVariable::set(bool value)
 {
   if (_type != xpath_type_boolean)
     return false;
@@ -14942,7 +14906,7 @@ PUGI_IMPL_FN bool xpath_variable::set(bool value)
   return true;
 }
 
-PUGI_IMPL_FN bool xpath_variable::set(double value)
+PUGI_IMPL_FN bool XPathVariable::set(double value)
 {
   if (_type != xpath_type_number)
     return false;
@@ -14951,7 +14915,7 @@ PUGI_IMPL_FN bool xpath_variable::set(double value)
   return true;
 }
 
-PUGI_IMPL_FN bool xpath_variable::set(const char_t *value)
+PUGI_IMPL_FN bool XPathVariable::set(const char_t *value)
 {
   if (_type != xpath_type_string)
     return false;
@@ -14976,7 +14940,7 @@ PUGI_IMPL_FN bool xpath_variable::set(const char_t *value)
   return true;
 }
 
-PUGI_IMPL_FN bool xpath_variable::set(const XPathNodeSet &value)
+PUGI_IMPL_FN bool XPathVariable::set(const XPathNodeSet &value)
 {
   if (_type != xpath_type_node_set)
     return false;
@@ -15017,9 +14981,8 @@ XPathVariableSet::operator=(const XPathVariableSet &rhs)
   return *this;
 }
 
-#ifdef PUGIXML_HAS_MOVE
 PUGI_IMPL_FN
-XPathVariableSet::XPathVariableSet(XPathVariableSet &&rhs) PUGIXML_NOEXCEPT
+XPathVariableSet::XPathVariableSet(XPathVariableSet &&rhs) noexcept
 {
   for (size_t i = 0; i < sizeof(_data) / sizeof(_data[0]); ++i)
   {
@@ -15029,7 +14992,7 @@ XPathVariableSet::XPathVariableSet(XPathVariableSet &&rhs) PUGIXML_NOEXCEPT
 }
 
 PUGI_IMPL_FN XPathVariableSet &
-XPathVariableSet::operator=(XPathVariableSet &&rhs) PUGIXML_NOEXCEPT
+XPathVariableSet::operator=(XPathVariableSet &&rhs) noexcept
 {
   for (size_t i = 0; i < sizeof(_data) / sizeof(_data[0]); ++i)
   {
@@ -15041,7 +15004,6 @@ XPathVariableSet::operator=(XPathVariableSet &&rhs) PUGIXML_NOEXCEPT
 
   return *this;
 }
-#endif
 
 PUGI_IMPL_FN void XPathVariableSet::_assign(const XPathVariableSet &rhs)
 {
@@ -15058,20 +15020,20 @@ PUGI_IMPL_FN void XPathVariableSet::_swap(XPathVariableSet &rhs)
 {
   for (size_t i = 0; i < sizeof(_data) / sizeof(_data[0]); ++i)
   {
-    xpath_variable *chain = _data[i];
+    XPathVariable *chain = _data[i];
 
     _data[i] = rhs._data[i];
     rhs._data[i] = chain;
   }
 }
 
-PUGI_IMPL_FN xpath_variable *XPathVariableSet::_find(const char_t *name) const
+PUGI_IMPL_FN XPathVariable *XPathVariableSet::_find(const char_t *name) const
 {
   const size_t hash_size = sizeof(_data) / sizeof(_data[0]);
   size_t hash = impl::hash_string(name) % hash_size;
 
   // look for existing variable
-  for (xpath_variable *var = _data[hash]; var; var = var->_next)
+  for (XPathVariable *var = _data[hash]; var; var = var->_next)
   {
     const char_t *vn = var->name();
     if (vn && impl::strequal(vn, name))
@@ -15081,15 +15043,15 @@ PUGI_IMPL_FN xpath_variable *XPathVariableSet::_find(const char_t *name) const
   return nullptr;
 }
 
-PUGI_IMPL_FN bool XPathVariableSet::_clone(xpath_variable *var,
-                                           xpath_variable **out_result)
+PUGI_IMPL_FN bool XPathVariableSet::_clone(XPathVariable *var,
+                                           XPathVariable **out_result)
 {
-  xpath_variable *last = nullptr;
+  XPathVariable *last = nullptr;
 
   while (var)
   {
     // allocate storage for new variable
-    xpath_variable *nvar = impl::new_xpath_variable(var->_type, var->name());
+    XPathVariable *nvar = impl::new_xpath_variable(var->_type, var->name());
     if (!nvar)
       return false;
 
@@ -15111,11 +15073,11 @@ PUGI_IMPL_FN bool XPathVariableSet::_clone(xpath_variable *var,
   return true;
 }
 
-PUGI_IMPL_FN void XPathVariableSet::_destroy(xpath_variable *var)
+PUGI_IMPL_FN void XPathVariableSet::_destroy(XPathVariable *var)
 {
   while (var)
   {
-    xpath_variable *next = var->_next;
+    XPathVariable *next = var->_next;
 
     impl::delete_xpath_variable(var->_type, var);
 
@@ -15123,14 +15085,14 @@ PUGI_IMPL_FN void XPathVariableSet::_destroy(xpath_variable *var)
   }
 }
 
-PUGI_IMPL_FN xpath_variable *XPathVariableSet::add(const char_t *name,
-                                                   xpath_value_type type)
+PUGI_IMPL_FN XPathVariable *XPathVariableSet::add(const char_t *name,
+                                                  XPathValueType type)
 {
   const size_t hash_size = sizeof(_data) / sizeof(_data[0]);
   size_t hash = impl::hash_string(name) % hash_size;
 
   // look for existing variable
-  for (xpath_variable *var = _data[hash]; var; var = var->_next)
+  for (XPathVariable *var = _data[hash]; var; var = var->_next)
   {
     const char_t *vn = var->name();
     if (vn && impl::strequal(vn, name))
@@ -15138,7 +15100,7 @@ PUGI_IMPL_FN xpath_variable *XPathVariableSet::add(const char_t *name,
   }
 
   // add new variable
-  xpath_variable *result = impl::new_xpath_variable(type, name);
+  XPathVariable *result = impl::new_xpath_variable(type, name);
 
   if (result)
   {
@@ -15152,35 +15114,35 @@ PUGI_IMPL_FN xpath_variable *XPathVariableSet::add(const char_t *name,
 
 PUGI_IMPL_FN bool XPathVariableSet::set(const char_t *name, bool value)
 {
-  xpath_variable *var = add(name, xpath_type_boolean);
+  XPathVariable *var = add(name, xpath_type_boolean);
   return var ? var->set(value) : false;
 }
 
 PUGI_IMPL_FN bool XPathVariableSet::set(const char_t *name, double value)
 {
-  xpath_variable *var = add(name, xpath_type_number);
+  XPathVariable *var = add(name, xpath_type_number);
   return var ? var->set(value) : false;
 }
 
 PUGI_IMPL_FN bool XPathVariableSet::set(const char_t *name, const char_t *value)
 {
-  xpath_variable *var = add(name, xpath_type_string);
+  XPathVariable *var = add(name, xpath_type_string);
   return var ? var->set(value) : false;
 }
 
 PUGI_IMPL_FN bool XPathVariableSet::set(const char_t *name,
                                         const XPathNodeSet &value)
 {
-  xpath_variable *var = add(name, xpath_type_node_set);
+  XPathVariable *var = add(name, xpath_type_node_set);
   return var ? var->set(value) : false;
 }
 
-PUGI_IMPL_FN xpath_variable *XPathVariableSet::get(const char_t *name)
+PUGI_IMPL_FN XPathVariable *XPathVariableSet::get(const char_t *name)
 {
   return _find(name);
 }
 
-PUGI_IMPL_FN const xpath_variable *
+PUGI_IMPL_FN const XPathVariable *
 XPathVariableSet::get(const char_t *name) const
 {
   return _find(name);
@@ -15242,17 +15204,15 @@ PUGI_IMPL_FN XPathQuery::~XPathQuery()
         static_cast< impl::xpath_query_impl * >(_impl));
 }
 
-#ifdef PUGIXML_HAS_MOVE
-PUGI_IMPL_FN XPathQuery::XPathQuery(XPathQuery &&rhs) PUGIXML_NOEXCEPT
+PUGI_IMPL_FN XPathQuery::XPathQuery(XPathQuery &&rhs) noexcept
 {
   _impl = rhs._impl;
   _result = rhs._result;
   rhs._impl = nullptr;
-  rhs._result = xpath_parse_result();
+  rhs._result = XPathParseResult();
 }
 
-PUGI_IMPL_FN XPathQuery &
-XPathQuery::operator=(XPathQuery &&rhs) PUGIXML_NOEXCEPT
+PUGI_IMPL_FN XPathQuery &XPathQuery::operator=(XPathQuery &&rhs) noexcept
 {
   if (this == &rhs)
     return *this;
@@ -15264,13 +15224,12 @@ XPathQuery::operator=(XPathQuery &&rhs) PUGIXML_NOEXCEPT
   _impl = rhs._impl;
   _result = rhs._result;
   rhs._impl = nullptr;
-  rhs._result = xpath_parse_result();
+  rhs._result = XPathParseResult();
 
   return *this;
 }
-#endif
 
-PUGI_IMPL_FN xpath_value_type XPathQuery::return_type() const
+PUGI_IMPL_FN XPathValueType XPathQuery::return_type() const
 {
   if (!_impl)
     return xpath_type_none;
@@ -15324,7 +15283,6 @@ PUGI_IMPL_FN double XPathQuery::evaluate_number(const XPathNode &n) const
   return r;
 }
 
-#ifndef PUGIXML_NO_STL
 PUGI_IMPL_FN string_t XPathQuery::evaluate_string(const XPathNode &n) const
 {
   if (!_impl)
@@ -15348,7 +15306,6 @@ PUGI_IMPL_FN string_t XPathQuery::evaluate_string(const XPathNode &n) const
 
   return string_t(r.c_str(), r.length());
 }
-#endif
 
 PUGI_IMPL_FN size_t XPathQuery::evaluate_string(char_t *buffer, size_t capacity,
                                                 const XPathNode &n) const
@@ -15435,7 +15392,7 @@ PUGI_IMPL_FN XPathNode XPathQuery::evaluate_node(const XPathNode &n) const
   return r.first();
 }
 
-PUGI_IMPL_FN const xpath_parse_result &XPathQuery::result() const
+PUGI_IMPL_FN const XPathParseResult &XPathQuery::result() const
 {
   return _result;
 }

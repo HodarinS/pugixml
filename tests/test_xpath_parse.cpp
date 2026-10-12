@@ -8,7 +8,7 @@ using namespace pugi;
 
 TEST(xpath_literal_parse)
 {
-	xml_node c;
+	XmlNode c;
 	CHECK_XPATH_STRING(c, STR("'a\"b'"), STR("a\"b"));
 	CHECK_XPATH_STRING(c, STR("\"a'b\""), STR("a'b"));
 	CHECK_XPATH_STRING(c, STR("\"\""), STR(""));
@@ -25,7 +25,7 @@ TEST(xpath_literal_error)
 
 TEST(xpath_number_parse)
 {
-	xml_node c;
+	XmlNode c;
 	CHECK_XPATH_NUMBER(c, STR("0"), 0);
 	CHECK_XPATH_NUMBER(c, STR("123"), 123);
 	CHECK_XPATH_NUMBER(c, STR("123.456"), 123.456);
@@ -41,7 +41,7 @@ TEST(xpath_number_error)
 	CHECK_XPATH_FAIL(STR(".123a"));
 }
 
-TEST(xpath_variables)
+TEST(XPathVariables)
 {
 	CHECK_XPATH_FAIL(STR("$var")); // no variable var
 	CHECK_XPATH_FAIL(STR("$1"));
@@ -90,11 +90,11 @@ TEST(xpath_semantics_error)
 
 TEST(xpath_semantics_posinv) // coverage for contains()
 {
-	xpath_query(STR("(node)[substring(1, 2, 3)]"));
-	xpath_query(STR("(node)[concat(1, 2, 3, 4)]"));
-	xpath_query(STR("(node)[count(foo)]"));
-	xpath_query(STR("(node)[local-name()]"));
-	xpath_query(STR("(node)[(node)[1]]"));
+	XPathQuery(STR("(node)[substring(1, 2, 3)]"));
+	XPathQuery(STR("(node)[concat(1, 2, 3, 4)]"));
+	XPathQuery(STR("(node)[count(foo)]"));
+	XPathQuery(STR("(node)[local-name()]"));
+	XPathQuery(STR("(node)[(node)[1]]"));
 }
 
 TEST(xpath_parse_paths_valid)
@@ -178,7 +178,7 @@ TEST(xpath_parse_paths_valid)
 
 	for (size_t i = 0; i < sizeof(paths) / sizeof(paths[0]); ++i)
 	{
-		xpath_query q(paths[i]);
+		XPathQuery q(paths[i]);
 	}
 }
 
@@ -222,10 +222,10 @@ TEST(xpath_parse_paths_valid_unicode)
 	for (size_t i = 0; i < sizeof(paths) / sizeof(paths[0]); ++i)
 	{
 	#if defined(PUGIXML_WCHAR_MODE)
-		xpath_query q(paths[i]);
+		XPathQuery q(paths[i]);
 	#elif !defined(PUGIXML_NO_STL)
 		std::basic_string<char> path_utf8 = as_utf8(paths[i]);
-		xpath_query q(path_utf8.c_str());
+		XPathQuery q(path_utf8.c_str());
 	#endif
 	}
 }
@@ -312,7 +312,7 @@ TEST(xpath_parse_out_of_memory_variable)
 	std::basic_string<char_t> literal(5000, 'a');
 	std::basic_string<char_t> query = STR("$") + literal;
 
-	xpath_variable_set vars;
+	XPathVariableSet vars;
 	CHECK_ALLOC_FAIL(CHECK_XPATH_FAIL_VAR(query.c_str(), &vars));
 }
 
@@ -327,9 +327,9 @@ TEST(xpath_parse_qname_error)
 	CHECK_XPATH_FAIL(STR(":"));
 }
 
-TEST(xpath_parse_result_default)
+TEST(XPathParseResult_default)
 {
-	xpath_parse_result result;
+	XPathParseResult result;
 
 	CHECK(!result);
 	CHECK(result.error != 0);
@@ -340,10 +340,10 @@ TEST(xpath_parse_error_propagation)
 {
 	char_t query[] = STR("(//foo[count(. | @*)] | ((a)//b)[1] | /foo | /foo/bar//more/ancestor-or-self::foobar | /text() | a[1 + 2 * 3 div (1+0) mod 2]//b[1]/c | a[$x])[true()]");
 
-	xpath_variable_set vars;
+	XPathVariableSet vars;
 	vars.set(STR("x"), 1.0);
 
-	xpath_query q(query, &vars);
+	XPathQuery q(query, &vars);
 	CHECK(q);
 
 	for (size_t i = 0; i + 1 < sizeof(query) / sizeof(query[0]); ++i)
@@ -362,13 +362,13 @@ TEST(xpath_parse_oom_propagation)
 {
 	const char_t* query_base = STR("(//foo[count(. | @*)] | ((a)//b)[1] | /foo | /foo/bar//more/ancestor-or-self::foobar | /text() | a[1 + 2 * 3 div (1+0) mod 2]//b[1]/c | a[$x])[true()]");
 
-	xpath_variable_set vars;
+	XPathVariableSet vars;
 	vars.set(STR("x"), 1.0);
 
 	test_runner::_memory_fail_threshold = 4096 + 128;
 
 	{
-		xpath_query q(query_base, &vars);
+		XPathQuery q(query_base, &vars);
 		CHECK(q);
 	}
 
@@ -412,8 +412,8 @@ TEST(xpath_parse_depth_limit_coverage)
 	CHECK_XPATH_FAIL((rep(STR("("), almost_limit) + STR("string(1)") + rep(STR(")"), almost_limit)).c_str());
 	CHECK_XPATH_FAIL((rep(STR("("), almost_limit) + STR("foo[1]") + rep(STR(")"), almost_limit)).c_str());
 
-	xpath_variable_set vars;
-	CHECK(vars.set(STR("x"), xpath_node_set()));
+	XPathVariableSet vars;
+	CHECK(vars.set(STR("x"), XPathNodeSet()));
 	CHECK_XPATH_FAIL_VAR((rep(STR("("), almost_limit) + STR("$x[1]") + rep(STR(")"), almost_limit)).c_str(), &vars);
 }
 

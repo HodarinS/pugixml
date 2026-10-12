@@ -6,7 +6,7 @@ using namespace pugi;
 
 TEST_XML(xpath_xalan_position_1, "<doc><a>1</a><a>2</a><a>3</a><a>4</a></doc>")
 {
-	xml_node c = doc.child(STR("doc"));
+	XmlNode c = doc.child(STR("doc"));
 
 	CHECK_XPATH_BOOLEAN(c, STR("position()=1"), true);
 	CHECK_XPATH_NODESET(c, STR("*[position()=4]")) % 9;
@@ -14,7 +14,7 @@ TEST_XML(xpath_xalan_position_1, "<doc><a>1</a><a>2</a><a>3</a><a>4</a></doc>")
 
 TEST_XML_FLAGS(xpath_xalan_position_2, "<doc><a test='true'><num>1</num></a><a><num>1191</num></a><a><num>263</num></a><a test='true'><num>2</num></a><a><num>827</num></a><a><num>256</num></a><a test='true'><num>3</num></a><a test='true'><num>4<x/>5</num></a><?pi?><?pi?><!--comment--><!--comment--></doc>", parse_default | parse_comments | parse_pi)
 {
-	xml_node c = doc.child(STR("doc"));
+	XmlNode c = doc.child(STR("doc"));
 
 	CHECK_XPATH_NODESET(c, STR("*[@test and position()=8]")) % 27;
 	CHECK_XPATH_NODESET(c, STR("*[@test][position()=4]/num")) % 29;
@@ -99,7 +99,7 @@ TEST_XML(xpath_xalan_position_7, "<chapter title='A'><section title='A1'><subsec
 
 TEST_XML(xpath_xalan_match_1, "<root><x spot='a' num='1'/><x spot='b' num='2'/><x spot='c' num='3'/><x spot='d' num='4'/><x spot='e' num='5'/><x spot='f' num='6'/><x spot='g' num='7'/><x spot='h' num='8'/><x spot='i' num='9'/><x spot='j' num='10'/><x spot='k' num='11'/><x spot='l' num='12'/></root>")
 {
-	xml_node c = doc.child(STR("root"));
+	XmlNode c = doc.child(STR("root"));
 
 	CHECK_XPATH_NODESET(c, STR("x[(position() mod 2)=1][position() > 3]")) % 21 % 27 % 33;
 	CHECK_XPATH_NODESET(c, STR("x[(position() mod 2)=1][position() > 3][position()=2]")) % 27;
@@ -159,7 +159,7 @@ TEST_XML(xpath_xalan_expression_1, "<doc><para id='1' xml:lang='en'>en</para><di
 
 TEST_XML(xpath_xalan_predicate_1, "<doc><a>1</a><a>2</a><a>3</a><a>4</a></doc>")
 {
-	xml_node c = doc.child(STR("doc"));
+	XmlNode c = doc.child(STR("doc"));
 
 	CHECK_XPATH_NODESET(c, STR("a[true()=4]")) % 3 % 5 % 7 % 9;
 	CHECK_XPATH_NODESET(c, STR("a[true()='stringwithchars']")) % 3 % 5 % 7 % 9;
@@ -189,7 +189,7 @@ TEST_XML(xpath_xalan_predicate_1, "<doc><a>1</a><a>2</a><a>3</a><a>4</a></doc>")
 
 TEST_XML(xpath_xalan_predicate_2, "<foo><bar a='0' b='0' c='0' d='0' seq='0'/><bar a='0' b='0' c='0' d='1' seq='1'/><bar a='0' b='0' c='1' d='0' seq='2'/><bar a='0' b='0' c='1' d='1' seq='3'/><bar a='0' b='1' c='0' d='0' seq='4'/><bar a='0' b='1' c='0' d='1' seq='5'/><bar a='0' b='1' c='1' d='0' seq='6'/><bar a='0' b='1' c='1' d='1' seq='7'/><bar a='1' b='0' c='0' d='0' seq='8'/><bar a='1' b='0' c='0' d='1' seq='9'/><bar a='1' b='0' c='1' d='0' seq='a'/><bar a='1' b='0' c='1' d='1' seq='b'/><bar a='1' b='1' c='0' d='0' seq='c'/><bar a='1' b='1' c='0' d='1' seq='d'/><bar a='1' b='1' c='1' d='0' seq='e'/><bar a='1' b='1' c='1' d='1' seq='f'/></foo>")
 {
-	xml_node c = doc.child(STR("foo"));
+	XmlNode c = doc.child(STR("foo"));
 
 	CHECK_XPATH_NODESET(c, STR("bar[@a='1' and @b='1']")) % 75 % 81 % 87 % 93;
 	CHECK_XPATH_NODESET(c, STR("bar[(@a='1' or @b='1') and @c='1']")) % 39 % 45 % 63 % 69 % 87 % 93;
@@ -204,7 +204,7 @@ TEST_XML(xpath_xalan_predicate_2, "<foo><bar a='0' b='0' c='0' d='0' seq='0'/><b
 
 TEST_XML(xpath_xalan_predicate_3, "<doc><a>1</a><a ex=''>2</a><a ex='value'>3</a><a why=''>4</a><a why='value'>5</a></doc>")
 {
-	xml_node c = doc.child(STR("doc"));
+	XmlNode c = doc.child(STR("doc"));
 
 	CHECK_XPATH_NUMBER(c, STR("count(a[@ex])"), 2);
 	CHECK_XPATH_NUMBER(c, STR("count(a[@ex=''])"), 1);
@@ -245,7 +245,7 @@ TEST_XML(xpath_xalan_predicate_7, "<doc><a>1</a><a>2<achild>target</achild></a><
 
 TEST_XML(xpath_xalan_predicate_8, "<doc><foo><bar attr='1'>this</bar><bar attr='2'>2</bar><bar attr='3'>3</bar></foo><foo><bar attr='4'>this</bar><bar attr='5'>this</bar><bar1 attr='6'>that</bar1></foo><foo><bar attr='7'><baz attr='a'>hello</baz><baz attr='b'>goodbye</baz></bar><bar2 attr='8'>this</bar2><bar2 attr='9'>that</bar2></foo><foo><bar attr='10'>this</bar><bar attr='11'><baz attr='a'>hello</baz><baz attr='b'>goodbye</baz></bar><bar attr='12'>other</bar></foo></doc>")
 {
-	xml_node c = doc.child(STR("doc"));
+	XmlNode c = doc.child(STR("doc"));
 
 	CHECK_XPATH_NODESET(c, STR("foo[(bar[2])='this']")) % 13;
 	CHECK_XPATH_NODESET(c, STR("foo[(bar[(baz[2])='goodbye'])]")) % 23 % 38;
@@ -260,7 +260,7 @@ TEST_XML(xpath_xalan_predicate_9, "<doc><a><asub><asubsub/></asub></a><b><bsub><
 
 TEST_XML(xpath_xalan_predicate_10, "<doc><element1>Text from first element<child1>Text from child1 of first element</child1><child2>Text from child2 of first element</child2></element1><element2>Text from second element<child1>Text from child1 of second element</child1><child2 attr1='yes'>Text from child2 of second element (correct execution)</child2></element2></doc>")
 {
-	xml_node c = doc.child(STR("doc"));
+	XmlNode c = doc.child(STR("doc"));
 
 	CHECK_XPATH_STRING(c, STR("//child2[ancestor::element2]"), STR("Text from child2 of second element (correct execution)"));
 	CHECK_XPATH_STRING(c, STR("//child2[ancestor-or-self::element2]"), STR("Text from child2 of second element (correct execution)"));
@@ -269,7 +269,7 @@ TEST_XML(xpath_xalan_predicate_10, "<doc><element1>Text from first element<child
 
 TEST_XML(xpath_xalan_predicate_11, "<doc><a squish='heavy' squash='butternut'>1</a><a squish='heavy' squeesh='virus'>2</a><a squash='butternut' squeesh='virus'>3</a><a squish='heavy'>4</a><a squeesh='virus'>5</a><a squash='butternut'>6</a></doc>")
 {
-	xml_node c = doc.child(STR("doc"));
+	XmlNode c = doc.child(STR("doc"));
 
 	CHECK_XPATH_NODESET(c, STR("a[@squeesh or (@squish and @squash)]")) % 3 % 7 % 11 % 18;
 	CHECK_XPATH_NODESET(c, STR("a[(@squeesh or @squish) and @squash]")) % 3 % 11;

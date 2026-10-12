@@ -27,8 +27,8 @@ TEST(parse_pi_parse)
 	xml_document doc;
 	CHECK(doc.load_string(STR("<?pi1?><?pi2 value?>"), parse_fragment | parse_pi));
 
-	xml_node pi1 = doc.first_child();
-	xml_node pi2 = doc.last_child();
+	XmlNode pi1 = doc.first_child();
+	XmlNode pi2 = doc.last_child();
 
 	CHECK(pi1 != pi2);
 	CHECK(pi1.type() == node_pi);
@@ -44,7 +44,7 @@ TEST(parse_pi_parse_spaces)
 	xml_document doc;
 	CHECK(doc.load_string(STR("<?target  \r\n\t  value ?>"), parse_fragment | parse_pi));
 
-	xml_node pi = doc.first_child();
+	XmlNode pi = doc.first_child();
 
 	CHECK(pi.type() == node_pi);
 	CHECK_STRING(pi.name(), STR("target"));
@@ -112,8 +112,8 @@ TEST(parse_comments_parse)
 	xml_document doc;
 	CHECK(doc.load_string(STR("<!----><!--value-->"), parse_fragment | parse_comments));
 
-	xml_node c1 = doc.first_child();
-	xml_node c2 = doc.last_child();
+	XmlNode c1 = doc.first_child();
+	XmlNode c2 = doc.last_child();
 
 	CHECK(c1 != c2);
 	CHECK(c1.type() == node_comment);
@@ -129,7 +129,7 @@ TEST(parse_comments_parse_no_eol)
 	xml_document doc;
 	CHECK(doc.load_string(STR("<!--\r\rval1\rval2\r\nval3\nval4\r\r-->"), parse_fragment | parse_comments));
 
-	xml_node c = doc.first_child();
+	XmlNode c = doc.first_child();
 	CHECK(c.type() == node_comment);
 	CHECK_STRING(c.value(), STR("\r\rval1\rval2\r\nval3\nval4\r\r"));
 }
@@ -139,7 +139,7 @@ TEST(parse_comments_parse_eol)
 	xml_document doc;
 	CHECK(doc.load_string(STR("<!--\r\rval1\rval2\r\nval3\nval4\r\r-->"), parse_fragment | parse_comments | parse_eol));
 
-	xml_node c = doc.first_child();
+	XmlNode c = doc.first_child();
 	CHECK(c.type() == node_comment);
 	CHECK_STRING(c.value(), STR("\n\nval1\nval2\nval3\nval4\n\n"));
 }
@@ -182,8 +182,8 @@ TEST(parse_cdata_parse)
 	xml_document doc;
 	CHECK(doc.load_string(STR("<![CDATA[]]><![CDATA[value]]>"), parse_fragment | parse_cdata));
 
-	xml_node c1 = doc.first_child();
-	xml_node c2 = doc.last_child();
+	XmlNode c1 = doc.first_child();
+	XmlNode c2 = doc.last_child();
 
 	CHECK(c1 != c2);
 	CHECK(c1.type() == node_cdata);
@@ -199,7 +199,7 @@ TEST(parse_cdata_parse_no_eol)
 	xml_document doc;
 	CHECK(doc.load_string(STR("<![CDATA[\r\rval1\rval2\r\nval3\nval4\r\r]]>"), parse_fragment | parse_cdata));
 
-	xml_node c = doc.first_child();
+	XmlNode c = doc.first_child();
 	CHECK(c.type() == node_cdata);
 	CHECK_STRING(c.value(), STR("\r\rval1\rval2\r\nval3\nval4\r\r"));
 }
@@ -209,7 +209,7 @@ TEST(parse_cdata_parse_eol)
 	xml_document doc;
 	CHECK(doc.load_string(STR("<![CDATA[\r\rval1\rval2\r\nval3\nval4\r\r]]>"), parse_fragment | parse_cdata | parse_eol));
 
-	xml_node c = doc.first_child();
+	XmlNode c = doc.first_child();
 	CHECK(c.type() == node_cdata);
 	CHECK_STRING(c.value(), STR("\n\nval1\nval2\nval3\nval4\n\n"));
 }
@@ -248,7 +248,7 @@ TEST(parse_ws_pcdata_skip)
 
 	CHECK(doc.load_string(STR("<root>  <node>  </node>  </root>"), parse_minimal));
 
-	xml_node root = doc.child(STR("root"));
+	XmlNode root = doc.child(STR("root"));
 
 	CHECK(root.first_child() == root.last_child());
 	CHECK(!root.first_child().first_child());
@@ -259,11 +259,11 @@ TEST(parse_ws_pcdata_parse)
 	xml_document doc;
 	CHECK(doc.load_string(STR("<root>  <node>  </node>  </root>"), parse_minimal | parse_ws_pcdata));
 
-	xml_node root = doc.child(STR("root"));
+	XmlNode root = doc.child(STR("root"));
 
-	xml_node c1 = root.first_child();
-	xml_node c2 = c1.next_sibling();
-	xml_node c3 = c2.next_sibling();
+	XmlNode c1 = root.first_child();
+	XmlNode c2 = c1.next_sibling();
+	XmlNode c3 = c2.next_sibling();
 
 	CHECK(c3 == root.last_child());
 
@@ -277,11 +277,11 @@ TEST(parse_ws_pcdata_parse)
 	CHECK_STRING(c2.first_child().value(), STR("  "));
 }
 
-static int get_tree_node_count(xml_node n)
+static int get_tree_node_count(XmlNode n)
 {
     int result = 1;
 
-    for (xml_node c = n.first_child(); c; c = c.next_sibling())
+    for (XmlNode c = n.first_child(); c; c = c.next_sibling())
         result += get_tree_node_count(c);
 
     return result;
@@ -488,7 +488,7 @@ TEST(parse_pcdata_trim_empty)
 		xml_document doc;
 		CHECK(doc.load_string(STR("<node>   </node>"), flags[i] | parse_trim_pcdata));
 
-		xml_node node = doc.child(STR("node"));
+		XmlNode node = doc.child(STR("node"));
 		CHECK(node);
 		CHECK(!node.first_child());
 	}
@@ -871,8 +871,8 @@ TEST(parse_declaration_parse)
 	xml_document doc;
 	CHECK(doc.load_string(STR("<?xml?><?xml version='1.0'?>"), parse_fragment | parse_declaration));
 
-	xml_node d1 = doc.first_child();
-	xml_node d2 = doc.last_child();
+	XmlNode d1 = doc.first_child();
+	XmlNode d2 = doc.last_child();
 
 	CHECK(d1 != d2);
 	CHECK(d1.type() == node_declaration);
@@ -1002,10 +1002,10 @@ TEST(parse_out_of_memory_allocator_state_sync)
 		CHECK(doc.append_child(STR("n")));
 }
 
-static bool test_offset(const char_t* contents, unsigned int options, xml_parse_status status, ptrdiff_t offset)
+static bool test_offset(const char_t* contents, unsigned int options, XmlParseStatus status, ptrdiff_t offset)
 {
 	xml_document doc;
-	xml_parse_result res = doc.load_string(contents, options);
+	XmlParseResult res = doc.load_string(contents, options);
 
 	return res.status == status && res.offset == offset;
 }
@@ -1053,7 +1053,7 @@ TEST(parse_error_offset)
 
 TEST(parse_result_default)
 {
-	xml_parse_result result;
+	XmlParseResult result;
 
 	CHECK(!result);
 	CHECK(result.status == status_internal_error);
@@ -1065,7 +1065,7 @@ TEST(parse_bom_fragment)
 {
 	struct test_data_t
 	{
-		xml_encoding encoding;
+		XmlEncoding encoding;
 		const char* data;
 		size_t size;
 		const char_t* text;
@@ -1190,10 +1190,10 @@ TEST(parse_embed_pcdata)
 		unsigned int flags = (i == 0) ? parse_default : parse_default | parse_embed_pcdata;
 
 		xml_document doc;
-		xml_parse_result res = doc.load_string(STR("<node><key>value</key><child><inner1>value1</inner1><inner2>value2</inner2>outer</child><two>text<data /></two></node>"), flags);
+		XmlParseResult res = doc.load_string(STR("<node><key>value</key><child><inner1>value1</inner1><inner2>value2</inner2>outer</child><two>text<data /></two></node>"), flags);
 		CHECK(res);
 
-		xml_node child = doc.child(STR("node")).child(STR("child"));
+		XmlNode child = doc.child(STR("node")).child(STR("child"));
 
 		// parse_embed_pcdata omits PCDATA nodes so DOM is different
 		if (flags & parse_embed_pcdata)
@@ -1234,7 +1234,7 @@ TEST_XML_FLAGS(parse_embed_pcdata_fragment, "text", parse_fragment | parse_embed
 
 TEST_XML_FLAGS(parse_embed_pcdata_child, "<n><child/>text</n>", parse_embed_pcdata)
 {
-	xml_node n = doc.child(STR("n"));
+	XmlNode n = doc.child(STR("n"));
 
 	CHECK_NODE(doc, STR("<n><child/>text</n>"));
 	CHECK(n.last_child().type() == node_pcdata);
@@ -1243,7 +1243,7 @@ TEST_XML_FLAGS(parse_embed_pcdata_child, "<n><child/>text</n>", parse_embed_pcda
 
 TEST_XML_FLAGS(parse_embed_pcdata_comment, "<n>text1<!---->text2</n>", parse_embed_pcdata)
 {
-	xml_node n = doc.child(STR("n"));
+	XmlNode n = doc.child(STR("n"));
 
 	CHECK_NODE(doc, STR("<n>text1text2</n>"));
 	CHECK_STRING(n.value(), STR("text1"));
@@ -1261,10 +1261,10 @@ TEST(parse_merge_pcdata)
 		unsigned int flags = parse_merge_pcdata | flag_sets[i];
 
 		xml_document doc;
-		xml_parse_result res = doc.load_string(STR("<node>First text<!-- here is a mesh node -->Second text<![CDATA[someothertext]]>some more text<?include somedata?>Last text</node>"), flags);
+		XmlParseResult res = doc.load_string(STR("<node>First text<!-- here is a mesh node -->Second text<![CDATA[someothertext]]>some more text<?include somedata?>Last text</node>"), flags);
 		CHECK(res);
 
-		xml_node child = doc.child(STR("node"));
+		XmlNode child = doc.child(STR("node"));
 
 		if (flags & parse_comments)
 		{
@@ -1298,7 +1298,7 @@ TEST(parse_merge_pcdata)
 TEST(parse_merge_pcdata_escape)
 {
 	xml_document doc;
-	xml_parse_result res = doc.load_string(STR("<node>First &amp;lt; <!-- comment 1 --> Second &amp;gt; <!-- comment 2 --> Third &amp;quot;</node>"), parse_default | parse_merge_pcdata);
+	XmlParseResult res = doc.load_string(STR("<node>First &amp;lt; <!-- comment 1 --> Second &amp;gt; <!-- comment 2 --> Third &amp;quot;</node>"), parse_default | parse_merge_pcdata);
 	CHECK(res);
 
 	CHECK_STRING(doc.child(STR("node")).child_value(), STR("First &lt;  Second &gt;  Third &quot;"));
@@ -1313,7 +1313,7 @@ TEST(parse_merge_pcdata_whitespace)
 		unsigned int flags = parse_merge_pcdata | flag_sets[i];
 
 		xml_document doc;
-		xml_parse_result res = doc.load_string(STR("<node><child1>  <!-- comment 1 -->\t<!-- comment 2 -->\n</child1><child2>text<!-- comment 1-->\t<!-- comment2 --> end</child2></node>"), flags);
+		XmlParseResult res = doc.load_string(STR("<node><child1>  <!-- comment 1 -->\t<!-- comment 2 -->\n</child1><child2>text<!-- comment 1-->\t<!-- comment2 --> end</child2></node>"), flags);
 		CHECK(res);
 
 		if (flags & parse_ws_pcdata)
@@ -1338,7 +1338,7 @@ TEST(parse_merge_pcdata_append)
 {
 	xml_document doc;
 	doc.append_child(STR("node")).append_child(node_pcdata);
-	xml_parse_result res = doc.child(STR("node")).append_buffer("hello <!--comment-->world", 25, parse_merge_pcdata | parse_fragment);
+	XmlParseResult res = doc.child(STR("node")).append_buffer("hello <!--comment-->world", 25, parse_merge_pcdata | parse_fragment);
 
 	CHECK(res.status == status_append_invalid_root);
 	CHECK_STRING(doc.child(STR("node")).first_child().value(), STR(""));
@@ -1353,7 +1353,7 @@ TEST(parse_merge_pcdata_append)
 TEST(parse_merge_pcdata_overlap)
 {
 	xml_document doc;
-	xml_parse_result res = doc.load_string(STR("<node>short <!-- --> this string is very long so long that copying it will overlap itself</node>"), parse_merge_pcdata);
+	XmlParseResult res = doc.load_string(STR("<node>short <!-- --> this string is very long so long that copying it will overlap itself</node>"), parse_merge_pcdata);
 	CHECK(res);
 	CHECK_STRING(doc.child_value(STR("node")), STR("short  this string is very long so long that copying it will overlap itself"));
 }
@@ -1388,7 +1388,7 @@ TEST(parse_encoding_detect_auto)
 	{
 		const char* contents;
 		size_t size;
-		xml_encoding encoding;
+		XmlEncoding encoding;
 	};
 
 	const data_t data[] =
@@ -1413,7 +1413,7 @@ TEST(parse_encoding_detect_auto)
 	for (size_t i = 0; i < sizeof(data) / sizeof(data[0]); ++i)
 	{
 		xml_document doc;
-		xml_parse_result result = doc.load_buffer(data[i].contents, data[i].size, parse_fragment);
+		XmlParseResult result = doc.load_buffer(data[i].contents, data[i].size, parse_fragment);
 
 		CHECK(result);
 		CHECK(result.encoding == data[i].encoding);
@@ -1426,7 +1426,7 @@ TEST(parse_encoding_detect_auto_incomplete)
 	{
 		const char* contents;
 		size_t size;
-		xml_encoding encoding;
+		XmlEncoding encoding;
 	};
 
 	const data_t data[] =
@@ -1455,7 +1455,7 @@ TEST(parse_encoding_detect_auto_incomplete)
 	for (size_t i = 0; i < sizeof(data) / sizeof(data[0]); ++i)
 	{
 		xml_document doc;
-		xml_parse_result result = doc.load_buffer(data[i].contents, data[i].size, parse_fragment);
+		XmlParseResult result = doc.load_buffer(data[i].contents, data[i].size, parse_fragment);
 
 		CHECK(result);
 		CHECK(result.encoding == data[i].encoding);

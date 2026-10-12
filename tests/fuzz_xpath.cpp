@@ -14,7 +14,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* Data, size_t Size)
 	try
 #endif
 	{
-		pugi::xpath_variable_set vars;
+		pugi::XPathVariableSet vars;
 		size_t var_count = fdp.ConsumeIntegralInRange<size_t>(0, 50);
 		std::vector<std::string> var_name_storage;
 		for (size_t i = 0; i < var_count; ++i)
@@ -25,7 +25,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* Data, size_t Size)
 			pugi::xpath_value_type value_type = static_cast<pugi::xpath_value_type>(fdp.ConsumeIntegralInRange(0, xpath_value_type_count));
 			vars.add(var_name_storage.back().c_str(), value_type);
 		}
-		pugi::xpath_query q(text.c_str(), &vars);
+		pugi::XPathQuery q(text.c_str(), &vars);
 
 		std::vector<uint8_t> xml_buffer = fdp.ConsumeBytes<uint8_t>(fdp.ConsumeIntegralInRange(0, 1024));
 		pugi::xml_document doc;

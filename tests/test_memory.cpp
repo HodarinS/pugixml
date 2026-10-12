@@ -105,7 +105,7 @@ TEST(memory_large_allocations)
 		// grow-prune loop
 		while (doc.first_child())
 		{
-			xml_node node;
+			XmlNode node;
 
 			// grow
 			for (node = doc.first_child(); node; node = node.next_sibling())
@@ -118,7 +118,7 @@ TEST(memory_large_allocations)
 			// prune
 			for (node = doc.first_child(); node; )
 			{
-				xml_node next = node.next_sibling().next_sibling();
+				XmlNode next = node.next_sibling().next_sibling();
 
 				node.parent().remove_child(node);
 
@@ -157,11 +157,11 @@ TEST(memory_page_management)
 		CHECK(page_allocs == 0 && page_deallocs == 0);
 
 		// initial fill
-		std::vector<xml_node> nodes;
+		std::vector<XmlNode> nodes;
 
 		for (size_t i = 0; i < 4000; ++i)
 		{
-			xml_node node = doc.append_child(STR("n"));
+			XmlNode node = doc.append_child(STR("n"));
 			CHECK(node);
 
 			nodes.push_back(node);
@@ -255,7 +255,7 @@ TEST(memory_string_allocate_increasing_inplace)
 {
 	xml_document doc;
 
-	xml_node node = doc.append_child(node_pcdata);
+	XmlNode node = doc.append_child(node_pcdata);
 
 	node.set_value(STR("x"));
 
@@ -282,7 +282,7 @@ TEST(memory_string_allocate_decreasing_inplace)
 {
 	xml_document doc;
 
-	xml_node node = doc.append_child(node_pcdata);
+	XmlNode node = doc.append_child(node_pcdata);
 
 	std::basic_string<char_t> s = STR("ab");
 

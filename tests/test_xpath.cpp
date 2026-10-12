@@ -42,7 +42,7 @@ TEST(xpath_allocator_many_pages)
 
 	for (int i = 0; i < 128; ++i) query += STR("+string-length('abcdefgh')");
 
-	CHECK_XPATH_NUMBER(xml_node(), query.c_str(), 1024);
+	CHECK_XPATH_NUMBER(XmlNode(), query.c_str(), 1024);
 }
 
 TEST(xpath_allocator_large_page)
@@ -51,22 +51,22 @@ TEST(xpath_allocator_large_page)
 
 	for (int i = 0; i < 1024; ++i) query += STR("abcdefgh");
 
-	CHECK_XPATH_NUMBER(xml_node(), (STR("string-length('") + query + STR("')")).c_str(), 8192);
+	CHECK_XPATH_NUMBER(XmlNode(), (STR("string-length('") + query + STR("')")).c_str(), 8192);
 }
 
 TEST_XML(xpath_sort_complex, "<node><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2></node>")
 {
 	// just some random union order, it should not matter probably?
-	xpath_node_set ns = doc.child(STR("node")).select_nodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
+	XPathNodeSet ns = doc.child(STR("node")).select_nodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
 
 	ns.sort(false);
-	xpath_node_set sorted = ns;
+	XPathNodeSet sorted = ns;
 
 	ns.sort(true);
-	xpath_node_set reverse_sorted = ns;
+	XPathNodeSet reverse_sorted = ns;
 
-	xpath_node_set_tester(sorted, "sorted order failed") % 2 % 3 % 4 % 5 % 6 % 7 % 8;
-	xpath_node_set_tester(reverse_sorted, "reverse sorted order failed") % 8 % 7 % 6 % 5 % 4 % 3 % 2;
+	XPathNodeSet_tester(sorted, "sorted order failed") % 2 % 3 % 4 % 5 % 6 % 7 % 8;
+	XPathNodeSet_tester(reverse_sorted, "reverse sorted order failed") % 8 % 7 % 6 % 5 % 4 % 3 % 2;
 }
 
 TEST(xpath_sort_complex_copy) // copy the document so that document order optimization does not work
@@ -75,30 +75,30 @@ TEST(xpath_sort_complex_copy) // copy the document so that document order optimi
 	load_document_copy(doc, STR("<node><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2></node>"));
 
 	// just some random union order, it should not matter probably?
-	xpath_node_set ns = doc.child(STR("node")).select_nodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
+	XPathNodeSet ns = doc.child(STR("node")).select_nodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
 
 	ns.sort(false);
-	xpath_node_set sorted = ns;
+	XPathNodeSet sorted = ns;
 
 	ns.sort(true);
-	xpath_node_set reverse_sorted = ns;
+	XPathNodeSet reverse_sorted = ns;
 
-	xpath_node_set_tester(sorted, "sorted order failed") % 2 % 3 % 4 % 5 % 6 % 7 % 8;
-	xpath_node_set_tester(reverse_sorted, "reverse sorted order failed") % 8 % 7 % 6 % 5 % 4 % 3 % 2;
+	XPathNodeSet_tester(sorted, "sorted order failed") % 2 % 3 % 4 % 5 % 6 % 7 % 8;
+	XPathNodeSet_tester(reverse_sorted, "reverse sorted order failed") % 8 % 7 % 6 % 5 % 4 % 3 % 2;
 }
 
 TEST_XML(xpath_sort_children, "<node><child><subchild id='1'/></child><child><subchild id='2'/></child></node>")
 {
-	xpath_node_set ns = doc.child(STR("node")).select_nodes(STR("child/subchild[@id=1] | child/subchild[@id=2]"));
+	XPathNodeSet ns = doc.child(STR("node")).select_nodes(STR("child/subchild[@id=1] | child/subchild[@id=2]"));
 
 	ns.sort(false);
-	xpath_node_set sorted = ns;
+	XPathNodeSet sorted = ns;
 
 	ns.sort(true);
-	xpath_node_set reverse_sorted = ns;
+	XPathNodeSet reverse_sorted = ns;
 
-	xpath_node_set_tester(sorted, "sorted order failed") % 4 % 7;
-	xpath_node_set_tester(reverse_sorted, "reverse sorted order failed") % 7 % 4;
+	XPathNodeSet_tester(sorted, "sorted order failed") % 4 % 7;
+	XPathNodeSet_tester(reverse_sorted, "reverse sorted order failed") % 7 % 4;
 }
 
 TEST(xpath_sort_children_copy) // copy the document so that document order optimization does not work
@@ -106,21 +106,21 @@ TEST(xpath_sort_children_copy) // copy the document so that document order optim
 	xml_document doc;
 	load_document_copy(doc, STR("<node><child><subchild id='1'/></child><child><subchild id='2'/></child></node>"));
 
-	xpath_node_set ns = doc.child(STR("node")).select_nodes(STR("child/subchild[@id=1] | child/subchild[@id=2]"));
+	XPathNodeSet ns = doc.child(STR("node")).select_nodes(STR("child/subchild[@id=1] | child/subchild[@id=2]"));
 
 	ns.sort(false);
-	xpath_node_set sorted = ns;
+	XPathNodeSet sorted = ns;
 
 	ns.sort(true);
-	xpath_node_set reverse_sorted = ns;
+	XPathNodeSet reverse_sorted = ns;
 
-	xpath_node_set_tester(sorted, "sorted order failed") % 4 % 7;
-	xpath_node_set_tester(reverse_sorted, "reverse sorted order failed") % 7 % 4;
+	XPathNodeSet_tester(sorted, "sorted order failed") % 4 % 7;
+	XPathNodeSet_tester(reverse_sorted, "reverse sorted order failed") % 7 % 4;
 }
 
 TEST_XML(xpath_sort_attributes, "<node/>")
 {
-	xml_node n = doc.child(STR("node"));
+	XmlNode n = doc.child(STR("node"));
 
 	// we need to insert attributes manually since unsorted node sets are (always?) sorted via pointers because of remove_duplicates,
 	// so we need to have different document and pointer order to cover all comparator cases
@@ -128,35 +128,35 @@ TEST_XML(xpath_sort_attributes, "<node/>")
 	n.append_attribute(STR("attr3"));
 	n.insert_attribute_before(STR("attr1"), n.attribute(STR("attr2")));
 
-	xpath_node_set ns = n.select_nodes(STR("@* | @*"));
+	XPathNodeSet ns = n.select_nodes(STR("@* | @*"));
 
 	ns.sort(true);
-	xpath_node_set reverse_sorted = ns;
+	XPathNodeSet reverse_sorted = ns;
 
 	ns.sort(false);
-	xpath_node_set sorted = ns;
+	XPathNodeSet sorted = ns;
 
-	xpath_node_set_tester(sorted, "sorted order failed") % 3 % 4 % 5;
-	xpath_node_set_tester(reverse_sorted, "reverse sorted order failed") % 5 % 4 % 3;
+	XPathNodeSet_tester(sorted, "sorted order failed") % 3 % 4 % 5;
+	XPathNodeSet_tester(reverse_sorted, "reverse sorted order failed") % 5 % 4 % 3;
 }
 
 TEST_XML(xpath_sort_attributes_docorder, "<node attr1='' attr2='value' attr4='value' />")
 {
-	xml_node n = doc.child(STR("node"));
+	XmlNode n = doc.child(STR("node"));
 
 	n.first_attribute().set_name(STR("attribute1"));
 	n.insert_attribute_after(STR("attr3"), n.attribute(STR("attr2")));
 
-	xpath_node_set ns = n.select_nodes(STR("@* | @*"));
+	XPathNodeSet ns = n.select_nodes(STR("@* | @*"));
 
 	ns.sort(true);
-	xpath_node_set reverse_sorted = ns;
+	XPathNodeSet reverse_sorted = ns;
 
 	ns.sort(false);
-	xpath_node_set sorted = ns;
+	XPathNodeSet sorted = ns;
 
-	xpath_node_set_tester(sorted, "sorted order failed") % 3 % 4 % 5 % 6;
-	xpath_node_set_tester(reverse_sorted, "reverse sorted order failed") % 6 % 5 % 4 % 3;
+	XPathNodeSet_tester(sorted, "sorted order failed") % 3 % 4 % 5 % 6;
+	XPathNodeSet_tester(reverse_sorted, "reverse sorted order failed") % 6 % 5 % 4 % 3;
 }
 
 TEST(xpath_sort_random_medium)
@@ -168,15 +168,15 @@ TEST(xpath_sort_random_medium)
 		STR("<child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2>")
 		STR("</node>"));
 
-	xpath_node_set ns = doc.select_nodes(STR("//node() | //@*"));
+	XPathNodeSet ns = doc.select_nodes(STR("//node() | //@*"));
 
-	std::vector<xpath_node> nsv(ns.begin(), ns.end());
+	std::vector<XPathNode> nsv(ns.begin(), ns.end());
 	random_shuffle(nsv);
 
-	xpath_node_set copy(&nsv[0], &nsv[0] + nsv.size());
+	XPathNodeSet copy(&nsv[0], &nsv[0] + nsv.size());
 	copy.sort();
 
-	xpath_node_set_tester tester(copy, "sorted order failed");
+	XPathNodeSet_tester tester(copy, "sorted order failed");
 
 	for (unsigned int i = 2; i < 39; ++i) tester % i;
 }
@@ -197,32 +197,32 @@ TEST(xpath_sort_random_large)
 		STR("<child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2>")
 		STR("<child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2></node>"));
 
-	xpath_node_set ns = doc.select_nodes(STR("//node() | //@*"));
+	XPathNodeSet ns = doc.select_nodes(STR("//node() | //@*"));
 
-	std::vector<xpath_node> nsv(ns.begin(), ns.end());
+	std::vector<XPathNode> nsv(ns.begin(), ns.end());
 	random_shuffle(nsv);
 
-	xpath_node_set copy(&nsv[0], &nsv[0] + nsv.size());
+	XPathNodeSet copy(&nsv[0], &nsv[0] + nsv.size());
 	copy.sort();
 
-	xpath_node_set_tester tester(copy, "sorted order failed");
+	XPathNodeSet_tester tester(copy, "sorted order failed");
 
 	for (unsigned int i = 2; i < 129; ++i) tester % i;
 }
 
 TEST_XML(xpath_sort_coverage, "<node><a/><b/></node>")
 {
-	xml_node a = doc.child(STR("node")).child(STR("a"));
-	xml_node b = doc.child(STR("node")).child(STR("b"));
+	XmlNode a = doc.child(STR("node")).child(STR("a"));
+	XmlNode b = doc.child(STR("node")).child(STR("b"));
 
-	xpath_node nodes[17];
+	XPathNode nodes[17];
 	for (size_t i = 0; i < sizeof(nodes) / sizeof(nodes[0]); ++i)
 		nodes[i] = (i == 0 || i == 8 || i == 16) ? a : b;
 
-	xpath_node_set ns(nodes, nodes + sizeof(nodes) / sizeof(nodes[0]), xpath_node_set::type_unsorted);
+	XPathNodeSet ns(nodes, nodes + sizeof(nodes) / sizeof(nodes[0]), XPathNodeSet::type_unsorted);
 	ns.sort();
 
-	CHECK(ns.type() == xpath_node_set::type_sorted);
+	CHECK(ns.type() == XPathNodeSet::type_sorted);
 
 	for (size_t i = 0; i < ns.size(); ++i)
 		CHECK(ns[i].node() == (i < 3 ? a : b));
@@ -236,7 +236,7 @@ TEST(xpath_long_numbers_parse)
 	const char_t* str_dbl_max = STR("179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
 	const char_t* str_dbl_max_dec = STR("179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.000000");
 
-	xml_node c;
+	XmlNode c;
 
 	// check parsing
 	CHECK_XPATH_NUMBER(c, str_flt_max, double(std::numeric_limits<float>::max()));
@@ -245,9 +245,9 @@ TEST(xpath_long_numbers_parse)
 	CHECK_XPATH_NUMBER(c, str_dbl_max_dec, std::numeric_limits<double>::max());
 }
 
-static bool test_xpath_string_prefix(const xml_node& node, const char_t* query, const char_t* expected, size_t match_length)
+static bool test_xpath_string_prefix(const XmlNode& node, const char_t* query, const char_t* expected, size_t match_length)
 {
-	xpath_query q(query);
+	XPathQuery q(query);
 
 	char_t result[32];
 	size_t size = q.evaluate_string(result, sizeof(result) / sizeof(result[0]), node);
@@ -265,7 +265,7 @@ TEST(xpath_long_numbers_stringize)
 	const char_t* str_dbl_max = STR("179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
 	const char_t* str_dbl_max_dec = STR("179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.000000");
 
-	xml_node c;
+	XmlNode c;
 
 	CHECK(test_xpath_string_prefix(c, str_flt_max, str_flt_max, 15));
 	CHECK(test_xpath_string_prefix(c, str_flt_max_dec, str_flt_max, 15));
@@ -286,11 +286,11 @@ TEST(xpath_denorm_numbers)
 	}
 
 	// check if current fpu setup supports denormals
-	double denorm = xpath_query(query.c_str()).evaluate_number(xml_node());
+	double denorm = XPathQuery(query.c_str()).evaluate_number(XmlNode());
 
 	if (denorm != 0.0)
 	{
-		CHECK_XPATH_STRING(xml_node(), query.c_str(), STR("0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009999987484955998"));
+		CHECK_XPATH_STRING(XmlNode(), query.c_str(), STR("0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009999987484955998"));
 	}
 }
 
@@ -374,7 +374,7 @@ TEST_XML(xpath_star_token, "<node>0.5<section><child/><child/><child/><child/></
 TEST(xpath_miscellaneous)
 {
 	CHECK_XPATH_FAIL(STR("/root/child[a=3]/substring(child::text())"));
-	CHECK_XPATH_NODESET(xml_node(), STR("foo/@FOO/@bar"));
+	CHECK_XPATH_NODESET(XmlNode(), STR("foo/@FOO/@bar"));
 }
 
 TEST_XML(xpath_context_node, "<node>5</node>")
@@ -404,7 +404,7 @@ TEST(xpath_large_node_set)
 	xml_document doc;
 	CHECK(doc.load_file("tests/data/large.xml"));
 
-	xpath_node_set ns = doc.select_nodes(STR("//*"));
+	XPathNodeSet ns = doc.select_nodes(STR("//*"));
 
 	CHECK(ns.size() == 10001);
 }
@@ -413,7 +413,7 @@ TEST(xpath_out_of_memory_query)
 {
 	test_runner::_memory_fail_threshold = 1;
 
-	CHECK_ALLOC_FAIL(xpath_query q(STR("node")));
+	CHECK_ALLOC_FAIL(XPathQuery q(STR("node")));
 }
 
 TEST_XML(xpath_out_of_memory_evaluate, "<n/>")
@@ -425,7 +425,7 @@ TEST_XML(xpath_out_of_memory_evaluate, "<n/>")
 	query.resize(4196, 'a');
 	query += STR("\")]");
 
-	xpath_query q(query.c_str());
+	XPathQuery q(query.c_str());
 
 	CHECK_ALLOC_FAIL(CHECK(q.evaluate_boolean(doc) == false));
 	CHECK_ALLOC_FAIL(CHECK_DOUBLE_NAN(q.evaluate_number(doc)));
@@ -435,7 +435,7 @@ TEST_XML(xpath_out_of_memory_evaluate, "<n/>")
 #endif
 
 	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, doc) == 1));
-	CHECK_ALLOC_FAIL(CHECK(q.evaluate_node(doc) == xpath_node()));
+	CHECK_ALLOC_FAIL(CHECK(q.evaluate_node(doc) == XPathNode()));
 	CHECK_ALLOC_FAIL(CHECK(q.evaluate_node_set(doc).empty()));
 }
 
@@ -448,9 +448,9 @@ TEST(xpath_out_of_memory_evaluate_concat)
 	query.resize(4196, 'a');
 	query += STR("\")");
 
-	xpath_query q(query.c_str());
+	XPathQuery q(query.c_str());
 
-	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, xml_node()) == 1));
+	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, XmlNode()) == 1));
 }
 
 TEST(xpath_out_of_memory_evaluate_concat_list)
@@ -462,11 +462,11 @@ TEST(xpath_out_of_memory_evaluate_concat_list)
 
 	query += STR("\"\")");
 
-	xpath_query q(query.c_str());
+	XPathQuery q(query.c_str());
 
 	test_runner::_memory_fail_threshold = 1;
 
-	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, xml_node()) == 1));
+	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, XmlNode()) == 1));
 }
 
 TEST(xpath_out_of_memory_evaluate_substring)
@@ -478,14 +478,14 @@ TEST(xpath_out_of_memory_evaluate_substring)
 	query.resize(4196, 'a');
 	query += STR("\", 1, 4097)");
 
-	xpath_query q(query.c_str());
+	XPathQuery q(query.c_str());
 
-	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, xml_node()) == 1));
+	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, XmlNode()) == 1));
 }
 
 TEST_XML(xpath_out_of_memory_evaluate_union, "<node />")
 {
-	// left hand side: size * sizeof(xpath_node) (8 on 32-bit, 16 on 64-bit)
+	// left hand side: size * sizeof(XPathNode) (8 on 32-bit, 16 on 64-bit)
 	// right hand side: same
 	// to make sure that when we append right hand side to left hand side, we run out of an XPath stack page (4K), we need slightly more than 2K/8 = 256 nodes on 32-bit, 128 nodes on 64-bit
 	size_t count = sizeof(void*) == 4 ? 300 : 150;
@@ -493,7 +493,7 @@ TEST_XML(xpath_out_of_memory_evaluate_union, "<node />")
 	for (size_t i = 0; i < count; ++i)
 		doc.first_child().append_child(STR("a"));
 
-	xpath_query q(STR("a|a"));
+	XPathQuery q(STR("a|a"));
 
 	test_runner::_memory_fail_threshold = 1;
 
@@ -502,7 +502,7 @@ TEST_XML(xpath_out_of_memory_evaluate_union, "<node />")
 
 TEST_XML(xpath_out_of_memory_evaluate_union_hash, "<node />")
 {
-	// left hand side: size * sizeof(xpath_node) (8 on 32-bit, 16 on 64-bit)
+	// left hand side: size * sizeof(XPathNode) (8 on 32-bit, 16 on 64-bit)
 	// right hand side: same
 	// hash table: size * 1.5 * sizeof(void*)
 	// to make sure that when we append right hand side to left hand side, we do *not* run out of an XPath stack page (4K), we need slightly less than 2K/8 = 256 nodes on 32-bit, 128 nodes on 64-bit
@@ -511,7 +511,7 @@ TEST_XML(xpath_out_of_memory_evaluate_union_hash, "<node />")
 	for (size_t i = 0; i < count; ++i)
 		doc.first_child().append_child(STR("a"));
 
-	xpath_query q(STR("a|a"));
+	XPathQuery q(STR("a|a"));
 
 	test_runner::_memory_fail_threshold = 1;
 
@@ -523,7 +523,7 @@ TEST_XML(xpath_out_of_memory_evaluate_predicate, "<node><a/><a/><a/><a/><a/><a/>
 {
 	test_runner::_memory_fail_threshold = 32768 + 4096 * 2;
 
-	xpath_query q(STR("//a[//a[//a[//a[true()]]]]"));
+	XPathQuery q(STR("//a[//a[//a[//a[true()]]]]"));
 
 	CHECK_ALLOC_FAIL(CHECK(q.evaluate_node_set(doc).empty()));
 }
@@ -532,7 +532,7 @@ TEST_XML(xpath_out_of_memory_evaluate_normalize_space_0, "<node> a b c d e f g h
 {
 	test_runner::_memory_fail_threshold = 32768 + 4096 * 2;
 
-	xpath_query q(STR("concat(normalize-space(), normalize-space(), normalize-space(), normalize-space(), normalize-space(), normalize-space(), normalize-space(), normalize-space())"));
+	XPathQuery q(STR("concat(normalize-space(), normalize-space(), normalize-space(), normalize-space(), normalize-space(), normalize-space(), normalize-space(), normalize-space())"));
 
 	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, doc.first_child()) == 1));
 }
@@ -541,7 +541,7 @@ TEST_XML(xpath_out_of_memory_evaluate_normalize_space_1, "<node> a b c d e f g h
 {
 	test_runner::_memory_fail_threshold = 32768 + 4096 * 2;
 
-	xpath_query q(STR("concat(normalize-space(node), normalize-space(node), normalize-space(node), normalize-space(node), normalize-space(node), normalize-space(node), normalize-space(node), normalize-space(node))"));
+	XPathQuery q(STR("concat(normalize-space(node), normalize-space(node), normalize-space(node), normalize-space(node), normalize-space(node), normalize-space(node), normalize-space(node), normalize-space(node))"));
 
 	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, doc) == 1));
 }
@@ -550,7 +550,7 @@ TEST_XML(xpath_out_of_memory_evaluate_translate, "<node> a b c d e f g h i j k l
 {
 	test_runner::_memory_fail_threshold = 32768 + 4096 * 2;
 
-	xpath_query q(STR("concat(translate(node, 'a', '\xe9'), translate(node, 'a', '\xe9'), translate(node, 'a', '\xe9'), translate(node, 'a', '\xe9'), translate(node, 'a', '\xe9'), translate(node, 'a', '\xe9'), translate(node, 'a', '\xe9'), translate(node, 'a', '\xe9'))"));
+	XPathQuery q(STR("concat(translate(node, 'a', '\xe9'), translate(node, 'a', '\xe9'), translate(node, 'a', '\xe9'), translate(node, 'a', '\xe9'), translate(node, 'a', '\xe9'), translate(node, 'a', '\xe9'), translate(node, 'a', '\xe9'), translate(node, 'a', '\xe9'))"));
 
 	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, doc) == 1));
 }
@@ -559,7 +559,7 @@ TEST_XML(xpath_out_of_memory_evaluate_translate_table, "<node> a b c d e f g h i
 {
 	test_runner::_memory_fail_threshold = 32768 + 4096 * 2;
 
-	xpath_query q(STR("concat(translate(node, 'a', 'A'), translate(node, 'a', 'A'), translate(node, 'a', 'A'), translate(node, 'a', 'A'), translate(node, 'a', 'A'), translate(node, 'a', 'A'), translate(node, 'a', 'A'), translate(node, 'a', 'A'))"));
+	XPathQuery q(STR("concat(translate(node, 'a', 'A'), translate(node, 'a', 'A'), translate(node, 'a', 'A'), translate(node, 'a', 'A'), translate(node, 'a', 'A'), translate(node, 'a', 'A'), translate(node, 'a', 'A'), translate(node, 'a', 'A'))"));
 
 	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, doc) == 1));
 }
@@ -578,7 +578,7 @@ TEST(xpath_out_of_memory_evaluate_string_append)
 	xml_document doc;
 	CHECK(doc.load_buffer_inplace(&buf[0], buf.size() * sizeof(char_t)));
 
-	xpath_query q(STR("string(n)"));
+	XPathQuery q(STR("string(n)"));
 	CHECK(q);
 
 	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, doc) == 1));
@@ -588,23 +588,23 @@ TEST(xpath_out_of_memory_evaluate_number_to_string)
 {
 	test_runner::_memory_fail_threshold = 4096 + 128;
 
-	xpath_variable_set vars;
+	XPathVariableSet vars;
 	vars.set(STR("x"), 1e+308);
 
-	xpath_query q(STR("concat($x, $x, $x, $x, $x, $x, $x, $x, $x, $x, $x, $x, $x, $x, $x, $x, $x)"), &vars);
+	XPathQuery q(STR("concat($x, $x, $x, $x, $x, $x, $x, $x, $x, $x, $x, $x, $x, $x, $x, $x, $x)"), &vars);
 
-	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, xml_node()) == 1));
+	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, XmlNode()) == 1));
 }
 
 TEST(xpath_memory_concat_massive)
 {
 	xml_document doc;
-	xml_node node = doc.append_child(STR("node"));
+	XmlNode node = doc.append_child(STR("node"));
 
 	for (int i = 0; i < 5000; ++i)
 		node.append_child(STR("c")).text().set(i % 10);
 
-	xpath_query q(STR("/"));
+	XPathQuery q(STR("/"));
 	size_t size = q.evaluate_string(0, 0, node);
 
 	CHECK(size == 5001);
@@ -620,15 +620,15 @@ TEST_XML(xpath_memory_translate_table, "<node>a</node>")
 		query += STR("translate(.,'a','A'),");
 	query += STR("'')");
 
-	CHECK_ALLOC_FAIL(CHECK(!xpath_query(query.c_str())));
+	CHECK_ALLOC_FAIL(CHECK(!XPathQuery(query.c_str())));
 }
 
 TEST_XML(xpath_sort_copy_share, "<node><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2></node>")
 {
 	// copy sharing shares the name/value data for nodes that can potentially make document order optimization invalid (silently)
-	xml_node node = doc.child(STR("node"));
-	xml_node child1 = node.child(STR("child1"));
-	xml_node child2 = node.child(STR("child2"));
+	XmlNode node = doc.child(STR("node"));
+	XmlNode child1 = node.child(STR("child1"));
+	XmlNode child2 = node.child(STR("child2"));
 
 	// swap child1 & child2
 	node.prepend_copy(child2);
@@ -638,40 +638,40 @@ TEST_XML(xpath_sort_copy_share, "<node><child1 attr1='value1' attr2='value2'/><c
 	node.remove_child(child2);
 
 	// just some random union order, it should not matter probably?
-	xpath_node_set ns = doc.child(STR("node")).select_nodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
+	XPathNodeSet ns = doc.child(STR("node")).select_nodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
 
 	ns.sort(false);
-	xpath_node_set sorted = ns;
+	XPathNodeSet sorted = ns;
 
 	ns.sort(true);
-	xpath_node_set reverse_sorted = ns;
+	XPathNodeSet reverse_sorted = ns;
 
-	xpath_node_set_tester(sorted, "sorted order failed") % 2 % 3 % 4 % 5 % 6 % 7 % 8;
-	xpath_node_set_tester(reverse_sorted, "reverse sorted order failed") % 8 % 7 % 6 % 5 % 4 % 3 % 2;
+	XPathNodeSet_tester(sorted, "sorted order failed") % 2 % 3 % 4 % 5 % 6 % 7 % 8;
+	XPathNodeSet_tester(reverse_sorted, "reverse sorted order failed") % 8 % 7 % 6 % 5 % 4 % 3 % 2;
 }
 
 TEST_XML(xpath_sort_move_share, "<node><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2></node>")
 {
 	// moving changes the relation between name/value data and document order, this can potentially make document order optimization invalid (silently)
-	xml_node node = doc.child(STR("node"));
-	xml_node child1 = node.child(STR("child1"));
-	xml_node child2 = node.child(STR("child2"));
+	XmlNode node = doc.child(STR("node"));
+	XmlNode child1 = node.child(STR("child1"));
+	XmlNode child2 = node.child(STR("child2"));
 
 	// swap child1 & child2
 	node.prepend_move(child2);
 	node.append_move(child1);
 
 	// just some random union order, it should not matter probably?
-	xpath_node_set ns = doc.child(STR("node")).select_nodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
+	XPathNodeSet ns = doc.child(STR("node")).select_nodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
 
 	ns.sort(false);
-	xpath_node_set sorted = ns;
+	XPathNodeSet sorted = ns;
 
 	ns.sort(true);
-	xpath_node_set reverse_sorted = ns;
+	XPathNodeSet reverse_sorted = ns;
 
-	xpath_node_set_tester(sorted, "sorted order failed") % 2 % 3 % 4 % 5 % 6 % 7 % 8;
-	xpath_node_set_tester(reverse_sorted, "reverse sorted order failed") % 8 % 7 % 6 % 5 % 4 % 3 % 2;
+	XPathNodeSet_tester(sorted, "sorted order failed") % 2 % 3 % 4 % 5 % 6 % 7 % 8;
+	XPathNodeSet_tester(reverse_sorted, "reverse sorted order failed") % 8 % 7 % 6 % 5 % 4 % 3 % 2;
 }
 
 TEST_XML(xpath_sort_append_buffer, "<node /><node />")
@@ -684,16 +684,16 @@ TEST_XML(xpath_sort_append_buffer, "<node /><node />")
 	doc.first_child().append_buffer(child1, strlen(child1));
 
 	// just some random union order, it should not matter probably?
-	xpath_node_set ns = doc.select_nodes(STR("node/child1 | node/child2 | node/child1/@* | node/. | node/child2/@* | node/child2/text()"));
+	XPathNodeSet ns = doc.select_nodes(STR("node/child1 | node/child2 | node/child1/@* | node/. | node/child2/@* | node/child2/text()"));
 
 	ns.sort(false);
-	xpath_node_set sorted = ns;
+	XPathNodeSet sorted = ns;
 
 	ns.sort(true);
-	xpath_node_set reverse_sorted = ns;
+	XPathNodeSet reverse_sorted = ns;
 
-	xpath_node_set_tester(sorted, "sorted order failed") % 2 % 3 % 4 % 5 % 6 % 7 % 8 % 9;
-	xpath_node_set_tester(reverse_sorted, "reverse sorted order failed") % 9 % 8 % 7 % 6 % 5 % 4 % 3 % 2;
+	XPathNodeSet_tester(sorted, "sorted order failed") % 2 % 3 % 4 % 5 % 6 % 7 % 8 % 9;
+	XPathNodeSet_tester(reverse_sorted, "reverse sorted order failed") % 9 % 8 % 7 % 6 % 5 % 4 % 3 % 2;
 }
 
 TEST(xpath_sort_crossdoc)
@@ -704,17 +704,17 @@ TEST(xpath_sort_crossdoc)
 	xml_document doc2;
 	CHECK(doc2.load_string(STR("<node />")));
 
-	xpath_node_set ns1 = doc1.select_nodes(STR("*"));
+	XPathNodeSet ns1 = doc1.select_nodes(STR("*"));
 	CHECK(ns1.size() == 1);
 
-	xpath_node_set ns2 = doc2.select_nodes(STR("*"));
+	XPathNodeSet ns2 = doc2.select_nodes(STR("*"));
 	CHECK(ns2.size() == 1);
 
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("ns1"), ns1);
 	set.set(STR("ns2"), ns2);
 
-	xpath_node_set ns = xpath_query(STR("$ns1 | $ns2"), &set).evaluate_node_set(xpath_node());
+	XPathNodeSet ns = XPathQuery(STR("$ns1 | $ns2"), &set).evaluate_node_set(XPathNode());
 
 	ns.sort();
 
@@ -730,17 +730,17 @@ TEST(xpath_sort_crossdoc_dynamic)
 	xml_document doc2;
 	doc2.append_child(STR("node"));
 
-	xpath_node_set ns1 = doc1.select_nodes(STR("*"));
+	XPathNodeSet ns1 = doc1.select_nodes(STR("*"));
 	CHECK(ns1.size() == 1);
 
-	xpath_node_set ns2 = doc2.select_nodes(STR("*"));
+	XPathNodeSet ns2 = doc2.select_nodes(STR("*"));
 	CHECK(ns2.size() == 1);
 
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("ns1"), ns1);
 	set.set(STR("ns2"), ns2);
 
-	xpath_node_set ns = xpath_query(STR("$ns1 | $ns2"), &set).evaluate_node_set(xpath_node());
+	XPathNodeSet ns = XPathQuery(STR("$ns1 | $ns2"), &set).evaluate_node_set(XPathNode());
 
 	ns.sort();
 
@@ -756,17 +756,17 @@ TEST(xpath_sort_crossdoc_different_depth)
 	xml_document doc2;
 	doc2.append_child(STR("node")).append_child(STR("node"));
 
-	xpath_node_set ns1 = doc1.select_nodes(STR("*"));
+	XPathNodeSet ns1 = doc1.select_nodes(STR("*"));
 	CHECK(ns1.size() == 1);
 
-	xpath_node_set ns2 = doc2.select_nodes(STR("*/*"));
+	XPathNodeSet ns2 = doc2.select_nodes(STR("*/*"));
 	CHECK(ns2.size() == 1);
 
-	xpath_variable_set set;
+	XPathVariableSet set;
 	set.set(STR("ns1"), ns1);
 	set.set(STR("ns2"), ns2);
 
-	xpath_node_set ns = xpath_query(STR("$ns1 | $ns2"), &set).evaluate_node_set(xpath_node());
+	XPathNodeSet ns = XPathQuery(STR("$ns1 | $ns2"), &set).evaluate_node_set(XPathNode());
 
 	ns.sort();
 
@@ -776,9 +776,9 @@ TEST(xpath_sort_crossdoc_different_depth)
 
 TEST_XML(xpath_sort_empty_node, "<node><child1/><child2/></node>")
 {
-	xml_node n = doc.child(STR("node"));
-	xpath_node nodes[] = { n.child(STR("child2")), xml_node(), n.child(STR("child1")), xml_node() };
-	xpath_node_set ns(nodes, nodes + sizeof(nodes) / sizeof(nodes[0]));
+	XmlNode n = doc.child(STR("node"));
+	XPathNode nodes[] = { n.child(STR("child2")), XmlNode(), n.child(STR("child1")), XmlNode() };
+	XPathNodeSet ns(nodes, nodes + sizeof(nodes) / sizeof(nodes[0]));
 
 	ns.sort();
 
@@ -794,7 +794,7 @@ TEST(xpath_allocate_string_out_of_memory)
 	test_runner::_memory_fail_threshold = 8*1024;
 
 #ifndef __DMC__ // DigitalMars exception handling crashes instead of catching the exception...
-	CHECK_ALLOC_FAIL(CHECK(!xpath_query(query.c_str())));
+	CHECK_ALLOC_FAIL(CHECK(!XPathQuery(query.c_str())));
 #endif
 }
 
@@ -808,12 +808,12 @@ TEST(xpath_remove_duplicates)
 		doc.prepend_child(STR("node1"));
 	}
 
-	xpath_node_set ns = doc.select_nodes(STR("/node2/preceding::* | //node1 | /node() | /* | /node1/following-sibling::*"));
+	XPathNodeSet ns = doc.select_nodes(STR("/node2/preceding::* | //node1 | /node() | /* | /node1/following-sibling::*"));
 
 	ns.sort();
 
 	{
-		xpath_node_set_tester tester(ns, "sorted order failed");
+		XPathNodeSet_tester tester(ns, "sorted order failed");
 
 		for (int i = 0; i < 40; ++i)
 			tester % (2 + i);

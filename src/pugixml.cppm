@@ -10,14 +10,6 @@ module;
  * See LICENSE.md or notice at the end of this file.
  */
 
-// Define version macro; evaluates to major * 1000 + minor * 10 + patch so that
-// it's safe to use in less-than comparisons Note: pugixml used major * 100 +
-// minor * 10 + patch format up until 1.9 (which had version identifier 190);
-// starting from pugixml 1.10, the minor version number is two digits
-#ifndef PUGIXML_VERSION
-#define PUGIXML_VERSION 1160 // 1.16
-#endif
-
 // If no API is defined, assume default
 #ifndef PUGIXML_API
 #define PUGIXML_API
@@ -45,6 +37,9 @@ import std;
 import std.compat;
 // Character type used for all internal storage and operations; depends on
 // PUGIXML_WCHAR_MODE
+export namespace pugi
+{
+
 using char_t = char;
 
 // String type used for operations that work with STL string; depends on
@@ -54,10 +49,13 @@ using string_t = std::basic_string< char >;
 // String view type used for operations that can work with a length delimited
 // string; depends on PUGIXML_WCHAR_MODE
 using string_view_t = std::basic_string_view< char >;
+} // namespace pugi
 
+export constexpr short PUGIXML_VERSION = 1160;
 // The PugiXML namespace
 export namespace pugi
 {
+
 // Tree node types
 enum XmlNodeType
 {
@@ -610,8 +608,8 @@ public:
   // allocates memory that has the lifetime of the owning document; removing
   // the appended nodes does not immediately reclaim that memory.
   XmlParseResult append_buffer(const void *contents, size_t size,
-                                 unsigned int options = parse_default,
-                                 XmlEncoding encoding = encoding_auto);
+                               unsigned int options = parse_default,
+                               XmlEncoding encoding = encoding_auto);
 
   // Find attribute using predicate. Returns first attribute for which
   // predicate returned true.
@@ -676,16 +674,16 @@ public:
 
   // Find child node by attribute name/value
   XmlNode find_child_by_attribute(const char_t *name, const char_t *attr_name,
-                                   const char_t *attr_value) const;
+                                  const char_t *attr_value) const;
   XmlNode find_child_by_attribute(const char_t *attr_name,
-                                   const char_t *attr_value) const;
+                                  const char_t *attr_value) const;
 
   // Get the absolute node path from root as a text string.
   string_t path(char_t delimiter = '/') const;
 
   // Search for a node by path consisting of node names and . or .. elements.
   XmlNode first_element_by_path(const char_t *path,
-                                 char_t delimiter = '/') const;
+                                char_t delimiter = '/') const;
 
   // Recursively traverse subtree with XmlTreeWalker
   bool traverse(XmlTreeWalker &walker);
@@ -693,12 +691,12 @@ public:
   // Select single node by evaluating XPath query. Returns first node from the
   // resulting node set.
   XPathNode select_node(const char_t *query,
-                         XPathVariableSet *variables = nullptr) const;
+                        XPathVariableSet *variables = nullptr) const;
   XPathNode select_node(const XPathQuery &query) const;
 
   // Select node set by evaluating XPath query
   XPathNodeSet select_nodes(const char_t *query,
-                              XPathVariableSet *variables = nullptr) const;
+                            XPathVariableSet *variables = nullptr) const;
   XPathNodeSet select_nodes(const XPathQuery &query) const;
 
   // Print subtree using a writer object
@@ -734,8 +732,7 @@ public:
   // Range-based for support for all children with the specified name
   // Note: name pointer must have a longer lifetime than the returned object;
   // be careful with passing temporaries!
-  XmlObjectRange< XmlNamedNodeIterator >
-  children(const char_t *name) const;
+  XmlObjectRange< XmlNamedNodeIterator > children(const char_t *name) const;
 
   // Get node offset in parsed file/string (in char_t units) for debugging
   // purposes
@@ -950,7 +947,7 @@ private:
   const char_t *_name;
 
   XmlNamedNodeIterator(XmlNodeStruct *ref, XmlNodeStruct *parent,
-                          const char_t *name);
+                       const char_t *name);
 };
 
 // Abstract tree walker class (see XmlNode::traverse)
@@ -980,7 +977,7 @@ public:
 };
 
 // Parsing status, returned as part of XmlParseResult object
-enum xml_parse_status
+enum XmlParseStatus
 {
   status_ok = 0, // No error
 
@@ -1020,8 +1017,8 @@ enum xml_parse_status
 // Parsing result
 struct PUGIXML_CLASS XmlParseResult
 {
-  // Parsing status (see xml_parse_status)
-  xml_parse_status status;
+  // Parsing status (see XmlParseStatus)
+  XmlParseStatus status;
 
   // Last parsed offset (in char_t units from start of input data)
   ptrdiff_t offset;
@@ -1073,46 +1070,45 @@ public:
   void reset(const xml_document &proto);
   // Load document from stream.
   XmlParseResult load(std::basic_istream< char > &stream,
-                        unsigned int options = parse_default,
-                        XmlEncoding encoding = encoding_auto);
+                      unsigned int options = parse_default,
+                      XmlEncoding encoding = encoding_auto);
   XmlParseResult load(std::basic_istream< wchar_t > &stream,
-                        unsigned int options = parse_default);
+                      unsigned int options = parse_default);
 
   // Load document from zero-terminated string. No encoding conversions are
   // applied.
   XmlParseResult load_string(const char_t *contents,
-                               unsigned int options = parse_default);
+                             unsigned int options = parse_default);
 
   // Load document from file
   XmlParseResult load_file(const char *path,
-                             unsigned int options = parse_default,
-                             XmlEncoding encoding = encoding_auto);
+                           unsigned int options = parse_default,
+                           XmlEncoding encoding = encoding_auto);
   XmlParseResult load_file(const wchar_t *path,
-                             unsigned int options = parse_default,
-                             XmlEncoding encoding = encoding_auto);
+                           unsigned int options = parse_default,
+                           XmlEncoding encoding = encoding_auto);
 
   // Load document from buffer. Copies/converts the buffer, so it may be
   // deleted or changed after the function returns.
   XmlParseResult load_buffer(const void *contents, size_t size,
-                               unsigned int options = parse_default,
-                               XmlEncoding encoding = encoding_auto);
+                             unsigned int options = parse_default,
+                             XmlEncoding encoding = encoding_auto);
 
   // Load document from buffer, using the buffer for in-place parsing (the
   // buffer is modified and used for storage of document data). You should
   // ensure that buffer data will persist throughout the document's lifetime,
   // and free the buffer memory manually once document is destroyed.
   XmlParseResult load_buffer_inplace(void *contents, size_t size,
-                                       unsigned int options = parse_default,
-                                       XmlEncoding encoding = encoding_auto);
+                                     unsigned int options = parse_default,
+                                     XmlEncoding encoding = encoding_auto);
 
   // Load document from buffer, using the buffer for in-place parsing (the
   // buffer is modified and used for storage of document data). You should
   // allocate the buffer with pugixml allocation function; document will free
   // the buffer when it is no longer needed (you can't use it anymore).
-  XmlParseResult
-  load_buffer_inplace_own(void *contents, size_t size,
-                          unsigned int options = parse_default,
-                          XmlEncoding encoding = encoding_auto);
+  XmlParseResult load_buffer_inplace_own(void *contents, size_t size,
+                                         unsigned int options = parse_default,
+                                         XmlEncoding encoding = encoding_auto);
 
   // Save XML document to writer (semantics is slightly different from
   // XmlNode::print, see documentation for details).
@@ -1141,7 +1137,7 @@ public:
 };
 
 // XPath query return type
-enum xpath_value_type
+enum XPathValueType
 {
   xpath_type_none,     // Unknown type (query failed to compile)
   xpath_type_node_set, // Node set (XPathNodeSet)
@@ -1151,7 +1147,7 @@ enum xpath_value_type
 };
 
 // XPath parsing result
-struct PUGIXML_CLASS xpath_parse_result
+struct PUGIXML_CLASS XPathParseResult
 {
   // Error message (0 if no error)
   const char *error;
@@ -1160,7 +1156,7 @@ struct PUGIXML_CLASS xpath_parse_result
   ptrdiff_t offset;
 
   // Default constructor, initializes object to failed state
-  xpath_parse_result();
+  XPathParseResult();
 
   // Cast to bool operator
   operator bool() const;
@@ -1170,26 +1166,26 @@ struct PUGIXML_CLASS xpath_parse_result
 };
 
 // A single XPath variable
-class PUGIXML_CLASS xpath_variable
+class PUGIXML_CLASS XPathVariable
 {
   friend class XPathVariableSet;
 
 protected:
-  xpath_value_type _type;
-  xpath_variable *_next;
+  XPathValueType _type;
+  XPathVariable *_next;
 
-  xpath_variable(xpath_value_type type);
+  XPathVariable(XPathValueType type);
 
   // Non-copyable semantics
-  xpath_variable(const xpath_variable &);
-  xpath_variable &operator=(const xpath_variable &);
+  XPathVariable(const XPathVariable &);
+  XPathVariable &operator=(const XPathVariable &);
 
 public:
   // Get variable name
   const char_t *name() const;
 
   // Get variable type
-  xpath_value_type type() const;
+  XPathValueType type() const;
 
   // Get variable value; no type conversion is performed, default value
   // (false, NaN, empty string, empty node set) is returned on type mismatch
@@ -1211,15 +1207,15 @@ public:
 class PUGIXML_CLASS XPathVariableSet
 {
 private:
-  xpath_variable *_data[64];
+  XPathVariable *_data[64];
 
   void _assign(const XPathVariableSet &rhs);
   void _swap(XPathVariableSet &rhs);
 
-  xpath_variable *_find(const char_t *name) const;
+  XPathVariable *_find(const char_t *name) const;
 
-  static bool _clone(xpath_variable *var, xpath_variable **out_result);
-  static void _destroy(xpath_variable *var);
+  static bool _clone(XPathVariable *var, XPathVariable **out_result);
+  static void _destroy(XPathVariable *var);
 
 public:
   // Default constructor/destructor
@@ -1235,7 +1231,7 @@ public:
   XPathVariableSet &operator=(XPathVariableSet &&rhs) noexcept;
 
   // Add a new variable or get the existing one, if the types match
-  xpath_variable *add(const char_t *name, xpath_value_type type);
+  XPathVariable *add(const char_t *name, XPathValueType type);
 
   // Set value of an existing variable; no type conversion is performed, false
   // is returned if there is no such variable or if types mismatch
@@ -1245,8 +1241,8 @@ public:
   bool set(const char_t *name, const XPathNodeSet &value);
 
   // Get existing variable by name
-  xpath_variable *get(const char_t *name);
-  const xpath_variable *get(const char_t *name) const;
+  XPathVariable *get(const char_t *name);
+  const XPathVariable *get(const char_t *name) const;
 };
 
 // A compiled XPath query object
@@ -1254,7 +1250,7 @@ class PUGIXML_CLASS XPathQuery
 {
 private:
   void *_impl;
-  xpath_parse_result _result;
+  XPathParseResult _result;
 
   typedef void (*unspecified_bool_type)(XPathQuery ***);
 
@@ -1267,7 +1263,7 @@ public:
   // If PUGIXML_NO_EXCEPTIONS is not defined, throws xpath_exception on
   // compilation errors.
   explicit XPathQuery(const char_t *query,
-                       XPathVariableSet *variables = nullptr);
+                      XPathVariableSet *variables = nullptr);
 
   // Constructor
   XPathQuery();
@@ -1279,7 +1275,7 @@ public:
   XPathQuery &operator=(XPathQuery &&rhs) noexcept;
 
   // Get query expression return type
-  xpath_value_type return_type() const;
+  XPathValueType return_type() const;
 
   // Evaluate expression as boolean value in the specified context; performs
   // type conversion if necessary. If PUGIXML_NO_EXCEPTIONS is not defined,
@@ -1320,7 +1316,7 @@ public:
 
   // Get parsing result (used to get compilation errors in
   // PUGIXML_NO_EXCEPTIONS mode)
-  const xpath_parse_result &result() const;
+  const XPathParseResult &result() const;
 
   // Safe bool conversion operator
   operator unspecified_bool_type() const;
@@ -1340,17 +1336,17 @@ public:
 class PUGIXML_CLASS xpath_exception : public std::exception
 {
 private:
-  xpath_parse_result _result;
+  XPathParseResult _result;
 
 public:
   // Construct exception from parse result
-  explicit xpath_exception(const xpath_parse_result &result);
+  explicit xpath_exception(const XPathParseResult &result);
 
   // Get error message
   virtual const char *what() const noexcept override;
 
   // Get parse result
-  const xpath_parse_result &result() const;
+  const XPathParseResult &result() const;
 };
 #if defined(_MSC_VER)
 #pragma warning(pop)
@@ -1417,7 +1413,7 @@ public:
   // Constructs a set from iterator range; data is not checked for duplicates
   // and is not sorted according to provided type, so be careful
   XPathNodeSet(const_iterator begin, const_iterator end,
-                 type_t type = type_unsorted);
+               type_t type = type_unsorted);
 
   // Destructor
   ~XPathNodeSet();

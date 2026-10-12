@@ -103,7 +103,7 @@ TEST_XML_FLAGS(write_comment, "<!--text-->", parse_comments | parse_fragment)
 TEST(write_comment_invalid)
 {
 	xml_document doc;
-	xml_node child = doc.append_child(node_comment);
+	XmlNode child = doc.append_child(node_comment);
 
 	CHECK_NODE(doc, STR("<!---->"));
 
@@ -140,7 +140,7 @@ TEST_XML_FLAGS(write_pi, "<?name value?>", parse_pi | parse_fragment)
 TEST(write_pi_null)
 {
 	xml_document doc;
-	xml_node node = doc.append_child(node_pi);
+	XmlNode node = doc.append_child(node_pi);
 
 	CHECK_NODE(doc, STR("<?:anonymous?>"));
 
@@ -152,7 +152,7 @@ TEST(write_pi_null)
 TEST(write_pi_invalid)
 {
 	xml_document doc;
-	xml_node node = doc.append_child(node_pi);
+	XmlNode node = doc.append_child(node_pi);
 
 	node.set_name(STR("test"));
 	node.set_value(STR("?"));
@@ -233,11 +233,11 @@ TEST_XML(write_no_escapes, "<node attr=''>text</node>")
 	CHECK_NODE_EX(doc, STR("<node attr=\"<>'\"&\x04\r\n\t\"><>'\"&\x04\r\n\t</node>"), STR(""), format_raw | format_no_escapes);
 }
 
-struct test_writer: xml_writer
+struct test_writer: XmlWriter
 {
 	std::basic_string<char_t> contents;
 
-	void write(const void* data, size_t size) PUGIXML_OVERRIDE
+	void write(const void* data, size_t size) override
 	{
 		CHECK(size % sizeof(char_t) == 0);
 		contents.append(static_cast<const char_t*>(data), size / sizeof(char_t));
@@ -493,7 +493,7 @@ TEST(write_unicode_invalid_utf8)
 TEST(write_no_name_element)
 {
 	xml_document doc;
-	xml_node root = doc.append_child();
+	XmlNode root = doc.append_child();
 	root.append_child();
 	root.append_child().append_child(node_pcdata).set_value(STR("text"));
 
@@ -521,20 +521,20 @@ TEST(write_no_name_attribute)
 TEST(write_print_empty)
 {
 	test_writer writer;
-	xml_node().print(writer);
+	XmlNode().print(writer);
 }
 
 #ifndef PUGIXML_NO_STL
 TEST(write_print_stream_empty)
 {
 	std::ostringstream oss;
-	xml_node().print(oss);
+	XmlNode().print(oss);
 }
 
 TEST(write_print_stream_empty_wide)
 {
 	std::basic_ostringstream<wchar_t> oss;
-	xml_node().print(oss);
+	XmlNode().print(oss);
 }
 #endif
 
@@ -686,7 +686,7 @@ TEST(write_flush_coverage)
 	xml_document doc;
 
 	// this creates a node that uses short sequences of lengths 1-6 for output
-	xml_node n = doc.append_child(STR("n"));
+	XmlNode n = doc.append_child(STR("n"));
 
 	xml_attribute a = n.append_attribute(STR("a"));
 
@@ -709,9 +709,9 @@ TEST(write_flush_coverage)
 }
 
 #ifndef PUGIXML_NO_EXCEPTIONS
-struct throwing_writer: xml_writer
+struct throwing_writer: XmlWriter
 {
-	void write(const void*, size_t) PUGIXML_OVERRIDE
+	void write(const void*, size_t) override
 	{
 		throw std::runtime_error("write failed");
 	}

@@ -309,7 +309,7 @@ public:
 	{
 	}
 
-	typename std::basic_streambuf<T>::pos_type seekoff(typename std::basic_streambuf<T>::off_type, std::ios_base::seekdir, std::ios_base::openmode) PUGIXML_OVERRIDE
+	typename std::basic_streambuf<T>::pos_type seekoff(typename std::basic_streambuf<T>::off_type, std::ios_base::seekdir, std::ios_base::openmode) override
 	{
 		seeks++;
 
@@ -345,14 +345,14 @@ public:
 	{
 	}
 
-	typename std::basic_streambuf<T>::pos_type seekoff(typename std::basic_streambuf<T>::off_type, std::ios_base::seekdir dir, std::ios_base::openmode) PUGIXML_OVERRIDE
+	typename std::basic_streambuf<T>::pos_type seekoff(typename std::basic_streambuf<T>::off_type, std::ios_base::seekdir dir, std::ios_base::openmode) override
 	{
 		seeks++;
 
 		return seeks > 1 && dir == std::ios_base::cur ? -1 : 0;
 	}
 
-	typename std::basic_streambuf<T>::pos_type seekpos(typename std::basic_streambuf<T>::pos_type, std::ios_base::openmode) PUGIXML_OVERRIDE
+	typename std::basic_streambuf<T>::pos_type seekpos(typename std::basic_streambuf<T>::pos_type, std::ios_base::openmode) override
 	{
 		return 0;
 	}
@@ -380,7 +380,7 @@ TEST(document_load_stream_wide_seekable_fail_tell)
 template <typename T> class read_fail_buffer: public std::basic_streambuf<T>
 {
 public:
-    typename std::basic_streambuf<T>::int_type underflow() PUGIXML_OVERRIDE
+    typename std::basic_streambuf<T>::int_type underflow() override
 	{
 		throw std::runtime_error("underflow failed");
 
@@ -417,7 +417,7 @@ public:
     {
     }
 
-    typename std::basic_streambuf<T>::int_type underflow() PUGIXML_OVERRIDE
+    typename std::basic_streambuf<T>::int_type underflow() override
 	{
 		throw std::runtime_error("underflow failed");
 
@@ -426,7 +426,7 @@ public:
 	#endif
 	}
 
-	typename std::basic_streambuf<T>::pos_type seekoff(typename std::basic_streambuf<T>::off_type off, std::ios_base::seekdir dir, std::ios_base::openmode) PUGIXML_OVERRIDE
+	typename std::basic_streambuf<T>::pos_type seekoff(typename std::basic_streambuf<T>::off_type off, std::ios_base::seekdir dir, std::ios_base::openmode) override
 	{
 		switch (dir)
 		{
@@ -438,7 +438,7 @@ public:
 		return offset;
 	}
 
-	typename std::basic_streambuf<T>::pos_type seekpos(typename std::basic_streambuf<T>::pos_type pos, std::ios_base::openmode) PUGIXML_OVERRIDE
+	typename std::basic_streambuf<T>::pos_type seekpos(typename std::basic_streambuf<T>::pos_type pos, std::ios_base::openmode) override
 	{
 		offset = pos;
 		return pos;
@@ -593,7 +593,7 @@ TEST(document_load_file_wide_out_of_memory)
 
 	xml_document doc;
 
-	xml_parse_result result;
+	XmlParseResult result;
 	result.status = status_out_of_memory;
 	CHECK_ALLOC_FAIL(result = doc.load_file(L"tests/data/small.xml"));
 
@@ -604,7 +604,7 @@ TEST(document_load_file_wide_out_of_memory)
 TEST(document_load_file_special_folder)
 {
 	xml_document doc;
-	xml_parse_result result = doc.load_file(".");
+	XmlParseResult result = doc.load_file(".");
 	CHECK(result.status == status_io_error);
 }
 #endif
@@ -613,14 +613,14 @@ TEST(document_load_file_special_folder)
 TEST(document_load_file_special_device)
 {
 	xml_document doc;
-	xml_parse_result result = doc.load_file("/dev/tty");
+	XmlParseResult result = doc.load_file("/dev/tty");
 	CHECK(result.status == status_file_not_found || result.status == status_io_error);
 }
 
 TEST(document_load_file_special_sysfs)
 {
 	xml_document doc;
-	xml_parse_result result = doc.load_file("/sys/kernel/fscaps");
+	XmlParseResult result = doc.load_file("/sys/kernel/fscaps");
 	CHECK(result.status == status_file_not_found || result.status == status_io_error);
 }
 #endif
@@ -897,7 +897,7 @@ TEST(document_load_buffer_inplace_own_empty)
 
 TEST(document_parse_result_bool)
 {
-	xml_parse_result result;
+	XmlParseResult result;
 
 	result.status = status_ok;
 	CHECK(result);
@@ -906,7 +906,7 @@ TEST(document_parse_result_bool)
 
 	for (int i = 1; i < 20; ++i)
 	{
-		result.status = static_cast<xml_parse_status>(i);
+		result.status = static_cast<XmlParseStatus>(i);
 		CHECK(!result);
 		CHECK(result == false);
 	}
@@ -914,11 +914,11 @@ TEST(document_parse_result_bool)
 
 TEST(document_parse_result_description)
 {
-	xml_parse_result result;
+	XmlParseResult result;
 
 	for (int i = 0; i < 20; ++i)
 	{
-		result.status = static_cast<xml_parse_status>(i);
+		result.status = static_cast<XmlParseStatus>(i);
 
 		CHECK(result.description() != 0);
 		CHECK(result.description()[0] != 0);
@@ -977,7 +977,7 @@ TEST(document_load_file_convert_auto)
 		"tests/data/utftest_utf8_nodecl.xml"
 	};
 
-	xml_encoding encodings[] =
+	XmlEncoding encodings[] =
 	{
 		encoding_utf16_be, encoding_utf16_be, encoding_utf16_be,
 		encoding_utf16_le, encoding_utf16_le, encoding_utf16_le,
@@ -989,7 +989,7 @@ TEST(document_load_file_convert_auto)
 	for (unsigned int i = 0; i < sizeof(files) / sizeof(files[0]); ++i)
 	{
 		xml_document doc;
-		xml_parse_result res = doc.load_file(files[i]);
+		XmlParseResult res = doc.load_file(files[i]);
 
 		CHECK(res);
 		CHECK(res.encoding == encodings[i]);
@@ -1018,7 +1018,7 @@ TEST(document_load_file_convert_specific)
 		"tests/data/utftest_utf8_nodecl.xml"
 	};
 
-	xml_encoding encodings[] =
+	XmlEncoding encodings[] =
 	{
 		encoding_utf16_be, encoding_utf16_be, encoding_utf16_be,
 		encoding_utf16_le, encoding_utf16_le, encoding_utf16_le,
@@ -1031,10 +1031,10 @@ TEST(document_load_file_convert_specific)
 	{
 		for (unsigned int j = 0; j < sizeof(files) / sizeof(files[0]); ++j)
 		{
-			xml_encoding encoding = encodings[j];
+			XmlEncoding encoding = encodings[j];
 
 			xml_document doc;
-			xml_parse_result res = doc.load_file(files[i], parse_default, encoding);
+			XmlParseResult res = doc.load_file(files[i], parse_default, encoding);
 
 			if (encoding == encodings[i])
 			{
@@ -1073,7 +1073,7 @@ TEST(document_load_file_convert_native_endianness)
 		}
 	};
 
-	xml_encoding encodings[] =
+	XmlEncoding encodings[] =
 	{
 		encoding_utf16, encoding_utf16, encoding_utf16,
 		encoding_utf32, encoding_utf32, encoding_utf32
@@ -1086,12 +1086,12 @@ TEST(document_load_file_convert_native_endianness)
 
 		for (unsigned int j = 0; j < sizeof(encodings) / sizeof(encodings[0]); ++j)
 		{
-			xml_encoding encoding = encodings[j];
+			XmlEncoding encoding = encodings[j];
 
 			// check file with right endianness
 			{
 				xml_document doc;
-				xml_parse_result res = doc.load_file(right_file, parse_default, encoding);
+				XmlParseResult res = doc.load_file(right_file, parse_default, encoding);
 
 				if (encoding == encodings[i])
 				{
@@ -1118,7 +1118,7 @@ TEST(document_load_file_convert_native_endianness)
 struct file_data_t
 {
     const char* path;
-    xml_encoding encoding;
+    XmlEncoding encoding;
 
     char* data;
     size_t size;
@@ -1198,7 +1198,7 @@ TEST(document_contents_preserve_latin1)
 	}
 }
 
-static bool test_parse_fail(const void* buffer, size_t size, xml_encoding encoding = encoding_utf8)
+static bool test_parse_fail(const void* buffer, size_t size, XmlEncoding encoding = encoding_utf8)
 {
 	// copy buffer to heap (to enable out-of-bounds checks)
 	void* temp = malloc(size);
@@ -1248,7 +1248,7 @@ TEST(document_convert_invalid_utf16)
 
 TEST(document_load_buffer_empty)
 {
-	xml_encoding encodings[] =
+	XmlEncoding encodings[] =
 	{
 		encoding_auto,
 		encoding_utf8,
@@ -1266,7 +1266,7 @@ TEST(document_load_buffer_empty)
 
 	for (unsigned int i = 0; i < sizeof(encodings) / sizeof(encodings[0]); ++i)
 	{
-		xml_encoding encoding = encodings[i];
+		XmlEncoding encoding = encodings[i];
 
 		xml_document doc;
 		CHECK(doc.load_buffer(buffer, 0, parse_default, encoding).status == status_no_document_element && !doc.first_child());
@@ -1284,7 +1284,7 @@ TEST(document_load_buffer_empty)
 
 TEST(document_load_buffer_empty_fragment)
 {
-	xml_encoding encodings[] =
+	XmlEncoding encodings[] =
 	{
 		encoding_auto,
 		encoding_utf8,
@@ -1302,7 +1302,7 @@ TEST(document_load_buffer_empty_fragment)
 
 	for (unsigned int i = 0; i < sizeof(encodings) / sizeof(encodings[0]); ++i)
 	{
-		xml_encoding encoding = encodings[i];
+		XmlEncoding encoding = encodings[i];
 
 		xml_document doc;
 		CHECK(doc.load_buffer(buffer, 0, parse_fragment, encoding) && !doc.first_child());
@@ -1321,7 +1321,7 @@ TEST(document_load_buffer_empty_fragment)
 TEST(document_load_buffer_empty_encoding)
 {
 	xml_document doc;
-	xml_parse_result result = doc.load_buffer(0, 0, parse_fragment);
+	XmlParseResult result = doc.load_buffer(0, 0, parse_fragment);
 
 	CHECK(result.status == status_ok);
 	CHECK(result.encoding == encoding_utf8);
@@ -1457,7 +1457,7 @@ TEST_XML_FLAGS(document_element, "<?xml version='1.0'?><node><child/></node><!--
 
 TEST_XML_FLAGS(document_element_absent, "<!---->", parse_comments | parse_fragment)
 {
-    CHECK(doc.document_element() == xml_node());
+    CHECK(doc.document_element() == XmlNode());
 }
 
 TEST_XML(document_reset, "<node><child/></node>")
@@ -1529,7 +1529,7 @@ TEST(document_load_buffer_utf_truncated)
 
 	struct document_data_t
 	{
-	    xml_encoding encoding;
+	    XmlEncoding encoding;
 
 	    const unsigned char* data;
 	    size_t size;
@@ -1554,7 +1554,7 @@ TEST(document_load_buffer_utf_truncated)
 			memcpy(buffer, d.data, j);
 
 			xml_document doc;
-			xml_parse_result res = doc.load_buffer(buffer, j, parse_default, d.encoding);
+			XmlParseResult res = doc.load_buffer(buffer, j, parse_default, d.encoding);
 
 			if (j == d.size)
 			{
@@ -1589,7 +1589,7 @@ TEST(document_load_stream_truncated)
 		std::istringstream iss(prefix);
 
 		xml_document doc;
-		xml_parse_result res = doc.load(iss);
+		XmlParseResult res = doc.load(iss);
 
 		if (i == sizeof(utf32_be))
 		{
@@ -1760,7 +1760,7 @@ TEST(document_move_large)
 {
 	xml_document* doc = new xml_document();
 
-	xml_node dn = doc->append_child(STR("node"));
+	XmlNode dn = doc->append_child(STR("node"));
 
 	for (int i = 0; i < 3000; ++i)
 		dn.append_child(STR("child"));
@@ -1768,7 +1768,7 @@ TEST(document_move_large)
 	xml_document other = std::move(*doc);
 	delete doc;
 
-	xml_node on = other.child(STR("node"));
+	XmlNode on = other.child(STR("node"));
 
 	for (int i = 0; i < 3000; ++i)
 		CHECK(on.remove_child(on.first_child()));
@@ -1872,7 +1872,7 @@ TEST(document_load_buffer_convert_out_of_memory)
 
 	xml_document doc;
 
-	xml_parse_result result;
+	XmlParseResult result;
 	result.status = status_out_of_memory;
 	CHECK_ALLOC_FAIL(result = doc.load_buffer(source, size, pugi::parse_default, pugi::encoding_latin1));
 
@@ -1892,7 +1892,7 @@ TEST(document_load_buffer_own_convert_out_of_memory)
 
 	xml_document doc;
 
-	xml_parse_result result;
+	XmlParseResult result;
 	result.status = status_out_of_memory;
 	CHECK_ALLOC_FAIL(result = doc.load_buffer_inplace_own(buffer, size, pugi::parse_default, pugi::encoding_latin1));
 

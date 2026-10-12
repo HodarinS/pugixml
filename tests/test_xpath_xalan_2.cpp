@@ -11,7 +11,7 @@ using namespace pugi;
 
 TEST_XML(xpath_xalan_string_1, "<doc a='test'>ENCYCLOPEDIA</doc>")
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_NUMBER(c, STR("string-length('This is a test')"), 14);
 	CHECK_XPATH_BOOLEAN(c, STR("starts-with('ENCYCLOPEDIA', 'ENCY')"), true);
@@ -57,7 +57,7 @@ TEST_XML_FLAGS(xpath_xalan_string_2, "<doc>\n  <av>\n    <a>\n      <b>b</b>\n  
 
 TEST_XML(xpath_xalan_string_3, "<doc a='test'>ENCYCLOPEDIA</doc>")
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_BOOLEAN(c, STR("contains('ENCYCLOPEDIA', 'TEST')"), false);
 	CHECK_XPATH_BOOLEAN(c, STR("contains('ENCYCLOPEDIA', 'CYCL')"), true);
@@ -99,7 +99,7 @@ TEST_XML(xpath_xalan_string_3, "<doc a='test'>ENCYCLOPEDIA</doc>")
 
 TEST_XML(xpath_xalan_string_4, "<doc><a>a</a><b>b</b><c>c</c><d>d</d><e>ef</e><f attr='whatsup'>what's up</f></doc><cd><![CDATA[qua'lit\"y]]></cd>")
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_STRING(c, STR("translate('BAR','abc','ABC')"), STR("BAR"));
 	CHECK_XPATH_STRING(c, STR("translate('bar','RAB','xyz')"), STR("bar"));
@@ -181,12 +181,12 @@ TEST(xpath_xalan_string_5)
 		expected += number_to_string_unsafe(j);
 	}
 
-	CHECK_XPATH_STRING(xml_node(), query.c_str(), expected.c_str());
+	CHECK_XPATH_STRING(XmlNode(), query.c_str(), expected.c_str());
 }
 
 TEST(xpath_xalan_string_6)
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_STRING(c, STR("string(1)"), STR("1"));
 	CHECK_XPATH_STRING(c, STR("string(12)"), STR("12"));
@@ -225,7 +225,7 @@ TEST(xpath_xalan_string_6)
 #if 0 // $ this test requires round-to-nearest behavior in string->number conversion during parsing; atof gives us truncation
 TEST(xpath_xalan_string_6_rounding)
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_STRING(c, STR("string(12345678901234567)"), STR("12345678901234568"));
 	CHECK_XPATH_STRING(c, STR("string(123456789012345678)"), STR("123456789012345680"));
@@ -236,7 +236,7 @@ TEST(xpath_xalan_string_6_rounding)
 
 TEST(xpath_xalan_string_7)
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_STRING(c, STR("string(.1)"), STR("0.1"));
 	CHECK_XPATH_STRING(c, STR("string(.01)"), STR("0.01"));
@@ -275,7 +275,7 @@ TEST(xpath_xalan_string_7)
 #if 0 // $ this test requires 16 decimal digits of mantissa in number->string conversion; we have 15 since only 15 is guaranteed, and 16 introduces 'garbage' digits in common cases like 0.4
 TEST(xpath_xalan_string_7_precision)
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_STRING(c, STR("string(.10123456789234567)"), STR("0.10123456789234567"));
 	CHECK_XPATH_STRING(c, STR("string(.101234567892345678)"), STR("0.10123456789234568"));
@@ -290,7 +290,7 @@ TEST(xpath_xalan_string_7_precision)
 
 TEST(xpath_xalan_string_8)
 {
-	xml_node c;
+	XmlNode c;
 
 	// $ originally all last digits were 5's; a fully compliant implementation should correctly convert those as well,
 	// however some of these failed because of atof truncation
@@ -327,7 +327,7 @@ TEST(xpath_xalan_string_8)
 
 TEST(xpath_xalan_string_9)
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_STRING(c, STR("string(.123456789)"), STR("0.123456789"));
 	CHECK_XPATH_STRING(c, STR("string(.0123456789)"), STR("0.0123456789"));

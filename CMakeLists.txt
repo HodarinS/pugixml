@@ -340,4 +340,8 @@ if (PUGIXML_BUILD_TESTS)
   target_link_libraries(pugixml-check
     PRIVATE
       pugixml::pugixml)
+  target_compile_features(pugixml-check
+      PRIVATE 
+          cxx_std_23
+    )
 endif()

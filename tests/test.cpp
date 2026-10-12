@@ -14,18 +14,18 @@
 #include <vector>
 
 #ifndef PUGIXML_NO_XPATH
-static void build_document_order(std::vector<pugi::xpath_node>& result, pugi::xml_node root)
+static void build_document_order(std::vector<pugi::XPathNode>& result, pugi::XmlNode root)
 {
-	result.push_back(pugi::xpath_node());
+	result.push_back(pugi::XPathNode());
 
-	pugi::xml_node cur = root;
+	pugi::XmlNode cur = root;
 
 	for (;;)
 	{
 		result.push_back(cur);
 
 		for (pugi::xml_attribute a = cur.first_attribute(); a; a = a.next_attribute())
-			result.push_back(pugi::xpath_node(a, cur));
+			result.push_back(pugi::XPathNode(a, cur));
 
 		if (cur.first_child())
 			cur = cur.first_child();
@@ -52,7 +52,7 @@ bool test_string_equal(const pugi::char_t* lhs, const pugi::char_t* rhs)
 	#endif
 }
 
-bool test_node(const pugi::xml_node& node, const pugi::char_t* contents, const pugi::char_t* indent, unsigned int flags)
+bool test_node(const pugi::XmlNode& node, const pugi::char_t* contents, const pugi::char_t* indent, unsigned int flags)
 {
 	xml_writer_string writer;
 
@@ -80,9 +80,9 @@ static size_t strlength(const pugi::char_t* s)
 #endif
 }
 
-bool test_xpath_string(const pugi::xpath_node& node, const pugi::char_t* query, pugi::xpath_variable_set* variables, const pugi::char_t* expected)
+bool test_xpath_string(const pugi::XPathNode& node, const pugi::char_t* query, pugi::XPathVariableSet* variables, const pugi::char_t* expected)
 {
-	pugi::xpath_query q(query, variables);
+	pugi::XPathQuery q(query, variables);
 	if (!q) return false;
 
 	const size_t capacity = 64;
@@ -101,17 +101,17 @@ bool test_xpath_string(const pugi::xpath_node& node, const pugi::char_t* query, 
 	return q.evaluate_string(&buffer[0], size, node) == size && test_string_equal(buffer.c_str(), expected);
 }
 
-bool test_xpath_boolean(const pugi::xpath_node& node, const pugi::char_t* query, pugi::xpath_variable_set* variables, bool expected)
+bool test_xpath_boolean(const pugi::XPathNode& node, const pugi::char_t* query, pugi::XPathVariableSet* variables, bool expected)
 {
-	pugi::xpath_query q(query, variables);
+	pugi::XPathQuery q(query, variables);
 	if (!q) return false;
 
 	return q.evaluate_boolean(node) == expected;
 }
 
-bool test_xpath_number(const pugi::xpath_node& node, const pugi::char_t* query, pugi::xpath_variable_set* variables, double expected)
+bool test_xpath_number(const pugi::XPathNode& node, const pugi::char_t* query, pugi::XPathVariableSet* variables, double expected)
 {
-	pugi::xpath_query q(query, variables);
+	pugi::XPathQuery q(query, variables);
 	if (!q) return false;
 
 	double value = q.evaluate_number(node);
@@ -121,22 +121,22 @@ bool test_xpath_number(const pugi::xpath_node& node, const pugi::char_t* query, 
 	return absolute_error < tolerance || absolute_error < fabs(expected) * tolerance;
 }
 
-bool test_xpath_number_nan(const pugi::xpath_node& node, const pugi::char_t* query, pugi::xpath_variable_set* variables)
+bool test_xpath_number_nan(const pugi::XPathNode& node, const pugi::char_t* query, pugi::XPathVariableSet* variables)
 {
-	pugi::xpath_query q(query, variables);
+	pugi::XPathQuery q(query, variables);
 	if (!q) return false;
 
 	return test_double_nan(q.evaluate_number(node));
 }
 
-bool test_xpath_fail_compile(const pugi::char_t* query, pugi::xpath_variable_set* variables)
+bool test_xpath_fail_compile(const pugi::char_t* query, pugi::XPathVariableSet* variables)
 {
 #ifdef PUGIXML_NO_EXCEPTIONS
-	return !pugi::xpath_query(query, variables);
+	return !pugi::XPathQuery(query, variables);
 #else
 	try
 	{
-		pugi::xpath_query q(query, variables);
+		pugi::XPathQuery q(query, variables);
 		return false;
 	}
 	catch (const pugi::xpath_exception&)
@@ -146,7 +146,7 @@ bool test_xpath_fail_compile(const pugi::char_t* query, pugi::xpath_variable_set
 #endif
 }
 
-void xpath_node_set_tester::check(bool condition)
+void XPathNodeSet_tester::check(bool condition)
 {
 	if (!condition)
 	{
@@ -155,12 +155,12 @@ void xpath_node_set_tester::check(bool condition)
 	}
 }
 
-xpath_node_set_tester::xpath_node_set_tester(const pugi::xpath_node_set& set, const char* message_): last(0), message(message_)
+XPathNodeSet_tester::XPathNodeSet_tester(const pugi::XPathNodeSet& set, const char* message_): last(0), message(message_)
 {
 	result = set;
 
 	// only sort unsorted sets so that we're able to verify reverse order for some axes
-	if (result.type() == pugi::xpath_node_set::type_unsorted) result.sort();
+	if (result.type() == pugi::XPathNodeSet::type_unsorted) result.sort();
 
 	if (result.empty())
 	{
@@ -169,17 +169,17 @@ xpath_node_set_tester::xpath_node_set_tester(const pugi::xpath_node_set& set, co
 	}
 	else
 	{
-		std::vector<pugi::xpath_node> order;
+		std::vector<pugi::XPathNode> order;
 		build_document_order(order, (result[0].attribute() ? result[0].parent() : result[0].node()).root());
 
-		document_order = new pugi::xpath_node[order.size()];
+		document_order = new pugi::XPathNode[order.size()];
 		std::copy(order.begin(), order.end(), document_order);
 
 		document_size = order.size();
 	}
 }
 
-xpath_node_set_tester::~xpath_node_set_tester()
+XPathNodeSet_tester::~XPathNodeSet_tester()
 {
 	// check that we processed everything
 	check(last == result.size());
@@ -187,7 +187,7 @@ xpath_node_set_tester::~xpath_node_set_tester()
 	delete[] document_order;
 }
 
-xpath_node_set_tester& xpath_node_set_tester::operator%(unsigned int expected)
+XPathNodeSet_tester& XPathNodeSet_tester::operator%(unsigned int expected)
 {
 	// check element count
 	check(last < result.size());
@@ -210,7 +210,7 @@ bool is_little_endian()
 	return *reinterpret_cast<char*>(&ui) == 1;
 }
 
-pugi::xml_encoding get_native_encoding()
+pugi::XmlEncoding get_native_encoding()
 {
 #ifdef PUGIXML_WCHAR_MODE
 	return pugi::encoding_wchar;

@@ -6,7 +6,7 @@ using namespace pugi;
 
 TEST(xpath_xalan_boolean_1)
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_BOOLEAN(c, STR("true()"), true);
 	CHECK_XPATH_BOOLEAN(c, STR("true() and true()"), true);
@@ -55,7 +55,7 @@ TEST_XML(xpath_xalan_boolean_2, "<doc/>")
 
 TEST(xpath_xalan_boolean_3)
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_BOOLEAN(c, STR("1>1"), false);
 	CHECK_XPATH_BOOLEAN(c, STR("2>1"), true);
@@ -105,7 +105,7 @@ TEST_XML(xpath_xalan_boolean_4, "<avj><a>foo</a><b>bar</b><c>foobar</c><d>foo</d
 
 TEST_XML(xpath_xalan_boolean_5, "<doc><j l='12' w='33'>first</j><j l='17' w='45'>second</j><j l='16' w='78'>third</j><j l='12' w='33'>fourth</j></doc>")
 {
-	xml_node c = doc.child(STR("doc"));
+	XmlNode c = doc.child(STR("doc"));
 
 	CHECK_XPATH_BOOLEAN(c, STR("j[@l='12'] = j[@w='33']"), true);
 	CHECK_XPATH_BOOLEAN(c, STR("j[@l='12'] = j[@l='17']"), false);
@@ -119,7 +119,7 @@ TEST_XML(xpath_xalan_boolean_5, "<doc><j l='12' w='33'>first</j><j l='17' w='45'
 
 TEST_XML(xpath_xalan_boolean_6, "<doc><avj><good><b>12</b><c>34</c><d>56</d><e>78</e></good></avj></doc>")
 {
-	xml_node c = doc.child(STR("doc"));
+	XmlNode c = doc.child(STR("doc"));
 
 	CHECK_XPATH_BOOLEAN(c, STR("avj/good/*=34"), true);
 	CHECK_XPATH_BOOLEAN(c, STR("not(avj/good/*=34)"), false);
@@ -134,7 +134,7 @@ TEST_XML(xpath_xalan_boolean_6, "<doc><avj><good><b>12</b><c>34</c><d>56</d><e>7
 
 TEST_XML(xpath_xalan_boolean_7, "<doc><avj><bool><b>true</b><c></c><d>false?</d><e>1</e><f>0</f></bool></avj></doc>")
 {
-	xml_node c = doc.child(STR("doc"));
+	XmlNode c = doc.child(STR("doc"));
 
 	CHECK_XPATH_BOOLEAN(c, STR("avj/bool/*=true()"), true);
 	CHECK_XPATH_BOOLEAN(c, STR("not(avj/bool/*=true())"), false);
@@ -159,7 +159,7 @@ TEST_XML(xpath_xalan_boolean_7, "<doc><avj><bool><b>true</b><c></c><d>false?</d>
 
 TEST_XML(xpath_xalan_conditional, "<letters>b</letters>")
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_BOOLEAN(c, STR("(round(3.7) > 3)"), true);
 	CHECK_XPATH_BOOLEAN(c, STR("2 > 1"), true);
@@ -167,7 +167,7 @@ TEST_XML(xpath_xalan_conditional, "<letters>b</letters>")
 	CHECK_XPATH_BOOLEAN(c, STR("'a'='a'"), true);
 	CHECK_XPATH_BOOLEAN(c, STR("2+2=4"), true);
 
-	xml_node b = doc.child(STR("letters")).first_child();
+	XmlNode b = doc.child(STR("letters")).first_child();
 
 	CHECK_XPATH_BOOLEAN(b, STR(".='b'"), true);
 	CHECK_XPATH_BOOLEAN(b, STR("name(..)='letters'"), true);
@@ -175,7 +175,7 @@ TEST_XML(xpath_xalan_conditional, "<letters>b</letters>")
 
 TEST_XML(xpath_xalan_math_1, "<a>3</a>")
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_NUMBER(c, STR("number('1')"), 1);
 	CHECK_XPATH_NUMBER(c, STR("floor(0.0)"), 0);
@@ -220,7 +220,7 @@ TEST_XML(xpath_xalan_math_1, "<a>3</a>")
 
 TEST_XML(xpath_xalan_math_2, "<a>3</a>")
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_NUMBER(doc, STR("round(a)"), 3);
 	CHECK_XPATH_NUMBER(c, STR("round(1.24)"), 1);
@@ -249,7 +249,7 @@ TEST_XML(xpath_xalan_math_3, "<doc><n v='1'/><n>2</n><n v='3'/><n>4</n><n v='5'>
 
 TEST_XML(xpath_xalan_math_4, "<doc><n1 a='1'>2</n1><n2 a='2'>3</n2><n1-n2>123</n1-n2><n-1>72</n-1><n-2>12</n-2><div a='2'>5</div><mod a='5'>2</mod></doc>")
 {
-	xml_node c = doc.child(STR("doc"));
+	XmlNode c = doc.child(STR("doc"));
 
 	CHECK_XPATH_NUMBER(c, STR("n1*n2"), 6);
 	CHECK_XPATH_NUMBER(c, STR("n1/@a*n2/@a"), 2);
@@ -296,7 +296,7 @@ TEST_XML(xpath_xalan_math_4, "<doc><n1 a='1'>2</n1><n2 a='2'>3</n2><n1-n2>123</n
 
 TEST(xpath_xalan_math_5)
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_NUMBER(c, STR("(((((('3'+5)*(3)+((('2')+2)*('1' - 6)))-('4' - '2'))+(-(4-6)))))"), 4);
 	CHECK_XPATH_NUMBER(c, STR("1*1*2*2*2*3*3*1*1*1*0.5*0.5"), 18);
@@ -336,7 +336,7 @@ TEST(xpath_xalan_math_5)
 
 TEST_XML(xpath_xalan_math_6, "<doc><n1>3</n1><n2>7</n2><n3>x</n3></doc>")
 {
-	xml_node c = doc.child(STR("doc"));
+	XmlNode c = doc.child(STR("doc"));
 
 	CHECK_XPATH_NUMBER(c, STR("-(n1|n2)"), -3);
 	CHECK_XPATH_NUMBER(c, STR("-(n2|n1)"), -3);
@@ -346,7 +346,7 @@ TEST_XML(xpath_xalan_math_6, "<doc><n1>3</n1><n2>7</n2><n3>x</n3></doc>")
 
 TEST_XML(xpath_xalan_math_7, "<doc><n1>3</n1><n2>7</n2><n3>x</n3></doc>")
 {
-	xml_node c = doc.child(STR("doc"));
+	XmlNode c = doc.child(STR("doc"));
 
 	CHECK_XPATH_NUMBER(c, STR("-(n1|n2)"), -3);
 	CHECK_XPATH_NUMBER(c, STR("-(n2|n1)"), -3);
@@ -372,7 +372,7 @@ TEST_XML(xpath_xalan_math_8, "<k>0.0004</k>")
 
 TEST(xpath_xalan_math_9)
 {
-	xml_node c;
+	XmlNode c;
 
 	CHECK_XPATH_STRING(c, STR("string(number('0.0'))"), STR("0"));
 	CHECK_XPATH_STRING(c, STR("string(-1 * number('0.0'))"), STR("0"));

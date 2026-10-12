@@ -1,5 +1,3 @@
-#include "../src/pugixml.hpp"
+import pugixml;
 
-#if PUGIXML_VERSION != 1160 // 1.16
-#error Unexpected pugixml version
-#endif
+static_assert(PUGIXML_VERSION == 1160, "Unexpected pugixml version"); // 1

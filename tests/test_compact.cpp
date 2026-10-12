@@ -5,7 +5,7 @@ using namespace pugi;
 
 static void overflow_hash_table(xml_document& doc)
 {
-	xml_node n = doc.child(STR("n"));
+	XmlNode n = doc.child(STR("n"));
 
 	// compact encoding assumes next_sibling is a forward-only pointer so we can allocate hash entries by reordering nodes
 	// we allocate enough hash entries to be exactly on the edge of rehash threshold
@@ -20,7 +20,7 @@ TEST_XML_FLAGS(compact_out_of_memory_string, "<n a='v'/><?n v?>", parse_pi)
 	overflow_hash_table(doc);
 
 	xml_attribute a = doc.child(STR("n")).attribute(STR("a"));
-	xml_node pi = doc.last_child();
+	XmlNode pi = doc.last_child();
 
 	CHECK_ALLOC_FAIL(CHECK(!pi.set_name(STR("name"))));
 	CHECK_ALLOC_FAIL(CHECK(!pi.set_value(STR("value"))));
@@ -34,7 +34,7 @@ TEST_XML(compact_out_of_memory_attribute, "<n a='v'/>")
 
 	overflow_hash_table(doc);
 
-	xml_node n = doc.child(STR("n"));
+	XmlNode n = doc.child(STR("n"));
 	xml_attribute a = n.attribute(STR("a"));
 
 	CHECK_ALLOC_FAIL(CHECK(!n.append_attribute(STR(""))));
@@ -49,7 +49,7 @@ TEST_XML(compact_out_of_memory_attribute_copy, "<n a='v'/>")
 
 	overflow_hash_table(doc);
 
-	xml_node n = doc.child(STR("n"));
+	XmlNode n = doc.child(STR("n"));
 	xml_attribute a = n.attribute(STR("a"));
 
 	CHECK_ALLOC_FAIL(CHECK(!n.append_copy(a)));
@@ -64,7 +64,7 @@ TEST_XML(compact_out_of_memory_node, "<n/>")
 
 	overflow_hash_table(doc);
 
-	xml_node n = doc.child(STR("n"));
+	XmlNode n = doc.child(STR("n"));
 
 	CHECK_ALLOC_FAIL(CHECK(!doc.append_child(node_element)));
 	CHECK_ALLOC_FAIL(CHECK(!doc.prepend_child(node_element)));
@@ -78,7 +78,7 @@ TEST_XML(compact_out_of_memory_node_copy, "<n/>")
 
 	overflow_hash_table(doc);
 
-	xml_node n = doc.child(STR("n"));
+	XmlNode n = doc.child(STR("n"));
 
 	CHECK_ALLOC_FAIL(CHECK(!doc.append_copy(n)));
 	CHECK_ALLOC_FAIL(CHECK(!doc.prepend_copy(n)));
@@ -92,8 +92,8 @@ TEST_XML(compact_out_of_memory_node_move, "<n/><ne/>")
 
 	overflow_hash_table(doc);
 
-	xml_node n = doc.child(STR("n"));
-	xml_node ne = doc.child(STR("ne"));
+	XmlNode n = doc.child(STR("n"));
+	XmlNode ne = doc.child(STR("ne"));
 
 	CHECK_ALLOC_FAIL(CHECK(!doc.append_move(n)));
 	CHECK_ALLOC_FAIL(CHECK(!doc.prepend_move(n)));
@@ -107,7 +107,7 @@ TEST_XML(compact_out_of_memory_remove, "<n a='v'/>")
 
 	overflow_hash_table(doc);
 
-	xml_node n = doc.child(STR("n"));
+	XmlNode n = doc.child(STR("n"));
 	xml_attribute a = n.attribute(STR("a"));
 
 	CHECK_ALLOC_FAIL(CHECK(!n.remove_attribute(a)));
@@ -116,7 +116,7 @@ TEST_XML(compact_out_of_memory_remove, "<n a='v'/>")
 
 TEST_XML(compact_pointer_attribute_list, "<n a='v'/>")
 {
-	xml_node n = doc.child(STR("n"));
+	XmlNode n = doc.child(STR("n"));
 	xml_attribute a = n.attribute(STR("a"));
 
 	// make sure we fill the page with node x
@@ -135,7 +135,7 @@ TEST_XML(compact_pointer_attribute_list, "<n a='v'/>")
 
 TEST_XML(compact_pointer_node_list, "<n/>")
 {
-	xml_node n = doc.child(STR("n"));
+	XmlNode n = doc.child(STR("n"));
 
 	// make sure we fill the page with node x
 	// this requires extended encoding for prev_sibling_c/next_sibling
