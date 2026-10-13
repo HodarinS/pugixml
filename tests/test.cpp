@@ -24,7 +24,7 @@ static void build_document_order(std::vector<pugi::XPathNode>& result, pugi::Xml
 	{
 		result.push_back(cur);
 
-		for (pugi::xml_attribute a = cur.first_attribute(); a; a = a.next_attribute())
+		for (pugi::XmlAttribute a = cur.first_attribute(); a; a = a.next_attribute())
 			result.push_back(pugi::XPathNode(a, cur));
 
 		if (cur.first_child())

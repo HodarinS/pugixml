@@ -28,7 +28,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* Data, size_t Size)
 		pugi::XPathQuery q(text.c_str(), &vars);
 
 		std::vector<uint8_t> xml_buffer = fdp.ConsumeBytes<uint8_t>(fdp.ConsumeIntegralInRange(0, 1024));
-		pugi::xml_document doc;
+		pugi::XmlDocument doc;
 		doc.load_buffer(xml_buffer.data(), xml_buffer.size(), pugi::parse_full);
 
 		q.evaluate_boolean(doc);

@@ -8,7 +8,7 @@
 
 using namespace pugi;
 
-static XmlParseResult load_concat(xml_document &doc, const char_t *a,
+static XmlParseResult load_concat(XmlDocument &doc, const char_t *a,
                                   const char_t *b = STR(""),
                                   const char_t *c = STR(""))
 {
@@ -29,7 +29,7 @@ static XmlParseResult load_concat(xml_document &doc, const char_t *a,
 
 static bool test_doctype_wf(const char_t *decl)
 {
-  xml_document doc;
+  XmlDocument doc;
 
   // standalone
   if (!load_concat(doc, decl) || !doc.first_child().empty())
@@ -66,7 +66,7 @@ static bool test_doctype_wf(const char_t *decl)
 
 static bool test_doctype_nwf(const char_t *decl)
 {
-  xml_document doc;
+  XmlDocument doc;
 
   // standalone
   if (load_concat(doc, decl).status != status_bad_doctype)
@@ -535,7 +535,7 @@ TEST(parse_doctype_xmlconf_oasis_1)
       "<!DOCTYPE doc SYSTEM \"p31pass1.dtd\" [<!ELEMENT doc EMPTY>]>");
 
   // not actually a doctype :)
-  xml_document doc;
+  XmlDocument doc;
   CHECK(doc.load_string(
             STR("<!--a <!DOCTYPE <?- ]]>-<[ CDATA [ \"- -'- -<doc>--> <!---->"),
             parse_full | parse_fragment) &&
@@ -582,7 +582,7 @@ TEST_XML_FLAGS(parse_doctype_value,
 
 TEST(parse_doctype_error_toplevel)
 {
-  xml_document doc;
+  XmlDocument doc;
   CHECK(doc.load_string(STR("<node><!DOCTYPE></node>")).status ==
         status_bad_doctype);
   CHECK(doc.load_string(STR("<node><!DOCTYPE></node>"), parse_doctype).status ==
@@ -591,7 +591,7 @@ TEST(parse_doctype_error_toplevel)
 
 TEST(parse_doctype_error_ignore)
 {
-  xml_document doc;
+  XmlDocument doc;
   CHECK(doc.load_string(STR("<!DOCTYPE root [ <![IGNORE[ ")).status ==
         status_bad_doctype);
   CHECK(doc.load_string(STR("<!DOCTYPE root [ <![IGNORE[ "), parse_doctype)
@@ -620,7 +620,7 @@ TEST(parse_doctype_stackless_group)
 
   str += STR(">");
 
-  xml_document doc;
+  XmlDocument doc;
   CHECK(doc.load_string(str.c_str(), parse_fragment));
 }
 
@@ -640,6 +640,6 @@ TEST(parse_doctype_stackless_ignore)
 
   str += STR(">");
 
-  xml_document doc;
+  XmlDocument doc;
   CHECK(doc.load_string(str.c_str(), parse_fragment));
 }

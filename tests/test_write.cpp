@@ -87,7 +87,7 @@ TEST_XML(write_cdata_inner, "<node><![CDATA[value]]></node>")
 
 TEST(write_cdata_null)
 {
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child(node_cdata);
 	doc.append_child(STR("node")).append_child(node_cdata);
 
@@ -102,7 +102,7 @@ TEST_XML_FLAGS(write_comment, "<!--text-->", parse_comments | parse_fragment)
 
 TEST(write_comment_invalid)
 {
-	xml_document doc;
+	XmlDocument doc;
 	XmlNode child = doc.append_child(node_comment);
 
 	CHECK_NODE(doc, STR("<!---->"));
@@ -125,7 +125,7 @@ TEST(write_comment_invalid)
 
 TEST(write_comment_null)
 {
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child(node_comment);
 
 	CHECK_NODE(doc, STR("<!---->"));
@@ -139,7 +139,7 @@ TEST_XML_FLAGS(write_pi, "<?name value?>", parse_pi | parse_fragment)
 
 TEST(write_pi_null)
 {
-	xml_document doc;
+	XmlDocument doc;
 	XmlNode node = doc.append_child(node_pi);
 
 	CHECK_NODE(doc, STR("<?:anonymous?>"));
@@ -151,7 +151,7 @@ TEST(write_pi_null)
 
 TEST(write_pi_invalid)
 {
-	xml_document doc;
+	XmlDocument doc;
 	XmlNode node = doc.append_child(node_pi);
 
 	node.set_name(STR("test"));
@@ -182,7 +182,7 @@ TEST_XML_FLAGS(write_doctype, "<!DOCTYPE id [ foo ]>", parse_doctype | parse_fra
 
 TEST(write_doctype_null)
 {
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child(node_doctype);
 
 	CHECK_NODE(doc, STR("<!DOCTYPE>"));
@@ -293,7 +293,7 @@ TEST(write_encodings)
 {
 	static char s_utf8[] = "<\x54\xC2\xA2\xE2\x82\xAC\xF0\xA4\xAD\xA2/>";
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_buffer(s_utf8, sizeof(s_utf8), parse_default, encoding_utf8));
 
 	CHECK(write_narrow(doc, format_default, encoding_utf8) == "<\x54\xC2\xA2\xE2\x82\xAC\xF0\xA4\xAD\xA2 />\n");
@@ -333,7 +333,7 @@ TEST(write_encoding_huge)
 
 	s_utf16 += std::string("\x00/\x00>", 4);
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_buffer(&s_utf16[0], s_utf16.length(), parse_default, encoding_utf16_be));
 
 	std::string s_utf8 = "<";
@@ -358,7 +358,7 @@ TEST(write_encoding_huge_invalid)
 
 		for (unsigned int i = 0; i < N; ++i) s_utf16 += static_cast<wchar_t>(0xd852);
 
-		xml_document doc;
+		XmlDocument doc;
 		doc.append_child().set_name(s_utf16.c_str());
 
 		CHECK(test_write_narrow(doc, format_default, encoding_utf8, "< />\n", 5));
@@ -376,7 +376,7 @@ TEST(write_encoding_huge)
 
 	s_utf8 += "/>";
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_buffer(&s_utf8[0], s_utf8.length(), parse_default, encoding_utf8));
 
 	std::string s_utf16 = std::string("\x00<", 2);
@@ -397,7 +397,7 @@ TEST(write_encoding_huge_invalid)
 
 	for (unsigned int i = 0; i < N; ++i) s_utf8 += "\x82";
 
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child().set_name(s_utf8.c_str());
 
 	std::string s_utf16 = std::string("\x00<\x00 \x00/\x00>\x00\n", 10);
@@ -410,7 +410,7 @@ TEST(write_unicode_escape)
 {
 	char s_utf8[] = "<\xE2\x82\xAC \xC2\xA2='\"\xF0\xA4\xAD\xA2&#x0a;\"'>&amp;\x14\xF0\xA4\xAD\xA2&lt;</\xE2\x82\xAC>";
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_buffer(s_utf8, sizeof(s_utf8), parse_default, encoding_utf8));
 
 	CHECK(write_narrow(doc, format_default, encoding_utf8) == "<\xE2\x82\xAC \xC2\xA2=\"&quot;\xF0\xA4\xAD\xA2&#10;&quot;\">&amp;&#20;\xF0\xA4\xAD\xA2&lt;</\xE2\x82\xAC>\n");
@@ -419,7 +419,7 @@ TEST(write_unicode_escape)
 #ifdef PUGIXML_WCHAR_MODE
 static bool test_write_unicode_invalid(const wchar_t* name, const char* expected)
 {
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child(node_pcdata).set_value(name);
 
 	return write_narrow(doc, format_raw, encoding_utf8) == expected;
@@ -453,7 +453,7 @@ TEST(write_unicode_invalid_utf16)
 #else
 static bool test_write_unicode_invalid(const char* name, const wchar_t* expected)
 {
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child(node_pcdata).set_value(name);
 
 	return write_wide(doc, format_raw, encoding_wchar) == expected;
@@ -492,7 +492,7 @@ TEST(write_unicode_invalid_utf8)
 
 TEST(write_no_name_element)
 {
-	xml_document doc;
+	XmlDocument doc;
 	XmlNode root = doc.append_child();
 	root.append_child();
 	root.append_child().append_child(node_pcdata).set_value(STR("text"));
@@ -503,7 +503,7 @@ TEST(write_no_name_element)
 
 TEST(write_no_name_pi)
 {
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child(node_pi);
 
 	CHECK_NODE(doc, STR("<?:anonymous?>"));
@@ -511,7 +511,7 @@ TEST(write_no_name_pi)
 
 TEST(write_no_name_attribute)
 {
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child().set_name(STR("root"));
 	doc.child(STR("root")).append_attribute(STR(""));
 
@@ -551,7 +551,7 @@ TEST(write_stackless)
 	for (unsigned int j = 0; j < count; ++j)
 		data += STR("</a>");
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(data.c_str()));
 
 	CHECK_NODE(doc, data.c_str());
@@ -569,7 +569,7 @@ TEST_XML(write_indent_custom, "<node attr='1'><child><sub>text</sub></child></no
 
 TEST(write_pcdata_null)
 {
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child(STR("node")).append_child(node_pcdata);
 
 	CHECK_NODE(doc, STR("<node/>"));
@@ -586,7 +586,7 @@ TEST(write_pcdata_null)
 
 TEST(write_pcdata_basic)
 {
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child(STR("node")).append_child(node_pcdata).set_value(STR("text"));
 
 	CHECK_NODE(doc, STR("<node>text</node>"));
@@ -596,7 +596,7 @@ TEST(write_pcdata_basic)
 
 TEST(write_pcdata_empty_text)
 {
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child(STR("node")).text().set(STR(""));
 
 	CHECK_NODE(doc, STR("<node/>"));
@@ -625,14 +625,14 @@ TEST(write_pcdata_whitespace_fixedpoint)
 
 	for (unsigned int i = 0; i < sizeof(flags_parse) / sizeof(flags_parse[0]); ++i)
 	{
-		xml_document doc;
+		XmlDocument doc;
 		CHECK(doc.load_string(data, flags_parse[i]));
 
 		for (unsigned int j = 0; j < sizeof(flags_format) / sizeof(flags_format[0]); ++j)
 		{
 			std::string saved = write_narrow(doc, flags_format[j], encoding_auto);
 
-			xml_document rdoc;
+			XmlDocument rdoc;
 			CHECK(rdoc.load_buffer(&saved[0], saved.size(), flags_parse[i]));
 
 			std::string rsaved = write_narrow(rdoc, flags_format[j], encoding_auto);
@@ -671,11 +671,11 @@ TEST_XML_FLAGS(write_roundtrip, "<node><child1 attr1='value1' attr2='value2'/><c
 
 		std::string contents = write_narrow(doc, flags, encoding_utf8);
 
-		xml_document verify;
+		XmlDocument verify;
 		CHECK(verify.load_buffer(contents.c_str(), contents.size(), parse_full));
 		CHECK(test_write_narrow(verify, flags, encoding_utf8, contents.c_str(), contents.size()));
 
-		xml_document verifyws;
+		XmlDocument verifyws;
 		CHECK(verifyws.load_buffer(contents.c_str(), contents.size(), parse_full | parse_ws_pcdata));
 		CHECK(test_write_narrow(verifyws, flags, encoding_utf8, contents.c_str(), contents.size()));
 	}
@@ -683,14 +683,14 @@ TEST_XML_FLAGS(write_roundtrip, "<node><child1 attr1='value1' attr2='value2'/><c
 
 TEST(write_flush_coverage)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	// this creates a node that uses short sequences of lengths 1-6 for output
 	XmlNode n = doc.append_child(STR("n"));
 
-	xml_attribute a = n.append_attribute(STR("a"));
+	XmlAttribute a = n.append_attribute(STR("a"));
 
-	xml_attribute b = n.append_attribute(STR("b"));
+	XmlAttribute b = n.append_attribute(STR("b"));
 	b.set_value(STR("<&\""));
 
 	n.append_child(node_comment);

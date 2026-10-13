@@ -3,7 +3,7 @@
 
 using namespace pugi;
 
-static void overflow_hash_table(xml_document& doc)
+static void overflow_hash_table(XmlDocument& doc)
 {
 	XmlNode n = doc.child(STR("n"));
 
@@ -19,7 +19,7 @@ TEST_XML_FLAGS(compact_out_of_memory_string, "<n a='v'/><?n v?>", parse_pi)
 
 	overflow_hash_table(doc);
 
-	xml_attribute a = doc.child(STR("n")).attribute(STR("a"));
+	XmlAttribute a = doc.child(STR("n")).attribute(STR("a"));
 	XmlNode pi = doc.last_child();
 
 	CHECK_ALLOC_FAIL(CHECK(!pi.set_name(STR("name"))));
@@ -35,7 +35,7 @@ TEST_XML(compact_out_of_memory_attribute, "<n a='v'/>")
 	overflow_hash_table(doc);
 
 	XmlNode n = doc.child(STR("n"));
-	xml_attribute a = n.attribute(STR("a"));
+	XmlAttribute a = n.attribute(STR("a"));
 
 	CHECK_ALLOC_FAIL(CHECK(!n.append_attribute(STR(""))));
 	CHECK_ALLOC_FAIL(CHECK(!n.prepend_attribute(STR(""))));
@@ -50,7 +50,7 @@ TEST_XML(compact_out_of_memory_attribute_copy, "<n a='v'/>")
 	overflow_hash_table(doc);
 
 	XmlNode n = doc.child(STR("n"));
-	xml_attribute a = n.attribute(STR("a"));
+	XmlAttribute a = n.attribute(STR("a"));
 
 	CHECK_ALLOC_FAIL(CHECK(!n.append_copy(a)));
 	CHECK_ALLOC_FAIL(CHECK(!n.prepend_copy(a)));
@@ -108,7 +108,7 @@ TEST_XML(compact_out_of_memory_remove, "<n a='v'/>")
 	overflow_hash_table(doc);
 
 	XmlNode n = doc.child(STR("n"));
-	xml_attribute a = n.attribute(STR("a"));
+	XmlAttribute a = n.attribute(STR("a"));
 
 	CHECK_ALLOC_FAIL(CHECK(!n.remove_attribute(a)));
 	CHECK_ALLOC_FAIL(CHECK(!doc.remove_child(n)));
@@ -117,7 +117,7 @@ TEST_XML(compact_out_of_memory_remove, "<n a='v'/>")
 TEST_XML(compact_pointer_attribute_list, "<n a='v'/>")
 {
 	XmlNode n = doc.child(STR("n"));
-	xml_attribute a = n.attribute(STR("a"));
+	XmlAttribute a = n.attribute(STR("a"));
 
 	// make sure we fill the page with node x
 	for (int i = 0; i < 1000; ++i)

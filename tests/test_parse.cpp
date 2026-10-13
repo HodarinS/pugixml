@@ -6,7 +6,7 @@ using namespace pugi;
 
 TEST(parse_pi_skip)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	unsigned int flag_sets[] = {parse_fragment, parse_fragment | parse_declaration};
 
@@ -24,7 +24,7 @@ TEST(parse_pi_skip)
 
 TEST(parse_pi_parse)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<?pi1?><?pi2 value?>"), parse_fragment | parse_pi));
 
 	XmlNode pi1 = doc.first_child();
@@ -41,7 +41,7 @@ TEST(parse_pi_parse)
 
 TEST(parse_pi_parse_spaces)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<?target  \r\n\t  value ?>"), parse_fragment | parse_pi));
 
 	XmlNode pi = doc.first_child();
@@ -53,7 +53,7 @@ TEST(parse_pi_parse_spaces)
 
 TEST(parse_pi_error)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	unsigned int flag_sets[] = {parse_fragment, parse_fragment | parse_pi};
 
@@ -95,21 +95,21 @@ TEST(parse_pi_error_buffer_boundary)
 	char buf1[] = "<?name?>";
 	char buf2[] = "<?name?x";
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_buffer_inplace(buf1, 8, parse_fragment | parse_pi));
 	CHECK(doc.load_buffer_inplace(buf2, 8, parse_fragment | parse_pi).status == status_bad_pi);
 }
 
 TEST(parse_comments_skip)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<!----><!--value-->"), parse_fragment));
 	CHECK(!doc.first_child());
 }
 
 TEST(parse_comments_parse)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<!----><!--value-->"), parse_fragment | parse_comments));
 
 	XmlNode c1 = doc.first_child();
@@ -126,7 +126,7 @@ TEST(parse_comments_parse)
 
 TEST(parse_comments_parse_no_eol)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<!--\r\rval1\rval2\r\nval3\nval4\r\r-->"), parse_fragment | parse_comments));
 
 	XmlNode c = doc.first_child();
@@ -136,7 +136,7 @@ TEST(parse_comments_parse_no_eol)
 
 TEST(parse_comments_parse_eol)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<!--\r\rval1\rval2\r\nval3\nval4\r\r-->"), parse_fragment | parse_comments | parse_eol));
 
 	XmlNode c = doc.first_child();
@@ -146,7 +146,7 @@ TEST(parse_comments_parse_eol)
 
 TEST(parse_comments_error)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	unsigned int flag_sets[] = {parse_fragment, parse_fragment | parse_comments, parse_fragment | parse_comments | parse_eol};
 
@@ -165,21 +165,21 @@ TEST(parse_comments_error)
 
 TEST(parse_cdata_skip)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<![CDATA[]]><![CDATA[value]]>"), parse_fragment));
 	CHECK(!doc.first_child());
 }
 
 TEST(parse_cdata_skip_contents)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node><![CDATA[]]>hello<![CDATA[value]]>, world!</node>"), parse_fragment));
 	CHECK_NODE(doc, STR("<node>hello, world!</node>"));
 }
 
 TEST(parse_cdata_parse)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<![CDATA[]]><![CDATA[value]]>"), parse_fragment | parse_cdata));
 
 	XmlNode c1 = doc.first_child();
@@ -196,7 +196,7 @@ TEST(parse_cdata_parse)
 
 TEST(parse_cdata_parse_no_eol)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<![CDATA[\r\rval1\rval2\r\nval3\nval4\r\r]]>"), parse_fragment | parse_cdata));
 
 	XmlNode c = doc.first_child();
@@ -206,7 +206,7 @@ TEST(parse_cdata_parse_no_eol)
 
 TEST(parse_cdata_parse_eol)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<![CDATA[\r\rval1\rval2\r\nval3\nval4\r\r]]>"), parse_fragment | parse_cdata | parse_eol));
 
 	XmlNode c = doc.first_child();
@@ -216,7 +216,7 @@ TEST(parse_cdata_parse_eol)
 
 TEST(parse_cdata_error)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	unsigned int flag_sets[] = {parse_fragment, parse_fragment | parse_cdata, parse_fragment | parse_cdata | parse_eol};
 
@@ -242,7 +242,7 @@ TEST(parse_cdata_error)
 
 TEST(parse_ws_pcdata_skip)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("  "), parse_fragment));
 	CHECK(!doc.first_child());
 
@@ -256,7 +256,7 @@ TEST(parse_ws_pcdata_skip)
 
 TEST(parse_ws_pcdata_parse)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<root>  <node>  </node>  </root>"), parse_minimal | parse_ws_pcdata));
 
 	XmlNode root = doc.child(STR("root"));
@@ -345,7 +345,7 @@ TEST(parse_ws_pcdata_permutations)
             {
                 unsigned int flags[] = {parse_default, parse_default | parse_ws_pcdata, parse_default | parse_ws_pcdata_single};
 
-                xml_document doc;
+                XmlDocument doc;
                 CHECK((td.nodes > 0) == doc.load_string(td.source, flags[flag]));
                 CHECK_NODE(doc, td.result);
 
@@ -396,7 +396,7 @@ TEST(parse_ws_pcdata_fragment_permutations)
             {
                 unsigned int flags[] = {parse_default, parse_default | parse_ws_pcdata, parse_default | parse_ws_pcdata_single};
 
-                xml_document doc;
+                XmlDocument doc;
                 CHECK((td.nodes > 0) == doc.load_string(td.source, flags[flag] | parse_fragment));
                 CHECK_NODE(doc, td.result);
 
@@ -409,7 +409,7 @@ TEST(parse_ws_pcdata_fragment_permutations)
 
 TEST(parse_pcdata_no_eol)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<root>\r\rval1\rval2\r\nval3\nval4\r\r</root>"), parse_minimal));
 
 	CHECK_STRING(doc.child_value(STR("root")), STR("\r\rval1\rval2\r\nval3\nval4\r\r"));
@@ -417,7 +417,7 @@ TEST(parse_pcdata_no_eol)
 
 TEST(parse_pcdata_eol)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<root>\r\rval1\rval2\r\nval3\nval4\r\r</root>"), parse_minimal | parse_eol));
 
 	CHECK_STRING(doc.child_value(STR("root")), STR("\n\nval1\nval2\nval3\nval4\n\n"));
@@ -425,7 +425,7 @@ TEST(parse_pcdata_eol)
 
 TEST(parse_pcdata_skip_ext)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("pre<root/>post"), parse_minimal));
 	CHECK(doc.first_child() == doc.last_child());
 	CHECK(doc.first_child().type() == node_element);
@@ -433,7 +433,7 @@ TEST(parse_pcdata_skip_ext)
 
 TEST(parse_pcdata_error)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<root>pcdata"), parse_minimal).status == status_end_element_mismatch);
 }
 
@@ -471,7 +471,7 @@ TEST(parse_pcdata_trim)
     {
         const test_data_t& td = test_data[i];
 
-        xml_document doc;
+        XmlDocument doc;
         CHECK(doc.load_string(td.source, td.flags | parse_trim_pcdata));
 
         const char_t* value = doc.child(STR("node")) ? doc.child_value(STR("node")) : doc.text().get();
@@ -485,7 +485,7 @@ TEST(parse_pcdata_trim_empty)
 
 	for (size_t i = 0; i < sizeof(flags) / sizeof(flags[0]); ++i)
 	{
-		xml_document doc;
+		XmlDocument doc;
 		CHECK(doc.load_string(STR("<node>   </node>"), flags[i] | parse_trim_pcdata));
 
 		XmlNode node = doc.child(STR("node"));
@@ -496,14 +496,14 @@ TEST(parse_pcdata_trim_empty)
 
 TEST(parse_escapes_skip)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node id='&lt;&gt;&amp;&apos;&quot;'>&lt;&gt;&amp;&apos;&quot;</node>"), parse_minimal));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR("&lt;&gt;&amp;&apos;&quot;"));
 }
 
 TEST(parse_escapes_parse)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node id='&lt;&gt;&amp;&apos;&quot;'>&lt;&gt;&amp;&apos;&quot;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("<>&'\""));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR("<>&'\""));
@@ -511,35 +511,35 @@ TEST(parse_escapes_parse)
 
 TEST(parse_escapes_code)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node>&#1;&#32;&#x20;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("\01  "));
 }
 
 TEST(parse_escapes_code_exhaustive_dec)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node>&#/;&#01;&#2;&#3;&#4;&#5;&#6;&#7;&#8;&#9;&#:;&#a;&#A;&#XA;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&#/;\x1\x2\x3\x4\x5\x6\x7\x8\x9&#:;&#a;&#A;&#XA;"));
 }
 
 TEST(parse_escapes_code_exhaustive_hex)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node>&#x/;&#x01;&#x2;&#x3;&#x4;&#x5;&#x6;&#x7;&#x8;&#x9;&#x:;&#x@;&#xA;&#xB;&#xC;&#xD;&#xE;&#xF;&#xG;&#x`;&#xa;&#xb;&#xc;&#xd;&#xe;&#xf;&#xg;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&#x/;\x1\x2\x3\x4\x5\x6\x7\x8\x9&#x:;&#x@;\xa\xb\xc\xd\xe\xf&#xG;&#x`;\xa\xb\xc\xd\xe\xf&#xg;"));
 }
 
 TEST(parse_escapes_code_restore)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node>&#1&#32;&#x1&#32;&#1-&#32;&#x1-&#32;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&#1 &#x1 &#1- &#x1- "));
 }
 
 TEST(parse_escapes_char_restore)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	CHECK(doc.load_string(STR("<node>&q&#32;&qu&#32;&quo&#32;&quot&#32;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&q &qu &quo &quot "));
@@ -559,7 +559,7 @@ TEST(parse_escapes_char_restore)
 
 TEST(parse_escapes_unicode)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node>&#x03B3;&#x03b3;&#x24B62;</node>"), parse_minimal | parse_escapes));
 
 #ifdef PUGIXML_WCHAR_MODE
@@ -575,7 +575,7 @@ TEST(parse_escapes_unicode)
 
 TEST(parse_escapes_error)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node>&#x03g;&#ab;&quot</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&#x03g;&#ab;&quot"));
 
@@ -591,14 +591,14 @@ TEST(parse_escapes_error)
 
 TEST(parse_escapes_code_invalid)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node>&#;&#x;&;&#x-;&#-;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&#;&#x;&;&#x-;&#-;"));
 }
 
 TEST(parse_escapes_attribute)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	for (int wnorm = 0; wnorm < 2; ++wnorm)
 		for (int eol = 0; eol < 2; ++eol)
@@ -617,7 +617,7 @@ TEST(parse_escapes_attribute)
 
 TEST(parse_attribute_spaces)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node id1='v1' id2 ='v2' id3= 'v3' id4 = 'v4' id5 \n\r\t = \r\t\n 'v5' />"), parse_minimal));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id1")).value(), STR("v1"));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id2")).value(), STR("v2"));
@@ -628,7 +628,7 @@ TEST(parse_attribute_spaces)
 
 TEST(parse_attribute_quot)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node id1='v1' id2=\"v2\"/>"), parse_minimal));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id1")).value(), STR("v1"));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id2")).value(), STR("v2"));
@@ -636,35 +636,35 @@ TEST(parse_attribute_quot)
 
 TEST(parse_attribute_no_eol_no_wconv)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node id=' \t\r\rval1  \rval2\r\nval3\nval4\r\r'/>"), parse_minimal));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR(" \t\r\rval1  \rval2\r\nval3\nval4\r\r"));
 }
 
 TEST(parse_attribute_eol_no_wconv)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node id=' \t\r\rval1  \rval2\r\nval3\nval4\r\r'/>"), parse_minimal | parse_eol));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR(" \t\n\nval1  \nval2\nval3\nval4\n\n"));
 }
 
 TEST(parse_attribute_no_eol_wconv)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node id=' \t\r\rval1  \rval2\r\nval3\nval4\r\r'/>"), parse_minimal | parse_wconv_attribute));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR("    val1   val2 val3 val4  "));
 }
 
 TEST(parse_attribute_eol_wconv)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node id=' \t\r\rval1  \rval2\r\nval3\nval4\r\r'/>"), parse_minimal | parse_eol | parse_wconv_attribute));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR("    val1   val2 val3 val4  "));
 }
 
 TEST(parse_attribute_wnorm)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	for (int eol = 0; eol < 2; ++eol)
 		for (int wconv = 0; wconv < 2; ++wconv)
@@ -677,7 +677,7 @@ TEST(parse_attribute_wnorm)
 
 TEST(parse_attribute_variations)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	for (int wnorm = 0; wnorm < 2; ++wnorm)
 		for (int eol = 0; eol < 2; ++eol)
@@ -699,7 +699,7 @@ TEST(parse_attribute_variations)
 
 TEST(parse_attribute_error)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node id"), parse_minimal).status == status_bad_attribute);
 	CHECK(doc.load_string(STR("<node id "), parse_minimal).status == status_bad_attribute);
 	CHECK(doc.load_string(STR("<node id  "), parse_minimal).status == status_bad_attribute);
@@ -722,7 +722,7 @@ TEST(parse_attribute_error)
 
 TEST(parse_attribute_termination_error)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	for (int wnorm = 0; wnorm < 2; ++wnorm)
 		for (int eol = 0; eol < 2; ++eol)
@@ -740,7 +740,7 @@ TEST(parse_attribute_termination_error)
 
 TEST(parse_attribute_quot_inside)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	for (int wnorm = 0; wnorm < 2; ++wnorm)
 		for (int eol = 0; eol < 2; ++eol)
@@ -760,7 +760,7 @@ TEST(parse_attribute_quot_inside)
 
 TEST(parse_attribute_wnorm_coverage)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<n a1='v' a2=' ' a3='x y' a4='x  y' a5='x   y' />"), parse_wnorm_attribute));
 	CHECK_NODE(doc, STR("<n a1=\"v\" a2=\"\" a3=\"x y\" a4=\"x y\" a5=\"x y\"/>"));
 
@@ -770,7 +770,7 @@ TEST(parse_attribute_wnorm_coverage)
 
 TEST(parse_attribute_wconv_coverage)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<n a1='v' a2='\r' a3='\r\n\n' a4='\n' />"), parse_wconv_attribute));
 	CHECK_NODE(doc, STR("<n a1=\"v\" a2=\" \" a3=\"  \" a4=\" \"/>"));
 
@@ -780,7 +780,7 @@ TEST(parse_attribute_wconv_coverage)
 
 TEST(parse_attribute_eol_coverage)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<n a1='v' a2='\r' a3='\r\n\n' a4='\n' />"), parse_eol));
 	CHECK_NODE(doc, STR("<n a1=\"v\" a2=\"&#10;\" a3=\"&#10;&#10;\" a4=\"&#10;\"/>"));
 
@@ -790,21 +790,21 @@ TEST(parse_attribute_eol_coverage)
 
 TEST(parse_tag_single)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node/><node /><node\n/>"), parse_minimal));
 	CHECK_NODE(doc, STR("<node/><node/><node/>"));
 }
 
 TEST(parse_tag_hierarchy)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<node><n1><n2/></n1><n3><n4><n5></n5></n4></n3 \r\n></node>"), parse_minimal));
 	CHECK_NODE(doc, STR("<node><n1><n2/></n1><n3><n4><n5/></n4></n3></node>"));
 }
 
 TEST(parse_tag_error)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<"), parse_minimal).status == status_unrecognized_tag);
 	CHECK(doc.load_string(STR("<!"), parse_minimal).status == status_unrecognized_tag);
 	CHECK(doc.load_string(STR("<!D"), parse_minimal).status == status_unrecognized_tag);
@@ -836,21 +836,21 @@ TEST(parse_tag_error)
 
 TEST(parse_declaration_cases)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<?xml?><?xmL?><?xMl?><?xML?><?Xml?><?XmL?><?XMl?><?XML?>"), parse_fragment | parse_pi));
 	CHECK(!doc.first_child());
 }
 
 TEST(parse_declaration_attr_cases)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<?xml ?><?xmL ?><?xMl ?><?xML ?><?Xml ?><?XmL ?><?XMl ?><?XML ?>"), parse_fragment | parse_pi));
 	CHECK(!doc.first_child());
 }
 
 TEST(parse_declaration_skip)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	unsigned int flag_sets[] = {parse_fragment, parse_fragment | parse_pi};
 
@@ -868,7 +868,7 @@ TEST(parse_declaration_skip)
 
 TEST(parse_declaration_parse)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("<?xml?><?xml version='1.0'?>"), parse_fragment | parse_declaration));
 
 	XmlNode d1 = doc.first_child();
@@ -884,7 +884,7 @@ TEST(parse_declaration_parse)
 
 TEST(parse_declaration_error)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	unsigned int flag_sets[] = {parse_fragment, parse_fragment | parse_declaration};
 
@@ -904,7 +904,7 @@ TEST(parse_declaration_error)
 
 TEST(parse_empty)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	CHECK(doc.load_string(STR("")).status == status_no_document_element && !doc.first_child());
 	CHECK(doc.load_string(STR(""), parse_fragment) && !doc.first_child());
@@ -914,7 +914,7 @@ TEST(parse_out_of_memory)
 {
 	test_runner::_memory_fail_threshold = 256;
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK_ALLOC_FAIL(CHECK(doc.load_string(STR("<foo a='1'/>")).status == status_out_of_memory));
 	CHECK(!doc.first_child());
 }
@@ -934,7 +934,7 @@ TEST(parse_out_of_memory_halfway_node)
 
 	test_runner::_memory_fail_threshold = 65536;
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK_ALLOC_FAIL(CHECK(doc.load_buffer_inplace(text, sizeof(text)).status == status_out_of_memory));
 	CHECK_NODE(doc.first_child(), STR("<n/>"));
 }
@@ -961,7 +961,7 @@ TEST(parse_out_of_memory_halfway_attr)
 
 	test_runner::_memory_fail_threshold = 65536;
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK_ALLOC_FAIL(CHECK(doc.load_buffer_inplace(text, sizeof(text)).status == status_out_of_memory));
 	CHECK_STRING(doc.first_child().name(), STR("n"));
 	CHECK_STRING(doc.first_child().first_attribute().name(), STR("a"));
@@ -972,7 +972,7 @@ TEST(parse_out_of_memory_conversion)
 {
 	test_runner::_memory_fail_threshold = 1;
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK_ALLOC_FAIL(CHECK(doc.load_buffer("<foo\x90/>", 7, parse_default, encoding_latin1).status == status_out_of_memory));
 	CHECK(!doc.first_child());
 }
@@ -992,7 +992,7 @@ TEST(parse_out_of_memory_allocator_state_sync)
 
 	test_runner::_memory_fail_threshold = 65536;
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK_ALLOC_FAIL(CHECK(doc.load_buffer_inplace(text, sizeof(text)).status == status_out_of_memory));
 	CHECK_NODE(doc.first_child(), STR("<n/>"));
 
@@ -1004,7 +1004,7 @@ TEST(parse_out_of_memory_allocator_state_sync)
 
 static bool test_offset(const char_t* contents, unsigned int options, XmlParseStatus status, ptrdiff_t offset)
 {
-	xml_document doc;
+	XmlDocument doc;
 	XmlParseResult res = doc.load_string(contents, options);
 
 	return res.status == status && res.offset == offset;
@@ -1087,7 +1087,7 @@ TEST(parse_bom_fragment)
 
 	for (size_t i = 0; i < sizeof(data) / sizeof(data[0]); ++i)
 	{
-		xml_document doc;
+		XmlDocument doc;
 		CHECK(doc.load_buffer(data[i].data, data[i].size, parse_fragment, data[i].encoding));
 		CHECK_STRING(doc.text().get(), data[i].text);
 		CHECK(save_narrow(doc, format_no_declaration | format_raw | format_write_bom, data[i].encoding) == std::string(data[i].data, data[i].size));
@@ -1096,7 +1096,7 @@ TEST(parse_bom_fragment)
 
 TEST(parse_bom_fragment_invalid_utf8)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	CHECK(doc.load_buffer("\xef\xbb\xbb", 3, parse_fragment, encoding_utf8));
 
@@ -1111,7 +1111,7 @@ TEST(parse_bom_fragment_invalid_utf8)
 
 TEST(parse_bom_fragment_invalid_utf16)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	CHECK(doc.load_buffer("\xff\xfe", 2, parse_fragment, encoding_utf16_be));
 
@@ -1126,7 +1126,7 @@ TEST(parse_bom_fragment_invalid_utf16)
 
 TEST(parse_bom_fragment_invalid_utf32)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	CHECK(doc.load_buffer("\xff\xff\x00\x00", 4, parse_fragment, encoding_utf32_le));
 
@@ -1141,7 +1141,7 @@ TEST(parse_bom_fragment_invalid_utf32)
 
 TEST(parse_pcdata_gap_fragment)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_string(STR("a&amp;b"), parse_fragment | parse_escapes));
 	CHECK_STRING(doc.text().get(), STR("a&b"));
 }
@@ -1150,7 +1150,7 @@ TEST(parse_name_end_eof)
 {
 	char_t test[] = STR("<node>");
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_buffer_inplace(test, 6 * sizeof(char_t)).status == status_end_element_mismatch);
 	CHECK_STRING(doc.first_child().name(), STR("node"));
 }
@@ -1160,7 +1160,7 @@ TEST(parse_close_tag_eof)
 	char_t test1[] = STR("<node></node");
 	char_t test2[] = STR("<node></nodx");
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_buffer_inplace(test1, 12 * sizeof(char_t)).status == status_bad_end_element);
 	CHECK_STRING(doc.first_child().name(), STR("node"));
 
@@ -1178,7 +1178,7 @@ TEST(parse_fuzz_doctype)
 		0xe3, 0x83, 0xb3, 0x20, 0xef, 0x83, 0x97, 0xe3, 0xa9, 0x2a, 0x20, 0x2d, 0x2d, 0x3e
 	};
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_buffer(data, sizeof(data)).status == status_bad_doctype);
 }
 
@@ -1189,7 +1189,7 @@ TEST(parse_embed_pcdata)
 	{
 		unsigned int flags = (i == 0) ? parse_default : parse_default | parse_embed_pcdata;
 
-		xml_document doc;
+		XmlDocument doc;
 		XmlParseResult res = doc.load_string(STR("<node><key>value</key><child><inner1>value1</inner1><inner2>value2</inner2>outer</child><two>text<data /></two></node>"), flags);
 		CHECK(res);
 
@@ -1260,7 +1260,7 @@ TEST(parse_merge_pcdata)
 	{
 		unsigned int flags = parse_merge_pcdata | flag_sets[i];
 
-		xml_document doc;
+		XmlDocument doc;
 		XmlParseResult res = doc.load_string(STR("<node>First text<!-- here is a mesh node -->Second text<![CDATA[someothertext]]>some more text<?include somedata?>Last text</node>"), flags);
 		CHECK(res);
 
@@ -1297,7 +1297,7 @@ TEST(parse_merge_pcdata)
 
 TEST(parse_merge_pcdata_escape)
 {
-	xml_document doc;
+	XmlDocument doc;
 	XmlParseResult res = doc.load_string(STR("<node>First &amp;lt; <!-- comment 1 --> Second &amp;gt; <!-- comment 2 --> Third &amp;quot;</node>"), parse_default | parse_merge_pcdata);
 	CHECK(res);
 
@@ -1312,7 +1312,7 @@ TEST(parse_merge_pcdata_whitespace)
 	{
 		unsigned int flags = parse_merge_pcdata | flag_sets[i];
 
-		xml_document doc;
+		XmlDocument doc;
 		XmlParseResult res = doc.load_string(STR("<node><child1>  <!-- comment 1 -->\t<!-- comment 2 -->\n</child1><child2>text<!-- comment 1-->\t<!-- comment2 --> end</child2></node>"), flags);
 		CHECK(res);
 
@@ -1336,7 +1336,7 @@ TEST(parse_merge_pcdata_whitespace)
 
 TEST(parse_merge_pcdata_append)
 {
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child(STR("node")).append_child(node_pcdata);
 	XmlParseResult res = doc.child(STR("node")).append_buffer("hello <!--comment-->world", 25, parse_merge_pcdata | parse_fragment);
 
@@ -1352,7 +1352,7 @@ TEST(parse_merge_pcdata_append)
 
 TEST(parse_merge_pcdata_overlap)
 {
-	xml_document doc;
+	XmlDocument doc;
 	XmlParseResult res = doc.load_string(STR("<node>short <!-- --> this string is very long so long that copying it will overlap itself</node>"), parse_merge_pcdata);
 	CHECK(res);
 	CHECK_STRING(doc.child_value(STR("node")), STR("short  this string is very long so long that copying it will overlap itself"));
@@ -1362,7 +1362,7 @@ TEST(parse_encoding_detect)
 {
 	char test[] = "<?xml version='1.0' encoding='utf-8'?><n/>";
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_buffer(test, sizeof(test)));
 }
 
@@ -1374,7 +1374,7 @@ TEST(parse_encoding_detect_latin1)
 	char test3[] = "<?xml version='1.0' encoding='ISO-8859-1'?><n/>";
 	char test4[] = "<?xml version='1.0' encoding = \"LATIN1\"?><n/>";
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_buffer(test0, sizeof(test0)).encoding == encoding_utf8);
 	CHECK(doc.load_buffer(test1, sizeof(test1)).encoding == encoding_latin1);
 	CHECK(doc.load_buffer(test2, sizeof(test2)).encoding == encoding_latin1);
@@ -1412,7 +1412,7 @@ TEST(parse_encoding_detect_auto)
 
 	for (size_t i = 0; i < sizeof(data) / sizeof(data[0]); ++i)
 	{
-		xml_document doc;
+		XmlDocument doc;
 		XmlParseResult result = doc.load_buffer(data[i].contents, data[i].size, parse_fragment);
 
 		CHECK(result);
@@ -1454,7 +1454,7 @@ TEST(parse_encoding_detect_auto_incomplete)
 
 	for (size_t i = 0; i < sizeof(data) / sizeof(data[0]); ++i)
 	{
-		xml_document doc;
+		XmlDocument doc;
 		XmlParseResult result = doc.load_buffer(data[i].contents, data[i].size, parse_fragment);
 
 		CHECK(result);

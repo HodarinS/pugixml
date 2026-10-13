@@ -874,8 +874,8 @@ TEST_XML(xpath_paths_null_nodeset_entries, "<node attr='value'/>")
       XPathNode(doc.first_child()),
       XPathNode(XmlNode()),
       XPathNode(doc.first_child().first_attribute(), doc.first_child()),
-      XPathNode(xml_attribute(), doc.first_child()),
-      XPathNode(xml_attribute(), XmlNode()),
+      XPathNode(XmlAttribute(), doc.first_child()),
+      XPathNode(XmlAttribute(), XmlNode()),
   };
 
   XPathNodeSet ns(nodes, nodes + sizeof(nodes) / sizeof(nodes[0]));

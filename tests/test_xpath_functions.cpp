@@ -868,7 +868,7 @@ TEST_XML_FLAGS(
 
 TEST(xpath_string_value_empty)
 {
-  xml_document doc;
+  XmlDocument doc;
   doc.append_child(node_pcdata).set_value(STR("head"));
   doc.append_child(node_pcdata);
   doc.append_child(node_pcdata).set_value(STR("tail"));

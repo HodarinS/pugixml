@@ -12,9 +12,9 @@
 
 using namespace pugi;
 
-static void load_document_copy(xml_document& doc, const char_t* text)
+static void load_document_copy(XmlDocument& doc, const char_t* text)
 {
-	xml_document source;
+	XmlDocument source;
 	CHECK(source.load_string(text));
 
 	doc.append_copy(source.first_child());
@@ -71,7 +71,7 @@ TEST_XML(xpath_sort_complex, "<node><child1 attr1='value1' attr2='value2'/><chil
 
 TEST(xpath_sort_complex_copy) // copy the document so that document order optimization does not work
 {
-	xml_document doc;
+	XmlDocument doc;
 	load_document_copy(doc, STR("<node><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2></node>"));
 
 	// just some random union order, it should not matter probably?
@@ -103,7 +103,7 @@ TEST_XML(xpath_sort_children, "<node><child><subchild id='1'/></child><child><su
 
 TEST(xpath_sort_children_copy) // copy the document so that document order optimization does not work
 {
-	xml_document doc;
+	XmlDocument doc;
 	load_document_copy(doc, STR("<node><child><subchild id='1'/></child><child><subchild id='2'/></child></node>"));
 
 	XPathNodeSet ns = doc.child(STR("node")).select_nodes(STR("child/subchild[@id=1] | child/subchild[@id=2]"));
@@ -161,7 +161,7 @@ TEST_XML(xpath_sort_attributes_docorder, "<node attr1='' attr2='value' attr4='va
 
 TEST(xpath_sort_random_medium)
 {
-	xml_document doc;
+	XmlDocument doc;
 	load_document_copy(doc, STR("<node>")
 		STR("<child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2>")
 		STR("<child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2>")
@@ -183,7 +183,7 @@ TEST(xpath_sort_random_medium)
 
 TEST(xpath_sort_random_large)
 {
-	xml_document doc;
+	XmlDocument doc;
 	load_document_copy(doc, STR("<node>")
 		STR("<child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2>")
 		STR("<child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2>")
@@ -401,7 +401,7 @@ TEST(xpath_lexer_unknown_lexeme)
 
 TEST(xpath_large_node_set)
 {
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_file("tests/data/large.xml"));
 
 	XPathNodeSet ns = doc.select_nodes(STR("//*"));
@@ -575,7 +575,7 @@ TEST(xpath_out_of_memory_evaluate_string_append)
 	buf += literal;
 	buf += STR("</c></n>");
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_buffer_inplace(&buf[0], buf.size() * sizeof(char_t)));
 
 	XPathQuery q(STR("string(n)"));
@@ -598,7 +598,7 @@ TEST(xpath_out_of_memory_evaluate_number_to_string)
 
 TEST(xpath_memory_concat_massive)
 {
-	xml_document doc;
+	XmlDocument doc;
 	XmlNode node = doc.append_child(STR("node"));
 
 	for (int i = 0; i < 5000; ++i)
@@ -698,10 +698,10 @@ TEST_XML(xpath_sort_append_buffer, "<node /><node />")
 
 TEST(xpath_sort_crossdoc)
 {
-	xml_document doc1;
+	XmlDocument doc1;
 	CHECK(doc1.load_string(STR("<node />")));
 
-	xml_document doc2;
+	XmlDocument doc2;
 	CHECK(doc2.load_string(STR("<node />")));
 
 	XPathNodeSet ns1 = doc1.select_nodes(STR("*"));
@@ -724,10 +724,10 @@ TEST(xpath_sort_crossdoc)
 
 TEST(xpath_sort_crossdoc_dynamic)
 {
-	xml_document doc1;
+	XmlDocument doc1;
 	doc1.append_child(STR("node"));
 
-	xml_document doc2;
+	XmlDocument doc2;
 	doc2.append_child(STR("node"));
 
 	XPathNodeSet ns1 = doc1.select_nodes(STR("*"));
@@ -750,10 +750,10 @@ TEST(xpath_sort_crossdoc_dynamic)
 
 TEST(xpath_sort_crossdoc_different_depth)
 {
-	xml_document doc1;
+	XmlDocument doc1;
 	doc1.append_child(STR("node"));
 
-	xml_document doc2;
+	XmlDocument doc2;
 	doc2.append_child(STR("node")).append_child(STR("node"));
 
 	XPathNodeSet ns1 = doc1.select_nodes(STR("*"));
@@ -800,7 +800,7 @@ TEST(xpath_allocate_string_out_of_memory)
 
 TEST(xpath_remove_duplicates)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	for (int i = 0; i < 20; ++i)
 	{
@@ -822,7 +822,7 @@ TEST(xpath_remove_duplicates)
 
 TEST(xpath_anonymous_nodes)
 {
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child(node_element);
 	doc.append_child(node_pi);
 

@@ -54,40 +54,40 @@ TEST_XML(dom_attr_empty, "<node attr='1'/>")
 
 TEST_XML(dom_attr_next_previous_attribute, "<node attr1='1' attr2='2' />")
 {
-	xml_attribute attr1 = doc.child(STR("node")).attribute(STR("attr1"));
-	xml_attribute attr2 = doc.child(STR("node")).attribute(STR("attr2"));
+	XmlAttribute attr1 = doc.child(STR("node")).attribute(STR("attr1"));
+	XmlAttribute attr2 = doc.child(STR("node")).attribute(STR("attr2"));
 
 	CHECK(attr1.next_attribute() == attr2);
-	CHECK(attr2.next_attribute() == xml_attribute());
+	CHECK(attr2.next_attribute() == XmlAttribute());
 
-	CHECK(attr1.previous_attribute() == xml_attribute());
+	CHECK(attr1.previous_attribute() == XmlAttribute());
 	CHECK(attr2.previous_attribute() == attr1);
 
-	CHECK(xml_attribute().next_attribute() == xml_attribute());
-	CHECK(xml_attribute().previous_attribute() == xml_attribute());
+	CHECK(XmlAttribute().next_attribute() == XmlAttribute());
+	CHECK(XmlAttribute().previous_attribute() == XmlAttribute());
 }
 
 TEST_XML(dom_attr_name_value, "<node attr='1'/>")
 {
-	xml_attribute attr = doc.child(STR("node")).attribute(STR("attr"));
+	XmlAttribute attr = doc.child(STR("node")).attribute(STR("attr"));
 
 	CHECK_NAME_VALUE(attr, STR("attr"), STR("1"));
-	CHECK_NAME_VALUE(xml_attribute(), STR(""), STR(""));
+	CHECK_NAME_VALUE(XmlAttribute(), STR(""), STR(""));
 }
 
 TEST_XML(dom_attr_as_string, "<node attr='1'/>")
 {
-	xml_attribute attr = doc.child(STR("node")).attribute(STR("attr"));
+	XmlAttribute attr = doc.child(STR("node")).attribute(STR("attr"));
 
 	CHECK_STRING(attr.as_string(), STR("1"));
-	CHECK_STRING(xml_attribute().as_string(), STR(""));
+	CHECK_STRING(XmlAttribute().as_string(), STR(""));
 }
 
 TEST_XML(dom_attr_as_int, "<node attr1='1' attr2='-1' attr3='-2147483648' attr4='2147483647' attr5='0'/>")
 {
 	XmlNode node = doc.child(STR("node"));
 
-	CHECK(xml_attribute().as_int() == 0);
+	CHECK(XmlAttribute().as_int() == 0);
 	CHECK(node.attribute(STR("attr1")).as_int() == 1);
 	CHECK(node.attribute(STR("attr2")).as_int() == -1);
 	CHECK(node.attribute(STR("attr3")).as_int() == -2147483647 - 1);
@@ -111,7 +111,7 @@ TEST_XML(dom_attr_as_uint, "<node attr1='0' attr2='1' attr3='2147483647' attr4='
 {
 	XmlNode node = doc.child(STR("node"));
 
-	CHECK(xml_attribute().as_uint() == 0);
+	CHECK(XmlAttribute().as_uint() == 0);
 	CHECK(node.attribute(STR("attr1")).as_uint() == 0);
 	CHECK(node.attribute(STR("attr2")).as_uint() == 1);
 	CHECK(node.attribute(STR("attr3")).as_uint() == 2147483647);
@@ -149,7 +149,7 @@ TEST_XML(dom_attr_as_float, "<node attr1='0' attr2='1' attr3='0.12' attr4='-5.1'
 {
 	XmlNode node = doc.child(STR("node"));
 
-	CHECK(xml_attribute().as_float() == 0);
+	CHECK(XmlAttribute().as_float() == 0);
 	CHECK_DOUBLE(double(node.attribute(STR("attr1")).as_float()), 0);
 	CHECK_DOUBLE(double(node.attribute(STR("attr2")).as_float()), 1);
 	CHECK_DOUBLE(double(node.attribute(STR("attr3")).as_float()), 0.12);
@@ -162,7 +162,7 @@ TEST_XML(dom_attr_as_double, "<node attr1='0' attr2='1' attr3='0.12' attr4='-5.1
 {
 	XmlNode node = doc.child(STR("node"));
 
-	CHECK(xml_attribute().as_double() == 0);
+	CHECK(XmlAttribute().as_double() == 0);
 	CHECK_DOUBLE(node.attribute(STR("attr1")).as_double(), 0);
 	CHECK_DOUBLE(node.attribute(STR("attr2")).as_double(), 1);
 	CHECK_DOUBLE(node.attribute(STR("attr3")).as_double(), 0.12);
@@ -175,7 +175,7 @@ TEST_XML(dom_attr_as_bool, "<node attr1='0' attr2='1' attr3='true' attr4='True' 
 {
 	XmlNode node = doc.child(STR("node"));
 
-	CHECK(!xml_attribute().as_bool());
+	CHECK(!XmlAttribute().as_bool());
 	CHECK(!node.attribute(STR("attr1")).as_bool());
 	CHECK(node.attribute(STR("attr2")).as_bool());
 	CHECK(node.attribute(STR("attr3")).as_bool());
@@ -184,7 +184,7 @@ TEST_XML(dom_attr_as_bool, "<node attr1='0' attr2='1' attr3='true' attr4='True' 
 	CHECK(node.attribute(STR("attr6")).as_bool());
 	CHECK(!node.attribute(STR("attr7")).as_bool());
 
-	xml_attribute attr = node.append_attribute(STR("attr8"));
+	XmlAttribute attr = node.append_attribute(STR("attr8"));
 	CHECK(attr.as_bool(true) == true);
 }
 
@@ -193,7 +193,7 @@ TEST_XML(dom_attr_as_llong, "<node attr1='1' attr2='-1' attr3='-9223372036854775
 {
 	XmlNode node = doc.child(STR("node"));
 
-	CHECK(xml_attribute().as_llong() == 0);
+	CHECK(XmlAttribute().as_llong() == 0);
 	CHECK(node.attribute(STR("attr1")).as_llong() == 1);
 	CHECK(node.attribute(STR("attr2")).as_llong() == -1);
 	CHECK(node.attribute(STR("attr3")).as_llong() == -9223372036854775807ll - 1);
@@ -217,7 +217,7 @@ TEST_XML(dom_attr_as_ullong, "<node attr1='0' attr2='1' attr3='92233720368547758
 {
 	XmlNode node = doc.child(STR("node"));
 
-	CHECK(xml_attribute().as_ullong() == 0);
+	CHECK(XmlAttribute().as_ullong() == 0);
 	CHECK(node.attribute(STR("attr1")).as_ullong() == 0);
 	CHECK(node.attribute(STR("attr2")).as_ullong() == 1);
 	CHECK(node.attribute(STR("attr3")).as_ullong() == 9223372036854775807ull);
@@ -240,7 +240,7 @@ TEST_XML(dom_attr_as_ullong_hex, "<node attr1='0777' attr2='0x5ab' attr3='0XFf' 
 
 TEST(dom_attr_defaults)
 {
-    xml_attribute attr;
+    XmlAttribute attr;
 
     CHECK_STRING(attr.as_string(STR("foo")), STR("foo"));
     CHECK(attr.as_int(42) == 42);
@@ -577,11 +577,11 @@ TEST_XML(dom_node_child_interior_null, "<node><child1/><child2/></node>")
 
 TEST_XML(dom_node_attribute, "<node attr1='0' attr2='1'/>")
 {
-	CHECK(XmlNode().attribute(STR("a")) == xml_attribute());
+	CHECK(XmlNode().attribute(STR("a")) == XmlAttribute());
 
 	XmlNode node = doc.child(STR("node"));
 
-	CHECK(node.attribute(STR("n")) == xml_attribute());
+	CHECK(node.attribute(STR("n")) == XmlAttribute());
 	CHECK_NAME_VALUE(node.attribute(STR("attr1")), STR("attr1"), STR("0"));
 	CHECK(node.attribute(STR("attr2")) == node.last_attribute());
 }
@@ -589,18 +589,18 @@ TEST_XML(dom_node_attribute, "<node attr1='0' attr2='1'/>")
 #ifdef PUGIXML_HAS_STRING_VIEW
 TEST_XML(dom_node_attribute_stringview, "<node attr1='0' attr2='1'/>")
 {
-	CHECK(XmlNode().attribute(string_view_t(STR("a"))) == xml_attribute());
+	CHECK(XmlNode().attribute(string_view_t(STR("a"))) == XmlAttribute());
 
 	XmlNode node = doc.child(string_view_t(STR("node")));
 
-	CHECK(node.attribute(string_view_t()) == xml_attribute());
-	CHECK(node.attribute(string_view_t(STR("n"))) == xml_attribute());
+	CHECK(node.attribute(string_view_t()) == XmlAttribute());
+	CHECK(node.attribute(string_view_t(STR("n"))) == XmlAttribute());
 	CHECK_NAME_VALUE(node.attribute(string_view_t(STR("attr1"))), STR("attr1"), STR("0"));
 	CHECK(node.attribute(string_view_t(STR("attr2"))) == node.last_attribute());
 
 	// verify only the characters in the view of the string view are included in the comparison
 	CHECK_NAME_VALUE(node.attribute(string_view_t(STR("attr1_andextratext"), 5)), STR("attr1"), STR("0"));
-	CHECK(node.attribute(string_view_t(STR("attr1"), 2)) == xml_attribute());
+	CHECK(node.attribute(string_view_t(STR("attr1"), 2)) == XmlAttribute());
 }
 
 TEST_XML(dom_node_attribute_interior_null, "<node attr1='0' attr2='1'/>")
@@ -612,17 +612,17 @@ TEST_XML(dom_node_attribute_interior_null, "<node attr1='0' attr2='1'/>")
 	size_t len = (sizeof(name) / sizeof(char_t)) - 1;
 	CHECK(len == 11);
 	CHECK_NAME_VALUE(node.attribute(string_view_t(name, 5)), STR("attr2"), STR("1")); // "attr2" view excluding null
-	CHECK(node.attribute(string_view_t(name, 6)) == xml_attribute()); // "attr2\0" view including null
-	CHECK(node.attribute(string_view_t(name, len)) == xml_attribute()); // "attr2\0extra" view
+	CHECK(node.attribute(string_view_t(name, 6)) == XmlAttribute()); // "attr2\0" view including null
+	CHECK(node.attribute(string_view_t(name, len)) == XmlAttribute()); // "attr2\0extra" view
 
-	xml_attribute attr = node.attribute(STR("attr2"));
+	XmlAttribute attr = node.attribute(STR("attr2"));
 	CHECK_NAME_VALUE(attr, STR("attr2"), STR("1"));
 	attr.set_name(string_view_t(name, len));
 
 	CHECK_NODE(doc, STR("<node attr1=\"0\" attr2=\"1\"/>"));
 	CHECK_NAME_VALUE(node.attribute(string_view_t(name, 5)), STR("attr2"), STR("1")); // "attr2" view excluding null
-	CHECK(node.attribute(string_view_t(name, 6)) == xml_attribute()); // "attr2\0" view including null
-	CHECK(node.attribute(string_view_t(name, len)) == xml_attribute()); // "attr2\0extra" view
+	CHECK(node.attribute(string_view_t(name, 6)) == XmlAttribute()); // "attr2\0" view including null
+	CHECK(node.attribute(string_view_t(name, len)) == XmlAttribute()); // "attr2\0extra" view
 }
 #endif
 
@@ -681,11 +681,11 @@ TEST_XML(dom_node_first_last_attribute, "<node attr1='0' attr2='1'/>")
 	CHECK(node.first_attribute() == node.attribute(STR("attr1")));
 	CHECK(node.last_attribute() == node.attribute(STR("attr2")));
 
-	CHECK(XmlNode().first_attribute() == xml_attribute());
-	CHECK(XmlNode().last_attribute() == xml_attribute());
+	CHECK(XmlNode().first_attribute() == XmlAttribute());
+	CHECK(XmlNode().last_attribute() == XmlAttribute());
 
-	CHECK(doc.first_attribute() == xml_attribute());
-	CHECK(doc.last_attribute() == xml_attribute());
+	CHECK(doc.first_attribute() == XmlAttribute());
+	CHECK(doc.last_attribute() == XmlAttribute());
 }
 
 TEST_XML(dom_node_first_last_child, "<node><child1/><child2/></node>")
@@ -717,7 +717,7 @@ TEST_XML(dom_node_find_child_by_attribute, "<node><stub attr='value3' /><child1 
 
 TEST(dom_node_find_child_by_attribute_null)
 {
-	xml_document doc;
+	XmlDocument doc;
 	XmlNode node0 = doc.append_child();
 	XmlNode node1 = doc.append_child(STR("a"));
 	XmlNode node2 = doc.append_child(STR("a"));
@@ -777,13 +777,13 @@ struct find_predicate_prefix
 
 TEST_XML(dom_node_find_attribute, "<node attr1='0' attr2='1'/>")
 {
-	CHECK(XmlNode().find_attribute(find_predicate_const(true)) == xml_attribute());
+	CHECK(XmlNode().find_attribute(find_predicate_const(true)) == XmlAttribute());
 
 	XmlNode node = doc.child(STR("node"));
 
-	CHECK(doc.find_attribute(find_predicate_const(true)) == xml_attribute());
+	CHECK(doc.find_attribute(find_predicate_const(true)) == XmlAttribute());
 	CHECK(node.find_attribute(find_predicate_const(true)) == node.first_attribute());
-	CHECK(node.find_attribute(find_predicate_const(false)) == xml_attribute());
+	CHECK(node.find_attribute(find_predicate_const(false)) == XmlAttribute());
 	CHECK(node.find_attribute(find_predicate_prefix(STR("attr2"))) == node.last_attribute());
 	CHECK(node.find_attribute(find_predicate_prefix(STR("attr"))) == node.first_attribute());
 }
@@ -1029,7 +1029,7 @@ TEST(dom_offset_debug_encoding)
 {
 	char buf[] = { 0, '<', 0, 'n', 0, '/', 0, '>' };
 
-	xml_document doc;
+	XmlDocument doc;
 	CHECK(doc.load_buffer(buf, sizeof(buf)));
 
 	CHECK(doc.offset_debug() == 0);
@@ -1065,11 +1065,11 @@ TEST_XML(dom_offset_debug_append_buffer, "<node/>")
 TEST_XML(dom_internal_object, "<node attr='value'>value</node>")
 {
 	XmlNode node = doc.child(STR("node"));
-	xml_attribute attr = node.first_attribute();
+	XmlAttribute attr = node.first_attribute();
 	XmlNode value = node.first_child();
 
 	CHECK(XmlNode().internal_object() == 0);
-	CHECK(xml_attribute().internal_object() == 0);
+	CHECK(XmlAttribute().internal_object() == 0);
 
     CHECK(node.internal_object() != 0);
     CHECK(value.internal_object() != 0);
@@ -1080,18 +1080,18 @@ TEST_XML(dom_internal_object, "<node attr='value'>value</node>")
     XmlNode node_copy = node;
     CHECK(node_copy.internal_object() == node.internal_object());
 
-    xml_attribute attr_copy = attr;
+    XmlAttribute attr_copy = attr;
     CHECK(attr_copy.internal_object() == attr.internal_object());
 }
 
 TEST_XML(dom_hash_value, "<node attr='value'>value</node>")
 {
 	XmlNode node = doc.child(STR("node"));
-	xml_attribute attr = node.first_attribute();
+	XmlAttribute attr = node.first_attribute();
 	XmlNode value = node.first_child();
 
 	CHECK(XmlNode().hash_value() == 0);
-	CHECK(xml_attribute().hash_value() == 0);
+	CHECK(XmlAttribute().hash_value() == 0);
 
     CHECK(node.hash_value() != 0);
     CHECK(value.hash_value() != 0);
@@ -1102,7 +1102,7 @@ TEST_XML(dom_hash_value, "<node attr='value'>value</node>")
     XmlNode node_copy = node;
     CHECK(node_copy.hash_value() == node.hash_value());
 
-    xml_attribute attr_copy = attr;
+    XmlAttribute attr_copy = attr;
     CHECK(attr_copy.hash_value() == attr.hash_value());
 }
 
@@ -1190,7 +1190,7 @@ TEST_XML(dom_unspecified_bool_coverage, "<node attr='value'>text</node>")
 	static_cast<void (*)(XmlNode***)>(node)(0);
 
 	CHECK(node.first_attribute());
-	static_cast<void (*)(xml_attribute***)>(node.first_attribute())(0);
+	static_cast<void (*)(XmlAttribute***)>(node.first_attribute())(0);
 
 	CHECK(node.text());
 	static_cast<void (*)(XmlText***)>(node.text())(0);
@@ -1215,7 +1215,7 @@ TEST_XML(dom_ranged_for, "<node attr1='1' attr2='2'><test>3</test><fake>5</fake>
 
 	for (XmlNode n: doc.children())
 	{
-		for (xml_attribute a: n.attributes())
+		for (XmlAttribute a: n.attributes())
 		{
 			CHECK(a.as_int() == index);
 			index++;
@@ -1235,11 +1235,11 @@ TEST_XML(dom_ranged_for, "<node attr1='1' attr2='2'><test>3</test><fake>5</fake>
 TEST_XML(dom_node_attribute_hinted, "<node attr1='1' attr2='2' attr3='3' />")
 {
 	XmlNode node = doc.first_child();
-	xml_attribute attr1 = node.attribute(STR("attr1"));
-	xml_attribute attr2 = node.attribute(STR("attr2"));
-	xml_attribute attr3 = node.attribute(STR("attr3"));
+	XmlAttribute attr1 = node.attribute(STR("attr1"));
+	XmlAttribute attr2 = node.attribute(STR("attr2"));
+	XmlAttribute attr3 = node.attribute(STR("attr3"));
 
-	xml_attribute hint;
+	XmlAttribute hint;
 	CHECK(!XmlNode().attribute(STR("test"), hint) && !hint);
 
 	CHECK(node.attribute(STR("attr2"), hint) == attr2 && hint == attr3);
@@ -1260,11 +1260,11 @@ TEST_XML(dom_node_attribute_hinted_stringview, "<node attr1='1' attr2='2' attr3=
 	string_view_t a1name = string_view_t(STR("attr1"));
 	string_view_t a2name = string_view_t(STR("attr2"));
 	string_view_t a3name = string_view_t(STR("attr3"));
-	xml_attribute attr1 = node.attribute(a1name);
-	xml_attribute attr2 = node.attribute(a2name);
-	xml_attribute attr3 = node.attribute(a3name);
+	XmlAttribute attr1 = node.attribute(a1name);
+	XmlAttribute attr2 = node.attribute(a2name);
+	XmlAttribute attr3 = node.attribute(a3name);
 
-	xml_attribute hint;
+	XmlAttribute hint;
 	CHECK(!XmlNode().attribute(string_view_t(string_view_t(STR("test"))), hint) && !hint);
 
 	CHECK(node.attribute(a2name, hint) == attr2 && hint == attr3);
@@ -1284,9 +1284,9 @@ TEST_XML(dom_node_attribute_hint_interior_null, "<node attr1='1' attr2='2' attr3
 {
 	XmlNode node = doc.first_child();
 
-	xml_attribute attr1 = node.attribute(STR("attr1"));
-	xml_attribute attr2 = node.attribute(STR("attr2"));
-	xml_attribute attr3 = node.attribute(STR("attr3"));
+	XmlAttribute attr1 = node.attribute(STR("attr1"));
+	XmlAttribute attr2 = node.attribute(STR("attr2"));
+	XmlAttribute attr3 = node.attribute(STR("attr3"));
 
 	CHECK(node && attr1 && attr2 && attr3);
 
@@ -1294,7 +1294,7 @@ TEST_XML(dom_node_attribute_hint_interior_null, "<node attr1='1' attr2='2' attr3
 	size_t len = (sizeof(name) / sizeof(char_t)) - 1;
 	CHECK(len == 11);
 
-	xml_attribute hint;
+	XmlAttribute hint;
 	CHECK(node.attribute(string_view_t(name, 5), hint) == attr2 && hint == attr3); // "attr2"
 	CHECK(node.attribute(string_view_t(name, 5), hint) == attr2 && hint == attr3); // "attr2"
 
@@ -1436,7 +1436,7 @@ TEST_XML(dom_as_int_plus, "<node attr1='+1' attr2='+0xa' />")
 
 TEST(dom_node_anonymous)
 {
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child(node_element);
 	doc.append_child(node_element);
 	doc.append_child(node_pcdata);
@@ -1467,15 +1467,15 @@ TEST_XML(dom_node_anonymous_child, "<node></node>")
 
 TEST_XML(dom_node_anonymous_attribute, "<node attr='0'/>")
 {
-	xml_attribute attr = doc.first_child().attribute(STR("attr"));
-	CHECK(attr != xml_attribute());
+	XmlAttribute attr = doc.first_child().attribute(STR("attr"));
+	CHECK(attr != XmlAttribute());
 	attr.set_name(STR(""));
 	CHECK_NODE(doc, STR("<node :anonymous=\"0\"/>"));
 	CHECK_NAME_VALUE(doc.first_child().first_attribute(), STR(""), STR("0"));
 
-	CHECK(doc.first_child().attribute(STR("")) == xml_attribute());
+	CHECK(doc.first_child().attribute(STR("")) == XmlAttribute());
 #ifdef PUGIXML_HAS_STRING_VIEW
-	CHECK(doc.first_child().attribute(string_view_t()) == xml_attribute());
-	CHECK(doc.first_child().attribute(string_view_t(STR("hi"), 0)) == xml_attribute());
+	CHECK(doc.first_child().attribute(string_view_t()) == XmlAttribute());
+	CHECK(doc.first_child().attribute(string_view_t(STR("hi"), 0)) == XmlAttribute());
 #endif
 }

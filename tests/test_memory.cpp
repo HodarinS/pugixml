@@ -45,7 +45,7 @@ TEST(memory_custom_memory_management)
 
 	{
 		// parse document
-		xml_document doc;
+		XmlDocument doc;
 
 		CHECK(page_allocs == 0 && page_deallocs == 0);
 
@@ -88,7 +88,7 @@ TEST(memory_large_allocations)
 	set_memory_management_functions(allocate, deallocate);
 
 	{
-		xml_document doc;
+		XmlDocument doc;
 
 		CHECK(page_allocs == 0 && page_deallocs == 0);
 
@@ -152,7 +152,7 @@ TEST(memory_page_management)
 	set_memory_management_functions(allocate, deallocate);
 
 	{
-		xml_document doc;
+		XmlDocument doc;
 
 		CHECK(page_allocs == 0 && page_deallocs == 0);
 
@@ -199,7 +199,7 @@ TEST(memory_page_management)
 
 TEST(memory_string_allocate_increasing)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	doc.append_child(node_pcdata).set_value(STR("x"));
 
@@ -225,7 +225,7 @@ TEST(memory_string_allocate_increasing)
 
 TEST(memory_string_allocate_decreasing)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	std::basic_string<char_t> s = STR("ab");
 
@@ -253,7 +253,7 @@ TEST(memory_string_allocate_decreasing)
 
 TEST(memory_string_allocate_increasing_inplace)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	XmlNode node = doc.append_child(node_pcdata);
 
@@ -280,7 +280,7 @@ TEST(memory_string_allocate_increasing_inplace)
 
 TEST(memory_string_allocate_decreasing_inplace)
 {
-	xml_document doc;
+	XmlDocument doc;
 
 	XmlNode node = doc.append_child(node_pcdata);
 

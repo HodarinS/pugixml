@@ -41,7 +41,7 @@ std::basic_string<pugi::char_t> xml_writer_string::as_string() const
 	return std::basic_string<pugi::char_t>(static_cast<const pugi::char_t*>(static_cast<const void*>(contents.data())), contents.size() / sizeof(pugi::char_t));
 }
 
-std::string save_narrow(const pugi::xml_document& doc, unsigned int flags, pugi::XmlEncoding encoding)
+std::string save_narrow(const pugi::XmlDocument& doc, unsigned int flags, pugi::XmlEncoding encoding)
 {
 	xml_writer_string writer;
 
@@ -50,7 +50,7 @@ std::string save_narrow(const pugi::xml_document& doc, unsigned int flags, pugi:
 	return writer.as_narrow();
 }
 
-bool test_save_narrow(const pugi::xml_document& doc, unsigned int flags, pugi::XmlEncoding encoding, const char* expected, size_t length)
+bool test_save_narrow(const pugi::XmlDocument& doc, unsigned int flags, pugi::XmlEncoding encoding, const char* expected, size_t length)
 {
 	return test_narrow(save_narrow(doc, flags, encoding), expected, length);
 }

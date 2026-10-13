@@ -4,7 +4,7 @@
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
 {
-    pugi::xml_document doc;
+    pugi::XmlDocument doc;
 
 	doc.load_buffer(Data, Size);
 	doc.load_buffer(Data, Size, pugi::parse_minimal);

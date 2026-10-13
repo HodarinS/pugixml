@@ -16,8 +16,8 @@ struct xml_writer_string: public pugi::XmlWriter
 	std::basic_string<pugi::char_t> as_string() const;
 };
 
-std::string save_narrow(const pugi::xml_document& doc, unsigned int flags, pugi::XmlEncoding encoding);
-bool test_save_narrow(const pugi::xml_document& doc, unsigned int flags, pugi::XmlEncoding encoding, const char* expected, size_t length);
+std::string save_narrow(const pugi::XmlDocument& doc, unsigned int flags, pugi::XmlEncoding encoding);
+bool test_save_narrow(const pugi::XmlDocument& doc, unsigned int flags, pugi::XmlEncoding encoding, const char* expected, size_t length);
 
 std::string write_narrow(pugi::XmlNode node, unsigned int flags, pugi::XmlEncoding encoding);
 bool test_write_narrow(pugi::XmlNode node, unsigned int flags, pugi::XmlEncoding encoding, const char* expected, size_t length);

@@ -245,13 +245,13 @@ TEST(XPathVariables_evaluate_node_set_fail)
 
 TEST(XPathVariables_multiple_documents)
 {
-	xml_document doc;
+	XmlDocument doc;
 	doc.append_child().set_name(STR("node"));
 
-	xml_document doc1;
+	XmlDocument doc1;
 	doc1.append_child().set_name(STR("node"));
 
-	xml_document doc2;
+	XmlDocument doc2;
 	doc2.append_child().set_name(STR("node"));
 
 	XPathVariableSet set;

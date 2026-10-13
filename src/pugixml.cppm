@@ -199,7 +199,7 @@ inline const unsigned int format_no_declaration = 0x08;
 // default.
 inline const unsigned int format_no_escapes = 0x10;
 
-// Open file using text mode in xml_document::save_file. This enables special
+// Open file using text mode in XmlDocument::save_file. This enables special
 // character (i.e. new-line) conversions on some systems. This flag is off by
 // default.
 inline const unsigned int format_save_file_text = 0x20;
@@ -319,7 +319,7 @@ private:
 };
 
 // A light-weight handle for manipulating attributes in DOM tree
-class PUGIXML_CLASS xml_attribute
+class PUGIXML_CLASS XmlAttribute
 {
   friend class XmlAttributeIterator;
   friend class XmlNode;
@@ -327,14 +327,14 @@ class PUGIXML_CLASS xml_attribute
 private:
   XmlAttributeStruct *_attr;
 
-  typedef void (*unspecified_bool_type)(xml_attribute ***);
+  typedef void (*unspecified_bool_type)(XmlAttribute ***);
 
 public:
   // Default constructor. Constructs an empty attribute.
-  xml_attribute();
+  XmlAttribute();
 
   // Constructs attribute from internal pointer
-  explicit xml_attribute(XmlAttributeStruct *attr);
+  explicit XmlAttribute(XmlAttributeStruct *attr);
 
   // Safe bool conversion operator
   operator unspecified_bool_type() const;
@@ -343,12 +343,12 @@ public:
   bool operator!() const;
 
   // Comparison operators (compares wrapped attribute pointers)
-  bool operator==(const xml_attribute &r) const;
-  bool operator!=(const xml_attribute &r) const;
-  bool operator<(const xml_attribute &r) const;
-  bool operator>(const xml_attribute &r) const;
-  bool operator<=(const xml_attribute &r) const;
-  bool operator>=(const xml_attribute &r) const;
+  bool operator==(const XmlAttribute &r) const;
+  bool operator!=(const XmlAttribute &r) const;
+  bool operator<(const XmlAttribute &r) const;
+  bool operator>(const XmlAttribute &r) const;
+  bool operator<=(const XmlAttribute &r) const;
+  bool operator>=(const XmlAttribute &r) const;
 
   // Check if attribute is empty (null)
   bool empty() const;
@@ -397,21 +397,21 @@ public:
   bool set_value(unsigned long long rhs);
 
   // Set attribute value (equivalent to set_value without error checking)
-  xml_attribute &operator=(const char_t *rhs);
-  xml_attribute &operator=(int rhs);
-  xml_attribute &operator=(unsigned int rhs);
-  xml_attribute &operator=(long rhs);
-  xml_attribute &operator=(unsigned long rhs);
-  xml_attribute &operator=(double rhs);
-  xml_attribute &operator=(float rhs);
-  xml_attribute &operator=(bool rhs);
-  xml_attribute &operator=(string_view_t rhs);
-  xml_attribute &operator=(long long rhs);
-  xml_attribute &operator=(unsigned long long rhs);
+  XmlAttribute &operator=(const char_t *rhs);
+  XmlAttribute &operator=(int rhs);
+  XmlAttribute &operator=(unsigned int rhs);
+  XmlAttribute &operator=(long rhs);
+  XmlAttribute &operator=(unsigned long rhs);
+  XmlAttribute &operator=(double rhs);
+  XmlAttribute &operator=(float rhs);
+  XmlAttribute &operator=(bool rhs);
+  XmlAttribute &operator=(string_view_t rhs);
+  XmlAttribute &operator=(long long rhs);
+  XmlAttribute &operator=(unsigned long long rhs);
 
   // Get next/previous attribute in the attribute list of the parent node
-  xml_attribute next_attribute() const;
-  xml_attribute previous_attribute() const;
+  XmlAttribute next_attribute() const;
+  XmlAttribute previous_attribute() const;
 
   // Get hash value (unique for handles to the same object)
   size_t hash_value() const;
@@ -468,8 +468,8 @@ public:
   const char_t *value() const;
 
   // Get attribute list
-  xml_attribute first_attribute() const;
-  xml_attribute last_attribute() const;
+  XmlAttribute first_attribute() const;
+  XmlAttribute last_attribute() const;
 
   // Get children list
   XmlNode first_child() const;
@@ -490,18 +490,18 @@ public:
 
   // Get child, attribute or next/previous sibling with the specified name
   XmlNode child(const char_t *name) const;
-  xml_attribute attribute(const char_t *name) const;
+  XmlAttribute attribute(const char_t *name) const;
   XmlNode next_sibling(const char_t *name) const;
   XmlNode previous_sibling(const char_t *name) const;
   XmlNode child(string_view_t name) const;
-  xml_attribute attribute(string_view_t name) const;
+  XmlAttribute attribute(string_view_t name) const;
   XmlNode next_sibling(string_view_t name) const;
   XmlNode previous_sibling(string_view_t name) const;
 
   // Get attribute, starting the search from a hint (and updating hint so that
   // searching for a sequence of attributes is fast)
-  xml_attribute attribute(const char_t *name, xml_attribute &hint) const;
-  xml_attribute attribute(string_view_t name, xml_attribute &hint) const;
+  XmlAttribute attribute(const char_t *name, XmlAttribute &hint) const;
+  XmlAttribute attribute(string_view_t name, XmlAttribute &hint) const;
 
   // Get child value of current node; that is, value of the first child node
   // of type PCDATA/CDATA
@@ -522,32 +522,32 @@ public:
 
   // Add attribute with specified name. Returns added attribute, or empty
   // attribute on errors.
-  xml_attribute append_attribute(const char_t *name);
-  xml_attribute prepend_attribute(const char_t *name);
-  xml_attribute insert_attribute_after(const char_t *name,
-                                       const xml_attribute &attr);
-  xml_attribute insert_attribute_before(const char_t *name,
-                                        const xml_attribute &attr);
-  xml_attribute append_attribute(string_view_t name);
-  xml_attribute prepend_attribute(string_view_t name);
-  xml_attribute insert_attribute_after(string_view_t name,
-                                       const xml_attribute &attr);
-  xml_attribute insert_attribute_before(string_view_t name,
-                                        const xml_attribute &attr);
+  XmlAttribute append_attribute(const char_t *name);
+  XmlAttribute prepend_attribute(const char_t *name);
+  XmlAttribute insert_attribute_after(const char_t *name,
+                                       const XmlAttribute &attr);
+  XmlAttribute insert_attribute_before(const char_t *name,
+                                        const XmlAttribute &attr);
+  XmlAttribute append_attribute(string_view_t name);
+  XmlAttribute prepend_attribute(string_view_t name);
+  XmlAttribute insert_attribute_after(string_view_t name,
+                                       const XmlAttribute &attr);
+  XmlAttribute insert_attribute_before(string_view_t name,
+                                        const XmlAttribute &attr);
 
   // Get attribute with specified name, adding one if it does not exist.
   // Returns the existing or added attribute, or empty attribute on errors.
-  xml_attribute ensure_attribute(const char_t *name);
-  xml_attribute ensure_attribute(string_view_t name);
+  XmlAttribute ensure_attribute(const char_t *name);
+  XmlAttribute ensure_attribute(string_view_t name);
 
   // Add a copy of the specified attribute. Returns added attribute, or empty
   // attribute on errors.
-  xml_attribute append_copy(const xml_attribute &proto);
-  xml_attribute prepend_copy(const xml_attribute &proto);
-  xml_attribute insert_copy_after(const xml_attribute &proto,
-                                  const xml_attribute &attr);
-  xml_attribute insert_copy_before(const xml_attribute &proto,
-                                   const xml_attribute &attr);
+  XmlAttribute append_copy(const XmlAttribute &proto);
+  XmlAttribute prepend_copy(const XmlAttribute &proto);
+  XmlAttribute insert_copy_after(const XmlAttribute &proto,
+                                  const XmlAttribute &attr);
+  XmlAttribute insert_copy_before(const XmlAttribute &proto,
+                                   const XmlAttribute &attr);
 
   // Add child node with specified type. Returns added node, or empty node on
   // errors.
@@ -587,7 +587,7 @@ public:
   XmlNode insert_move_before(const XmlNode &moved, const XmlNode &node);
 
   // Remove specified attribute
-  bool remove_attribute(const xml_attribute &a);
+  bool remove_attribute(const XmlAttribute &a);
   bool remove_attribute(const char_t *name);
   bool remove_attribute(string_view_t name);
 
@@ -614,17 +614,17 @@ public:
   // Find attribute using predicate. Returns first attribute for which
   // predicate returned true.
   template < typename Predicate >
-  xml_attribute find_attribute(Predicate pred) const
+  XmlAttribute find_attribute(Predicate pred) const
   {
     if (!_root)
-      return xml_attribute();
+      return XmlAttribute();
 
-    for (xml_attribute attrib = first_attribute(); attrib;
+    for (XmlAttribute attrib = first_attribute(); attrib;
          attrib = attrib.next_attribute())
       if (pred(attrib))
         return attrib;
 
-    return xml_attribute();
+    return XmlAttribute();
   }
 
   // Find child node using predicate. Returns first child for which predicate
@@ -868,13 +868,13 @@ public:
 };
 
 // Attribute iterator (a bidirectional iterator over a collection of
-// xml_attribute)
+// XmlAttribute)
 class PUGIXML_CLASS XmlAttributeIterator
 {
   friend class XmlNode;
 
 private:
-  mutable xml_attribute _wrap;
+  mutable XmlAttribute _wrap;
   XmlNode _parent;
 
   XmlAttributeIterator(XmlAttributeStruct *ref, XmlNodeStruct *parent);
@@ -882,23 +882,23 @@ private:
 public:
   // Iterator traits
   typedef ptrdiff_t difference_type;
-  typedef xml_attribute value_type;
-  typedef xml_attribute *pointer;
-  typedef xml_attribute &reference;
+  typedef XmlAttribute value_type;
+  typedef XmlAttribute *pointer;
+  typedef XmlAttribute &reference;
   typedef std::bidirectional_iterator_tag iterator_category;
 
   // Default constructor
   XmlAttributeIterator();
 
   // Construct an iterator which points to the specified attribute
-  XmlAttributeIterator(const xml_attribute &attr, const XmlNode &parent);
+  XmlAttributeIterator(const XmlAttribute &attr, const XmlNode &parent);
 
   // Iterator operators
   bool operator==(const XmlAttributeIterator &rhs) const;
   bool operator!=(const XmlAttributeIterator &rhs) const;
 
-  xml_attribute &operator*() const;
-  xml_attribute *operator->() const;
+  XmlAttribute &operator*() const;
+  XmlAttribute *operator->() const;
 
   XmlAttributeIterator &operator++();
   XmlAttributeIterator operator++(int);
@@ -1037,7 +1037,7 @@ struct PUGIXML_CLASS XmlParseResult
 };
 
 // Document class (DOM tree root)
-class PUGIXML_CLASS xml_document : public XmlNode
+class PUGIXML_CLASS XmlDocument : public XmlNode
 {
 private:
   char_t *_buffer;
@@ -1045,29 +1045,29 @@ private:
   char _memory[192];
 
   // Non-copyable semantics
-  xml_document(const xml_document &);
-  xml_document &operator=(const xml_document &);
+  XmlDocument(const XmlDocument &);
+  XmlDocument &operator=(const XmlDocument &);
 
   void _create();
   void _destroy();
-  void _move(xml_document &rhs) noexcept;
+  void _move(XmlDocument &rhs) noexcept;
 
 public:
   // Default constructor, makes empty document
-  xml_document();
+  XmlDocument();
 
   // Destructor, invalidates all node/attribute handles to this document
-  ~xml_document();
+  ~XmlDocument();
   // Move semantics support
-  xml_document(xml_document &&rhs) noexcept;
-  xml_document &operator=(xml_document &&rhs) noexcept;
+  XmlDocument(XmlDocument &&rhs) noexcept;
+  XmlDocument &operator=(XmlDocument &&rhs) noexcept;
 
   // Removes all nodes, leaving the empty document
   void reset();
 
   // Removes all nodes, then copies the entire contents of the specified
   // document
-  void reset(const xml_document &proto);
+  void reset(const XmlDocument &proto);
   // Load document from stream.
   XmlParseResult load(std::basic_istream< char > &stream,
                       unsigned int options = parse_default,
@@ -1353,12 +1353,12 @@ public:
 #endif
 #endif
 
-// XPath node class (either XmlNode or xml_attribute)
+// XPath node class (either XmlNode or XmlAttribute)
 class PUGIXML_CLASS XPathNode
 {
 private:
   XmlNode _node;
-  xml_attribute _attribute;
+  XmlAttribute _attribute;
 
   typedef void (*unspecified_bool_type)(XPathNode ***);
 
@@ -1368,11 +1368,11 @@ public:
 
   // Construct XPath node from XML node/attribute
   XPathNode(const XmlNode &node);
-  XPathNode(const xml_attribute &attribute, const XmlNode &parent);
+  XPathNode(const XmlAttribute &attribute, const XmlNode &parent);
 
   // Get node/attribute, if any
   XmlNode node() const;
-  xml_attribute attribute() const;
+  XmlAttribute attribute() const;
 
   // Get parent of contained node/attribute
   XmlNode parent() const;

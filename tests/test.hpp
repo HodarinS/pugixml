@@ -113,7 +113,7 @@ struct dummy_fixture
 #define TEST_XML_FLAGS(name, xml, flags)                                       \
   struct test_fixture_##name                                                   \
   {                                                                            \
-    pugi::xml_document doc;                                                    \
+    pugi::XmlDocument doc;                                                    \
                                                                                \
     test_fixture_##name()                                                      \
     {                                                                          \
