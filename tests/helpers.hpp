@@ -18,7 +18,7 @@ template <typename T> static void generic_bool_ops_test(const T& obj)
 #   pragma warning(disable: 4800) // forcing value to bool 'true' or 'false' (performance warning) - we really want to just cast to bool instead of !!
 #endif
 
-	bool b1 = null, b2 = obj;
+	bool b1 = (bool)null, b2 = (bool)obj;
 
 #ifdef _MSC_VER
 #   pragma warning(pop)

@@ -5999,19 +5999,14 @@ XmlAttribute::XmlAttribute(XmlAttributeStruct *attr)
 {
 }
 
-static void unspecified_bool_xml_attribute(XmlAttribute ***)
+
+
+XmlAttribute::operator bool() const
 {
+  return _attr ? true : false;
 }
 
-XmlAttribute::operator XmlAttribute::unspecified_bool_type() const
-{
-  return _attr ? unspecified_bool_xml_attribute : NULL;
-}
 
-bool XmlAttribute::operator!() const
-{
-  return !_attr;
-}
 
 bool XmlAttribute::operator==(const XmlAttribute &r) const
 {
@@ -6398,19 +6393,13 @@ XmlNode::XmlNode(XmlNodeStruct *p)
 {
 }
 
-static void unspecified_bool_xml_node(XmlNode ***)
+
+XmlNode::operator bool() const
 {
+  return _root ? true : false;
 }
 
-XmlNode::operator XmlNode::unspecified_bool_type() const
-{
-  return _root ? unspecified_bool_xml_node : NULL;
-}
 
-bool XmlNode::operator!() const
-{
-  return !_root;
-}
 
 XmlNode::iterator XmlNode::begin() const
 {
@@ -7957,19 +7946,12 @@ XmlText::XmlText()
 {
 }
 
-static void unspecified_bool_xml_text(XmlText ***)
+
+XmlText::operator bool() const
 {
+  return _data() ? true : false;
 }
 
-XmlText::operator XmlText::unspecified_bool_type() const
-{
-  return _data() ? unspecified_bool_xml_text : NULL;
-}
-
-bool XmlText::operator!() const
-{
-  return !_data();
-}
 
 bool XmlText::empty() const
 {
@@ -14479,19 +14461,13 @@ XmlNode XPathNode::parent() const
   return _attribute ? _node : _node.parent();
 }
 
-static void unspecified_bool_xpath_node(XPathNode ***)
+
+XPathNode::operator bool() const
 {
+  return (_node || _attribute) ? true : false;
 }
 
-XPathNode::operator XPathNode::unspecified_bool_type() const
-{
-  return (_node || _attribute) ? unspecified_bool_xpath_node : NULL;
-}
 
-bool XPathNode::operator!() const
-{
-  return !(_node || _attribute);
-}
 
 bool XPathNode::operator==(const XPathNode &n) const
 {
@@ -15237,19 +15213,12 @@ const XPathParseResult &XPathQuery::result() const
   return _result;
 }
 
-static void unspecified_bool_xpath_query(XPathQuery ***)
+XPathQuery::operator bool() const
 {
+  return _impl ? true : false;
 }
 
-XPathQuery::operator XPathQuery::unspecified_bool_type() const
-{
-  return _impl ? unspecified_bool_xpath_query : NULL;
-}
 
-bool XPathQuery::operator!() const
-{
-  return !_impl;
-}
 
 XPathNode XmlNode::select_node(const char_t *query,
                                XPathVariableSet *variables) const

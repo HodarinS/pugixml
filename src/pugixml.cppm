@@ -326,7 +326,6 @@ export class PUGIXML_CLASS XmlAttribute
 private:
   XmlAttributeStruct *_attr;
 
-  typedef void (*unspecified_bool_type)(XmlAttribute ***);
 
 public:
   // Default constructor. Constructs an empty attribute.
@@ -335,11 +334,7 @@ public:
   // Constructs attribute from internal pointer
   explicit XmlAttribute(XmlAttributeStruct *attr);
 
-  // Safe bool conversion operator
-  operator unspecified_bool_type() const;
-
-  // Borland C++ workaround
-  bool operator!() const;
+  operator bool() const;
 
   // Comparison operators (compares wrapped attribute pointers)
   bool operator==(const XmlAttribute &r) const;
@@ -429,7 +424,6 @@ class PUGIXML_CLASS XmlNode
 protected:
   XmlNodeStruct *_root;
 
-  typedef void (*unspecified_bool_type)(XmlNode ***);
 
 public:
   // Default constructor. Constructs an empty node.
@@ -439,10 +433,7 @@ public:
   explicit XmlNode(XmlNodeStruct *p);
 
   // Safe bool conversion operator
-  operator unspecified_bool_type() const;
-
-  // Borland C++ workaround
-  bool operator!() const;
+  explicit operator bool() const;
 
   // Comparison operators (compares wrapped node pointers)
   bool operator==(const XmlNode &r) const;
@@ -751,8 +742,6 @@ export class PUGIXML_CLASS XmlText
 
   XmlNodeStruct *_root;
 
-  typedef void (*unspecified_bool_type)(XmlText ***);
-
   explicit XmlText(XmlNodeStruct *root);
 
   XmlNodeStruct *_data_new();
@@ -763,10 +752,7 @@ public:
   XmlText();
 
   // Safe bool conversion operator
-  operator unspecified_bool_type() const;
-
-  // Borland C++ workaround
-  bool operator!() const;
+  explicit operator bool() const;
 
   // Check if text object is empty (null)
   bool empty() const;
@@ -1251,8 +1237,6 @@ private:
   void *_impl;
   XPathParseResult _result;
 
-  typedef void (*unspecified_bool_type)(XPathQuery ***);
-
   // Non-copyable semantics
   XPathQuery(const XPathQuery &);
   XPathQuery &operator=(const XPathQuery &);
@@ -1318,10 +1302,8 @@ public:
   const XPathParseResult &result() const;
 
   // Safe bool conversion operator
-  operator unspecified_bool_type() const;
+  explicit operator bool() const;
 
-  // Borland C++ workaround
-  bool operator!() const;
 };
 
 #ifndef PUGIXML_NO_EXCEPTIONS
@@ -1359,8 +1341,6 @@ private:
   XmlNode _node;
   XmlAttribute _attribute;
 
-  typedef void (*unspecified_bool_type)(XPathNode ***);
-
 public:
   // Default constructor; constructs empty XPath node
   XPathNode();
@@ -1377,10 +1357,7 @@ public:
   XmlNode parent() const;
 
   // Safe bool conversion operator
-  operator unspecified_bool_type() const;
-
-  // Borland C++ workaround
-  bool operator!() const;
+  explicit operator bool() const;
 
   // Comparison operators
   bool operator==(const XPathNode &n) const;

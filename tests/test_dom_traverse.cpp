@@ -1182,31 +1182,7 @@ TEST_XML(dom_node_children_attributes, "<node1 attr1='value1' attr2='value2' /><
 	CHECK(r4.end() == XmlAttributeIterator());
 }
 
-TEST_XML(dom_unspecified_bool_coverage, "<node attr='value'>text</node>")
-{
-	XmlNode node = doc.first_child();
 
-	CHECK(node);
-	static_cast<void (*)(XmlNode***)>(node)(0);
-
-	CHECK(node.first_attribute());
-	static_cast<void (*)(XmlAttribute***)>(node.first_attribute())(0);
-
-	CHECK(node.text());
-	static_cast<void (*)(XmlText***)>(node.text())(0);
-
-#ifndef PUGIXML_NO_XPATH
-	XPathQuery q(STR("/node"));
-
-	CHECK(q);
-	static_cast<void (*)(XPathQuery***)>(q)(0);
-
-	XPathNode qn = q.evaluate_node(doc);
-
-	CHECK(qn);
-	static_cast<void (*)(XPathNode***)>(qn)(0);
-#endif
-}
 
 #if __cplusplus >= 201103
 TEST_XML(dom_ranged_for, "<node attr1='1' attr2='2'><test>3</test><fake>5</fake><test>4</test></node>")
