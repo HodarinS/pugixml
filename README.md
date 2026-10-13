@@ -14,6 +14,7 @@ pugixml is used by a lot of projects, both open-source and proprietary, for perf
 - C++23 minimum required 
 - CamelCase
 - AdditionalFunctions
+- additional encoding support via iconv (iconv required)
 
 ## Documentation
 
@@ -29,22 +30,24 @@ You’re advised to start with the quick-start guide; however, many important li
 Here's an example of how code using pugixml looks; it opens an XML file, goes over all Tool nodes and prints tools that have a Timeout attribute greater than 0:
 
 ```c++
-#include "pugixml.hpp"
-#include <iostream>
+import std;
+import pugixml;
 
 int main()
 {
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file("xgconsole.xml");
+    pugi::XmlDocument doc;
+    pugi::XmlParseResult result = doc.loadFile("xgconsole.xml");
     if (!result)
         return -1;
         
-    for (pugi::xml_node tool: doc.child("Profile").child("Tools").children("Tool"))
+    for (pugi::XmlNode const& tool: doc.child("Profile").child("Tools").children("Tool"))
     {
-        int timeout = tool.attribute("Timeout").as_int();
+        int timeout = tool.attribute("Timeout").asInt();
         
         if (timeout > 0)
-            std::cout << "Tool " << tool.attribute("Filename").value() << " has timeout " << timeout << "\n";
+            std::println("Tool {} has timeout {}", 
+                        tool.attribute("Filename").value(), 
+                        timeout);
     }
 }
 ```
@@ -52,23 +55,25 @@ int main()
 And the same example using XPath:
 
 ```c++
-#include "pugixml.hpp"
-#include <iostream>
+import std;
+import pugixml;
+
 
 int main()
 {
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file("xgconsole.xml");
+    pugi::XmlDocument doc;
+    pugi::XmlParseResult result = doc.loadFile("xgconsole.xml");
     if (!result)
         return -1;
         
-    pugi::xpath_node_set tools_with_timeout = doc.select_nodes("/Profile/Tools/Tool[@Timeout > 0]");
+    pugi::XPathNodeSet tools_with_timeout = doc.selectNodes("/Profile/Tools/Tool[@Timeout > 0]");
     
-    for (pugi::xpath_node node: tools_with_timeout)
+    for (pugi::XPathNode const& node: tools_with_timeout)
     {
-        pugi::xml_node tool = node.node();
-        std::cout << "Tool " << tool.attribute("Filename").value() <<
-            " has timeout " << tool.attribute("Timeout").as_int() << "\n";
+        pugi::XmlNode tool = node.node();
+        std::println("Tool {} has timeout {}", 
+                        tool.attribute("Filename").value(), 
+                        tool.attribute("Timeout").as_int());
     }
 }
 ```
