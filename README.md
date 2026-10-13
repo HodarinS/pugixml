@@ -11,7 +11,7 @@ pugixml is used by a lot of projects, both open-source and proprietary, for perf
 ## Changes From Fork
 
 - C++ native module
-- C++23 minimum support 
+- C++23 minimum required 
 - CamelCase
 - AdditionalFunctions
 
