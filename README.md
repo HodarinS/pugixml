@@ -8,6 +8,13 @@ variants and conversions between different Unicode encodings (which happen autom
 
 pugixml is used by a lot of projects, both open-source and proprietary, for performance and easy-to-use interface.
 
+## Changes From Fork
+
+- C++ native module
+- C++23 minimum support 
+- CamelCase
+- AdditionalFunctions
+
 ## Documentation
 
 Documentation for the current release of pugixml is available on-line as two separate documents:
