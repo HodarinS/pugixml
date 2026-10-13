@@ -144,7 +144,7 @@ TEST_XML(xpath_sort_attributes_docorder, "<node attr1='' attr2='value' attr4='va
 {
 	XmlNode n = doc.child(STR("node"));
 
-	n.first_attribute().set_name(STR("attribute1"));
+	n.first_attribute().setName(STR("attribute1"));
 	n.insert_attribute_after(STR("attr3"), n.attribute(STR("attr2")));
 
 	XPathNodeSet ns = n.select_nodes(STR("@* | @*"));

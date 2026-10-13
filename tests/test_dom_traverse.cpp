@@ -445,7 +445,7 @@ TEST_XML(dom_node_iterator_invalidate, "<node><node1><child1/></node1><node2><ch
 
 	// adding attr2 back, it3 is still past-the-end!
 	XmlNodeIterator it2new = node2.append_child();
-	it2new->set_name(STR("child2-new"));
+	it2new->setName(STR("child2-new"));
 
 	CHECK(node2.end() == it3);
 	CHECK(move_iter(it1, 1) == it2new);
@@ -566,7 +566,7 @@ TEST_XML(dom_node_child_interior_null, "<node><child1/><child2/></node>")
 	CHECK(doc.child(string_view_t(name, 5)) == XmlNode()); // "node\0" view including null
 	CHECK(doc.child(string_view_t(name, len)) == XmlNode()); // "node\0extra" view
 
-	node.set_name(string_view_t(name, len));
+	node.setName(string_view_t(name, len));
 	CHECK_NODE(doc, STR("<node><child1/><child2/></node>"));
 	CHECK_NAME_VALUE(node, STR("node"), STR(""));
 	CHECK_NAME_VALUE(doc.child(string_view_t(name, 4)), STR("node"), STR(""));  // "node" view excluding null
@@ -617,7 +617,7 @@ TEST_XML(dom_node_attribute_interior_null, "<node attr1='0' attr2='1'/>")
 
 	XmlAttribute attr = node.attribute(STR("attr2"));
 	CHECK_NAME_VALUE(attr, STR("attr2"), STR("1"));
-	attr.set_name(string_view_t(name, len));
+	attr.setName(string_view_t(name, len));
 
 	CHECK_NODE(doc, STR("<node attr1=\"0\" attr2=\"1\"/>"));
 	CHECK_NAME_VALUE(node.attribute(string_view_t(name, 5)), STR("attr2"), STR("1")); // "attr2" view excluding null
@@ -1047,7 +1047,7 @@ TEST_XML(dom_offset_debug_append, "<node/>")
 	CHECK(c2.offset_debug() == -1);
 	CHECK(c3.offset_debug() == -1);
 
-	c1.set_name(STR("nodenode"));
+	c1.setName(STR("nodenode"));
 	CHECK(c1.offset_debug() == -1);
 }
 
@@ -1277,7 +1277,7 @@ TEST_XML(dom_node_attribute_hint_interior_null, "<node attr1='1' attr2='2' attr3
 	CHECK(!node.attribute(string_view_t(name, 6), hint) && hint == attr3); // "attr2\0"
 	CHECK(!node.attribute(string_view_t(name, len), hint) && hint == attr3); // "attr2\0extra"
 
-	attr2.set_name(string_view_t(name, len)); // attr2\0extra
+	attr2.setName(string_view_t(name, len)); // attr2\0extra
 
 	CHECK(node.attribute(string_view_t(name, 5), hint) == attr2 && hint == attr3); // "attr2"
 	CHECK(node.attribute(string_view_t(name, 5), hint) == attr2 && hint == attr3); // "attr2"
@@ -1428,7 +1428,7 @@ TEST_XML(dom_node_anonymous_child, "<node></node>")
 {
 	XmlNode node = doc.child(STR("node"));
 	CHECK_NAME_VALUE(node, STR("node"), STR(""));
-	node.set_name(STR(""));
+	node.setName(STR(""));
 	CHECK_NODE(doc, STR("<:anonymous/>"));
 	CHECK(doc.first_child() != XmlNode());
 	CHECK_NAME_VALUE(doc.first_child(), STR(""), STR(""));
@@ -1445,7 +1445,7 @@ TEST_XML(dom_node_anonymous_attribute, "<node attr='0'/>")
 {
 	XmlAttribute attr = doc.first_child().attribute(STR("attr"));
 	CHECK(attr != XmlAttribute());
-	attr.set_name(STR(""));
+	attr.setName(STR(""));
 	CHECK_NODE(doc, STR("<node :anonymous=\"0\"/>"));
 	CHECK_NAME_VALUE(doc.first_child().first_attribute(), STR(""), STR("0"));
 

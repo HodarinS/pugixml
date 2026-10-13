@@ -369,28 +369,28 @@ public:
 
   // Set attribute name/value (returns false if attribute is empty or there is
   // not enough memory)
-  bool set_name(const char_t *rhs);
-  bool set_name(const char_t *rhs, size_t size);
-  bool set_name(string_view_t rhs);
-  bool set_value(const char_t *rhs);
-  bool set_value(const char_t *rhs, size_t size);
-  bool set_value(string_view_t rhs);
+  bool setName(const char_t *rhs);
+  bool setName(const char_t *rhs, size_t size);
+  bool setName(string_view_t rhs);
+  bool setValue(const char_t *rhs);
+  bool setValue(const char_t *rhs, size_t size);
+  bool setValue(string_view_t rhs);
 
   // Set attribute value with type conversion (numbers are converted to
   // strings, boolean is converted to "true"/"false")
-  bool set_value(int rhs);
-  bool set_value(unsigned int rhs);
-  bool set_value(long rhs);
-  bool set_value(unsigned long rhs);
-  bool set_value(double rhs);
-  bool set_value(double rhs, int precision);
-  bool set_value(float rhs);
-  bool set_value(float rhs, int precision);
-  bool set_value(bool rhs);
-  bool set_value(long long rhs);
-  bool set_value(unsigned long long rhs);
+  bool setValue(int rhs);
+  bool setValue(unsigned int rhs);
+  bool setValue(long rhs);
+  bool setValue(unsigned long rhs);
+  bool setValue(double rhs);
+  bool setValue(double rhs, int precision);
+  bool setValue(float rhs);
+  bool setValue(float rhs, int precision);
+  bool setValue(bool rhs);
+  bool setValue(long long rhs);
+  bool setValue(unsigned long long rhs);
 
-  // Set attribute value (equivalent to set_value without error checking)
+  // Set attribute value (equivalent to setValue without error checking)
   XmlAttribute &operator=(const char_t *rhs);
   XmlAttribute &operator=(int rhs);
   XmlAttribute &operator=(unsigned int rhs);
@@ -503,12 +503,12 @@ public:
 
   // Set node name/value (returns false if node is empty, there is not enough
   // memory, or node can not have name/value)
-  bool set_name(const char_t *rhs);
-  bool set_name(const char_t *rhs, size_t size);
-  bool set_name(string_view_t rhs);
-  bool set_value(const char_t *rhs);
-  bool set_value(const char_t *rhs, size_t size);
-  bool set_value(string_view_t rhs);
+  bool setName(const char_t *rhs);
+  bool setName(const char_t *rhs, size_t size);
+  bool setName(string_view_t rhs);
+  bool setValue(const char_t *rhs);
+  bool setValue(const char_t *rhs, size_t size);
+  bool setValue(string_view_t rhs);
 
   // Add attribute with specified name. Returns added attribute, or empty
   // attribute on errors.

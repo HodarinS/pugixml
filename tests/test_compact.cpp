@@ -22,10 +22,10 @@ TEST_XML_FLAGS(compact_out_of_memory_string, "<n a='v'/><?n v?>", parse_pi)
 	XmlAttribute a = doc.child(STR("n")).attribute(STR("a"));
 	XmlNode pi = doc.last_child();
 
-	CHECK_ALLOC_FAIL(CHECK(!pi.set_name(STR("name"))));
-	CHECK_ALLOC_FAIL(CHECK(!pi.set_value(STR("value"))));
-	CHECK_ALLOC_FAIL(CHECK(!a.set_name(STR("name"))));
-	CHECK_ALLOC_FAIL(CHECK(!a.set_value(STR("value"))));
+	CHECK_ALLOC_FAIL(CHECK(!pi.setName(STR("name"))));
+	CHECK_ALLOC_FAIL(CHECK(!pi.setValue(STR("value"))));
+	CHECK_ALLOC_FAIL(CHECK(!a.setName(STR("name"))));
+	CHECK_ALLOC_FAIL(CHECK(!a.setValue(STR("value"))));
 }
 
 TEST_XML(compact_out_of_memory_attribute, "<n a='v'/>")

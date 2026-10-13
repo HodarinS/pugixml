@@ -69,13 +69,13 @@ TEST_XML_FLAGS(write_cdata_escape, "<![CDATA[value]]>", parse_cdata | parse_frag
 {
 	CHECK_NODE(doc, STR("<![CDATA[value]]>"));
 
-	doc.first_child().set_value(STR("1]]>2]]>3"));
+	doc.first_child().setValue(STR("1]]>2]]>3"));
 	CHECK_NODE(doc, STR("<![CDATA[1]]]]><![CDATA[>2]]]]><![CDATA[>3]]>"));
 
-	doc.first_child().set_value(STR("1]"));
+	doc.first_child().setValue(STR("1]"));
 	CHECK_NODE(doc, STR("<![CDATA[1]]]>"));
 
-	doc.first_child().set_value(STR("1]]"));
+	doc.first_child().setValue(STR("1]]"));
 	CHECK_NODE(doc, STR("<![CDATA[1]]]]>"));
 }
 
@@ -107,19 +107,19 @@ TEST(write_comment_invalid)
 
 	CHECK_NODE(doc, STR("<!---->"));
 
-	child.set_value(STR("-"));
+	child.setValue(STR("-"));
 	CHECK_NODE(doc, STR("<!--- -->"));
 
-	child.set_value(STR("--"));
+	child.setValue(STR("--"));
 	CHECK_NODE(doc, STR("<!--- - -->"));
 
-	child.set_value(STR("---"));
+	child.setValue(STR("---"));
 	CHECK_NODE(doc, STR("<!--- - - -->"));
 
-	child.set_value(STR("-->"));
+	child.setValue(STR("-->"));
 	CHECK_NODE(doc, STR("<!--- ->-->"));
 
-	child.set_value(STR("-->-"));
+	child.setValue(STR("-->-"));
 	CHECK_NODE(doc, STR("<!--- ->- -->"));
 }
 
@@ -144,7 +144,7 @@ TEST(write_pi_null)
 
 	CHECK_NODE(doc, STR("<?:anonymous?>"));
 
-	node.set_value(STR("value"));
+	node.setValue(STR("value"));
 
 	CHECK_NODE(doc, STR("<?:anonymous value?>"));
 }
@@ -154,16 +154,16 @@ TEST(write_pi_invalid)
 	XmlDocument doc;
 	XmlNode node = doc.append_child(node_pi);
 
-	node.set_name(STR("test"));
-	node.set_value(STR("?"));
+	node.setName(STR("test"));
+	node.setValue(STR("?"));
 
 	CHECK_NODE(doc, STR("<?test ?") STR("?>"));
 
-	node.set_value(STR("?>"));
+	node.setValue(STR("?>"));
 
 	CHECK_NODE(doc, STR("<?test ? >?>"));
 
-	node.set_value(STR("<?foo?>"));
+	node.setValue(STR("<?foo?>"));
 
 	CHECK_NODE(doc, STR("<?test <?foo? >?>"));
 }
@@ -191,7 +191,7 @@ TEST(write_doctype_null)
 TEST_XML(write_escape, "<node attr=''>text</node>")
 {
 	doc.child(STR("node")).attribute(STR("attr")) = STR("<>'\"&\x04\r\n\t");
-	doc.child(STR("node")).first_child().set_value(STR("<>'\"&\x04\r\n\t"));
+	doc.child(STR("node")).first_child().setValue(STR("<>'\"&\x04\r\n\t"));
 
 	CHECK_NODE(doc, STR("<node attr=\"&lt;>'&quot;&amp;&#04;&#13;&#10;&#09;\">&lt;&gt;'\"&amp;&#04;\r\n\t</node>"));
 	CHECK_NODE_EX(doc, STR("<node attr='&lt;>&apos;\"&amp;&#04;&#13;&#10;&#09;'>&lt;&gt;'\"&amp;&#04;\r\n\t</node>"), STR(""), format_raw | format_attribute_single_quote);
@@ -200,7 +200,7 @@ TEST_XML(write_escape, "<node attr=''>text</node>")
 TEST_XML(write_escape_roundtrip, "<node attr=''>text</node>")
 {
 	doc.child(STR("node")).attribute(STR("attr")) = STR("<>'\"&\x04\r\n\t");
-	doc.child(STR("node")).first_child().set_value(STR("<>'\"&\x04\r\n\t"));
+	doc.child(STR("node")).first_child().setValue(STR("<>'\"&\x04\r\n\t"));
 
 	std::string contents = write_narrow(doc, format_raw, encoding_utf8);
 
@@ -228,7 +228,7 @@ TEST_XML(write_escape_unicode, "<node attr='&#x3c00;'/>")
 TEST_XML(write_no_escapes, "<node attr=''>text</node>")
 {
 	doc.child(STR("node")).attribute(STR("attr")) = STR("<>'\"&\x04\r\n\t");
-	doc.child(STR("node")).first_child().set_value(STR("<>'\"&\x04\r\n\t"));
+	doc.child(STR("node")).first_child().setValue(STR("<>'\"&\x04\r\n\t"));
 
 	CHECK_NODE_EX(doc, STR("<node attr=\"<>'\"&\x04\r\n\t\"><>'\"&\x04\r\n\t</node>"), STR(""), format_raw | format_no_escapes);
 }
@@ -281,7 +281,7 @@ TEST_XML(write_print_stream_wide, "<node/>")
 TEST_XML(write_huge_chunk, "<node/>")
 {
 	std::basic_string<char_t> name(10000, STR('n'));
-	doc.child(STR("node")).set_name(name.c_str());
+	doc.child(STR("node")).setName(name.c_str());
 
 	test_writer writer;
 	doc.print(writer, STR(""), format_default, get_native_encoding());
@@ -359,7 +359,7 @@ TEST(write_encoding_huge_invalid)
 		for (unsigned int i = 0; i < N; ++i) s_utf16 += static_cast<wchar_t>(0xd852);
 
 		XmlDocument doc;
-		doc.append_child().set_name(s_utf16.c_str());
+		doc.append_child().setName(s_utf16.c_str());
 
 		CHECK(test_write_narrow(doc, format_default, encoding_utf8, "< />\n", 5));
 	}
@@ -398,7 +398,7 @@ TEST(write_encoding_huge_invalid)
 	for (unsigned int i = 0; i < N; ++i) s_utf8 += "\x82";
 
 	XmlDocument doc;
-	doc.append_child().set_name(s_utf8.c_str());
+	doc.append_child().setName(s_utf8.c_str());
 
 	std::string s_utf16 = std::string("\x00<\x00 \x00/\x00>\x00\n", 10);
 
@@ -420,7 +420,7 @@ TEST(write_unicode_escape)
 static bool test_write_unicode_invalid(const wchar_t* name, const char* expected)
 {
 	XmlDocument doc;
-	doc.append_child(node_pcdata).set_value(name);
+	doc.append_child(node_pcdata).setValue(name);
 
 	return write_narrow(doc, format_raw, encoding_utf8) == expected;
 }
@@ -454,7 +454,7 @@ TEST(write_unicode_invalid_utf16)
 static bool test_write_unicode_invalid(const char* name, const wchar_t* expected)
 {
 	XmlDocument doc;
-	doc.append_child(node_pcdata).set_value(name);
+	doc.append_child(node_pcdata).setValue(name);
 
 	return write_wide(doc, format_raw, encoding_wchar) == expected;
 }
@@ -495,7 +495,7 @@ TEST(write_no_name_element)
 	XmlDocument doc;
 	XmlNode root = doc.append_child();
 	root.append_child();
-	root.append_child().append_child(node_pcdata).set_value(STR("text"));
+	root.append_child().append_child(node_pcdata).setValue(STR("text"));
 
 	CHECK_NODE(doc, STR("<:anonymous><:anonymous/><:anonymous>text</:anonymous></:anonymous>"));
 	CHECK_NODE_EX(doc, STR("<:anonymous>\n\t<:anonymous />\n\t<:anonymous>text</:anonymous>\n</:anonymous>\n"), STR("\t"), format_default);
@@ -512,7 +512,7 @@ TEST(write_no_name_pi)
 TEST(write_no_name_attribute)
 {
 	XmlDocument doc;
-	doc.append_child().set_name(STR("root"));
+	doc.append_child().setName(STR("root"));
 	doc.child(STR("root")).append_attribute(STR(""));
 
 	CHECK_NODE(doc, STR("<root :anonymous=\"\"/>"));
@@ -587,7 +587,7 @@ TEST(write_pcdata_null)
 TEST(write_pcdata_basic)
 {
 	XmlDocument doc;
-	doc.append_child(STR("node")).append_child(node_pcdata).set_value(STR("text"));
+	doc.append_child(STR("node")).append_child(node_pcdata).setValue(STR("text"));
 
 	CHECK_NODE(doc, STR("<node>text</node>"));
 	CHECK_NODE_EX(doc, STR("<node>text</node>\n"), STR("\t"), format_indent);
@@ -691,7 +691,7 @@ TEST(write_flush_coverage)
 	XmlAttribute a = n.append_attribute(STR("a"));
 
 	XmlAttribute b = n.append_attribute(STR("b"));
-	b.set_value(STR("<&\""));
+	b.setValue(STR("<&\""));
 
 	n.append_child(node_comment);
 
@@ -701,7 +701,7 @@ TEST(write_flush_coverage)
 	for (size_t l = 0; l <= basel; ++l)
 	{
 		std::basic_string<char_t> pad(bufl - l, STR('v'));
-		a.set_value(pad.c_str());
+		a.setValue(pad.c_str());
 
 		std::string s = save_narrow(doc, format_raw, encoding_auto);
 		CHECK(s.size() == basel + bufl - l);

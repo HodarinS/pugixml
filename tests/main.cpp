@@ -74,7 +74,7 @@ static void replace_memory_management()
     pugi::XmlDocument doc;
     std::println("replace_memory_management");
     auto node = doc.append_child();
-    node.set_name("node");
+    node.setName("node");
     std::println("replace_memory_management");
   }
   std::println("replace_memory_management");

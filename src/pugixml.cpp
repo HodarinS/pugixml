@@ -861,7 +861,7 @@ T *compact_get_value(const void *object)
 }
 
 template < int header_offset, typename T >
-void compact_set_value(const void *object, T *value)
+void compact_setValue(const void *object, T *value)
 {
   compact_get_page(object, header_offset)
       ->allocator->_hash->insert(object, value);
@@ -900,7 +900,7 @@ public:
         _data = static_cast< unsigned char >(offset + 1);
       else
       {
-        compact_set_value< header_offset >(this, value);
+        compact_setValue< header_offset >(this, value);
 
         _data = 255;
       }
@@ -982,7 +982,7 @@ public:
         }
         else
         {
-          compact_set_value< header_offset >(this, value);
+          compact_setValue< header_offset >(this, value);
 
           _data = 65535;
         }
@@ -1071,7 +1071,7 @@ public:
           }
           else
           {
-            compact_set_value< header_offset >(this, value);
+            compact_setValue< header_offset >(this, value);
 
             _data = 255;
           }
@@ -1079,7 +1079,7 @@ public:
       }
       else
       {
-        compact_set_value< header_offset >(this, value);
+        compact_setValue< header_offset >(this, value);
 
         _data = 255;
       }
@@ -5352,7 +5352,7 @@ integer_to_string(char_t *begin, char_t *end, U value, bool negative)
 
 // set value with conversion functions
 template < typename String, typename Header >
-bool set_value_ascii(String &dest, Header &header, uintptr_t header_mask,
+bool setValue_ascii(String &dest, Header &header, uintptr_t header_mask,
                      char *buf)
 {
 #ifdef PUGIXML_WCHAR_MODE
@@ -5370,7 +5370,7 @@ bool set_value_ascii(String &dest, Header &header, uintptr_t header_mask,
 }
 
 template < typename U, typename String, typename Header >
-bool set_value_integer(String &dest, Header &header, uintptr_t header_mask,
+bool setValue_integer(String &dest, Header &header, uintptr_t header_mask,
                        U value, bool negative)
 {
   char_t buf[64];
@@ -5381,7 +5381,7 @@ bool set_value_integer(String &dest, Header &header, uintptr_t header_mask,
 }
 
 template < typename String, typename Header >
-bool set_value_convert(String &dest, Header &header, uintptr_t header_mask,
+bool setValue_convert(String &dest, Header &header, uintptr_t header_mask,
                        float value, int precision)
 {
   char buf[128];
@@ -5394,11 +5394,11 @@ bool set_value_convert(String &dest, Header &header, uintptr_t header_mask,
 #else
   PUGI_IMPL_SNPRINTF(buf, "%.*g", precision, double(value));
 #endif
-  return set_value_ascii(dest, header, header_mask, buf);
+  return setValue_ascii(dest, header, header_mask, buf);
 }
 
 template < typename String, typename Header >
-bool set_value_convert(String &dest, Header &header, uintptr_t header_mask,
+bool setValue_convert(String &dest, Header &header, uintptr_t header_mask,
                        double value, int precision)
 {
   char buf[128];
@@ -5412,11 +5412,11 @@ bool set_value_convert(String &dest, Header &header, uintptr_t header_mask,
   PUGI_IMPL_SNPRINTF(buf, "%.*g", precision, value);
 #endif
 
-  return set_value_ascii(dest, header, header_mask, buf);
+  return setValue_ascii(dest, header, header_mask, buf);
 }
 
 template < typename String, typename Header >
-bool set_value_bool(String &dest, Header &header, uintptr_t header_mask,
+bool setValue_bool(String &dest, Header &header, uintptr_t header_mask,
                     bool value)
 {
   return strcpy_insitu(dest, header, header_mask, value ? ("true") : ("false"),
@@ -6150,71 +6150,71 @@ XmlAttributeStruct *XmlAttribute::internal_object() const
 
 XmlAttribute &XmlAttribute::operator=(const char_t *rhs)
 {
-  set_value(rhs);
+  setValue(rhs);
   return *this;
 }
 
 XmlAttribute &XmlAttribute::operator=(int rhs)
 {
-  set_value(rhs);
+  setValue(rhs);
   return *this;
 }
 
 XmlAttribute &XmlAttribute::operator=(unsigned int rhs)
 {
-  set_value(rhs);
+  setValue(rhs);
   return *this;
 }
 
 XmlAttribute &XmlAttribute::operator=(long rhs)
 {
-  set_value(rhs);
+  setValue(rhs);
   return *this;
 }
 
 XmlAttribute &XmlAttribute::operator=(unsigned long rhs)
 {
-  set_value(rhs);
+  setValue(rhs);
   return *this;
 }
 
 XmlAttribute &XmlAttribute::operator=(double rhs)
 {
-  set_value(rhs);
+  setValue(rhs);
   return *this;
 }
 
 XmlAttribute &XmlAttribute::operator=(float rhs)
 {
-  set_value(rhs);
+  setValue(rhs);
   return *this;
 }
 
 XmlAttribute &XmlAttribute::operator=(bool rhs)
 {
-  set_value(rhs);
+  setValue(rhs);
   return *this;
 }
 
 XmlAttribute &XmlAttribute::operator=(string_view_t rhs)
 {
-  set_value(rhs);
+  setValue(rhs);
   return *this;
 }
 
 XmlAttribute &XmlAttribute::operator=(long long rhs)
 {
-  set_value(rhs);
+  setValue(rhs);
   return *this;
 }
 
 XmlAttribute &XmlAttribute::operator=(unsigned long long rhs)
 {
-  set_value(rhs);
+  setValue(rhs);
   return *this;
 }
 
-bool XmlAttribute::set_name(const char_t *rhs)
+bool XmlAttribute::setName(const char_t *rhs)
 {
   if (!_attr)
     return false;
@@ -6224,7 +6224,7 @@ bool XmlAttribute::set_name(const char_t *rhs)
                              impl::strlength(rhs));
 }
 
-bool XmlAttribute::set_name(const char_t *rhs, size_t size)
+bool XmlAttribute::setName(const char_t *rhs, size_t size)
 {
   if (!_attr)
     return false;
@@ -6234,7 +6234,7 @@ bool XmlAttribute::set_name(const char_t *rhs, size_t size)
                              size);
 }
 
-bool XmlAttribute::set_name(string_view_t rhs)
+bool XmlAttribute::setName(string_view_t rhs)
 {
   if (!_attr)
     return false;
@@ -6244,7 +6244,7 @@ bool XmlAttribute::set_name(string_view_t rhs)
                              rhs.data(), rhs.size());
 }
 
-bool XmlAttribute::set_value(const char_t *rhs)
+bool XmlAttribute::setValue(const char_t *rhs)
 {
   if (!_attr)
     return false;
@@ -6254,7 +6254,7 @@ bool XmlAttribute::set_value(const char_t *rhs)
                              impl::strlength(rhs));
 }
 
-bool XmlAttribute::set_value(const char_t *rhs, size_t size)
+bool XmlAttribute::setValue(const char_t *rhs, size_t size)
 {
   if (!_attr)
     return false;
@@ -6264,7 +6264,7 @@ bool XmlAttribute::set_value(const char_t *rhs, size_t size)
                              size);
 }
 
-bool XmlAttribute::set_value(string_view_t rhs)
+bool XmlAttribute::setValue(string_view_t rhs)
 {
   if (!_attr)
     return false;
@@ -6274,111 +6274,111 @@ bool XmlAttribute::set_value(string_view_t rhs)
                              rhs.data(), rhs.size());
 }
 
-bool XmlAttribute::set_value(int rhs)
+bool XmlAttribute::setValue(int rhs)
 {
   if (!_attr)
     return false;
 
-  return impl::set_value_integer< unsigned int >(
+  return impl::setValue_integer< unsigned int >(
       _attr->value, _attr->header, impl::xml_memory_page_value_allocated_mask,
       rhs, rhs < 0);
 }
 
-bool XmlAttribute::set_value(unsigned int rhs)
+bool XmlAttribute::setValue(unsigned int rhs)
 {
   if (!_attr)
     return false;
 
-  return impl::set_value_integer< unsigned int >(
+  return impl::setValue_integer< unsigned int >(
       _attr->value, _attr->header, impl::xml_memory_page_value_allocated_mask,
       rhs, false);
 }
 
-bool XmlAttribute::set_value(long rhs)
+bool XmlAttribute::setValue(long rhs)
 {
   if (!_attr)
     return false;
 
-  return impl::set_value_integer< unsigned long >(
+  return impl::setValue_integer< unsigned long >(
       _attr->value, _attr->header, impl::xml_memory_page_value_allocated_mask,
       rhs, rhs < 0);
 }
 
-bool XmlAttribute::set_value(unsigned long rhs)
+bool XmlAttribute::setValue(unsigned long rhs)
 {
   if (!_attr)
     return false;
 
-  return impl::set_value_integer< unsigned long >(
+  return impl::setValue_integer< unsigned long >(
       _attr->value, _attr->header, impl::xml_memory_page_value_allocated_mask,
       rhs, false);
 }
 
-bool XmlAttribute::set_value(double rhs)
+bool XmlAttribute::setValue(double rhs)
 {
   if (!_attr)
     return false;
 
-  return impl::set_value_convert(_attr->value, _attr->header,
+  return impl::setValue_convert(_attr->value, _attr->header,
                                  impl::xml_memory_page_value_allocated_mask,
                                  rhs, default_double_precision);
 }
 
-bool XmlAttribute::set_value(double rhs, int precision)
+bool XmlAttribute::setValue(double rhs, int precision)
 {
   if (!_attr)
     return false;
 
-  return impl::set_value_convert(_attr->value, _attr->header,
+  return impl::setValue_convert(_attr->value, _attr->header,
                                  impl::xml_memory_page_value_allocated_mask,
                                  rhs, precision);
 }
 
-bool XmlAttribute::set_value(float rhs)
+bool XmlAttribute::setValue(float rhs)
 {
   if (!_attr)
     return false;
 
-  return impl::set_value_convert(_attr->value, _attr->header,
+  return impl::setValue_convert(_attr->value, _attr->header,
                                  impl::xml_memory_page_value_allocated_mask,
                                  rhs, default_float_precision);
 }
 
-bool XmlAttribute::set_value(float rhs, int precision)
+bool XmlAttribute::setValue(float rhs, int precision)
 {
   if (!_attr)
     return false;
 
-  return impl::set_value_convert(_attr->value, _attr->header,
+  return impl::setValue_convert(_attr->value, _attr->header,
                                  impl::xml_memory_page_value_allocated_mask,
                                  rhs, precision);
 }
 
-bool XmlAttribute::set_value(bool rhs)
+bool XmlAttribute::setValue(bool rhs)
 {
   if (!_attr)
     return false;
 
-  return impl::set_value_bool(_attr->value, _attr->header,
+  return impl::setValue_bool(_attr->value, _attr->header,
                               impl::xml_memory_page_value_allocated_mask, rhs);
 }
 
-bool XmlAttribute::set_value(long long rhs)
+bool XmlAttribute::setValue(long long rhs)
 {
   if (!_attr)
     return false;
 
-  return impl::set_value_integer< unsigned long long >(
+  return impl::setValue_integer< unsigned long long >(
       _attr->value, _attr->header, impl::xml_memory_page_value_allocated_mask,
       rhs, rhs < 0);
 }
 
-bool XmlAttribute::set_value(unsigned long long rhs)
+bool XmlAttribute::setValue(unsigned long long rhs)
 {
   if (!_attr)
     return false;
 
-  return impl::set_value_integer< unsigned long long >(
+  return impl::setValue_integer< unsigned long long >(
       _attr->value, _attr->header, impl::xml_memory_page_value_allocated_mask,
       rhs, false);
 }
@@ -6788,7 +6788,7 @@ XmlNode XmlNode::last_child() const
   return first ? XmlNode(first->prev_sibling_c) : XmlNode();
 }
 
-bool XmlNode::set_name(const char_t *rhs)
+bool XmlNode::setName(const char_t *rhs)
 {
   XmlNodeType type_ = _root ? PUGI_IMPL_NODETYPE(_root) : node_null;
 
@@ -6800,7 +6800,7 @@ bool XmlNode::set_name(const char_t *rhs)
                              impl::strlength(rhs));
 }
 
-bool XmlNode::set_name(const char_t *rhs, size_t size)
+bool XmlNode::setName(const char_t *rhs, size_t size)
 {
   XmlNodeType type_ = _root ? PUGI_IMPL_NODETYPE(_root) : node_null;
 
@@ -6812,7 +6812,7 @@ bool XmlNode::set_name(const char_t *rhs, size_t size)
                              size);
 }
 
-bool XmlNode::set_name(string_view_t rhs)
+bool XmlNode::setName(string_view_t rhs)
 {
   XmlNodeType type_ = _root ? PUGI_IMPL_NODETYPE(_root) : node_null;
 
@@ -6824,7 +6824,7 @@ bool XmlNode::set_name(string_view_t rhs)
                              rhs.data(), rhs.size());
 }
 
-bool XmlNode::set_value(const char_t *rhs)
+bool XmlNode::setValue(const char_t *rhs)
 {
   XmlNodeType type_ = _root ? PUGI_IMPL_NODETYPE(_root) : node_null;
 
@@ -6837,7 +6837,7 @@ bool XmlNode::set_value(const char_t *rhs)
                              impl::strlength(rhs));
 }
 
-bool XmlNode::set_value(const char_t *rhs, size_t size)
+bool XmlNode::setValue(const char_t *rhs, size_t size)
 {
   XmlNodeType type_ = _root ? PUGI_IMPL_NODETYPE(_root) : node_null;
 
@@ -6850,7 +6850,7 @@ bool XmlNode::set_value(const char_t *rhs, size_t size)
                              size);
 }
 
-bool XmlNode::set_value(string_view_t rhs)
+bool XmlNode::setValue(string_view_t rhs)
 {
   XmlNodeType type_ = _root ? PUGI_IMPL_NODETYPE(_root) : node_null;
 
@@ -6878,7 +6878,7 @@ XmlAttribute XmlNode::append_attribute(const char_t *name_)
 
   impl::append_attribute(a._attr, _root);
 
-  a.set_name(name_);
+  a.setName(name_);
 
   return a;
 }
@@ -6898,7 +6898,7 @@ XmlAttribute XmlNode::prepend_attribute(const char_t *name_)
 
   impl::prepend_attribute(a._attr, _root);
 
-  a.set_name(name_);
+  a.setName(name_);
 
   return a;
 }
@@ -6921,7 +6921,7 @@ XmlAttribute XmlNode::insert_attribute_after(const char_t *name_,
 
   impl::insert_attribute_after(a._attr, attr._attr, _root);
 
-  a.set_name(name_);
+  a.setName(name_);
 
   return a;
 }
@@ -6944,7 +6944,7 @@ XmlAttribute XmlNode::insert_attribute_before(const char_t *name_,
 
   impl::insert_attribute_before(a._attr, attr._attr, _root);
 
-  a.set_name(name_);
+  a.setName(name_);
 
   return a;
 }
@@ -6964,7 +6964,7 @@ XmlAttribute XmlNode::append_attribute(string_view_t name_)
 
   impl::append_attribute(a._attr, _root);
 
-  a.set_name(name_);
+  a.setName(name_);
 
   return a;
 }
@@ -6984,7 +6984,7 @@ XmlAttribute XmlNode::prepend_attribute(string_view_t name_)
 
   impl::prepend_attribute(a._attr, _root);
 
-  a.set_name(name_);
+  a.setName(name_);
 
   return a;
 }
@@ -7007,7 +7007,7 @@ XmlAttribute XmlNode::insert_attribute_after(string_view_t name_,
 
   impl::insert_attribute_after(a._attr, attr._attr, _root);
 
-  a.set_name(name_);
+  a.setName(name_);
 
   return a;
 }
@@ -7030,7 +7030,7 @@ XmlAttribute XmlNode::insert_attribute_before(string_view_t name_,
 
   impl::insert_attribute_before(a._attr, attr._attr, _root);
 
-  a.set_name(name_);
+  a.setName(name_);
 
   return a;
 }
@@ -7155,7 +7155,7 @@ XmlNode XmlNode::append_child(XmlNodeType type_)
   impl::append_node(n._root, _root);
 
   if (type_ == node_declaration)
-    n.set_name(("xml"));
+    n.setName(("xml"));
 
   return n;
 }
@@ -7176,7 +7176,7 @@ XmlNode XmlNode::prepend_child(XmlNodeType type_)
   impl::prepend_node(n._root, _root);
 
   if (type_ == node_declaration)
-    n.set_name(("xml"));
+    n.setName(("xml"));
 
   return n;
 }
@@ -7199,7 +7199,7 @@ XmlNode XmlNode::insert_child_before(XmlNodeType type_, const XmlNode &node)
   impl::insert_node_before(n._root, node._root);
 
   if (type_ == node_declaration)
-    n.set_name(("xml"));
+    n.setName(("xml"));
 
   return n;
 }
@@ -7222,7 +7222,7 @@ XmlNode XmlNode::insert_child_after(XmlNodeType type_, const XmlNode &node)
   impl::insert_node_after(n._root, node._root);
 
   if (type_ == node_declaration)
-    n.set_name(("xml"));
+    n.setName(("xml"));
 
   return n;
 }
@@ -7231,7 +7231,7 @@ XmlNode XmlNode::append_child(const char_t *name_)
 {
   XmlNode result = append_child(node_element);
 
-  result.set_name(name_);
+  result.setName(name_);
 
   return result;
 }
@@ -7240,7 +7240,7 @@ XmlNode XmlNode::prepend_child(const char_t *name_)
 {
   XmlNode result = prepend_child(node_element);
 
-  result.set_name(name_);
+  result.setName(name_);
 
   return result;
 }
@@ -7249,7 +7249,7 @@ XmlNode XmlNode::insert_child_after(const char_t *name_, const XmlNode &node)
 {
   XmlNode result = insert_child_after(node_element, node);
 
-  result.set_name(name_);
+  result.setName(name_);
 
   return result;
 }
@@ -7258,7 +7258,7 @@ XmlNode XmlNode::insert_child_before(const char_t *name_, const XmlNode &node)
 {
   XmlNode result = insert_child_before(node_element, node);
 
-  result.set_name(name_);
+  result.setName(name_);
 
   return result;
 }
@@ -7267,7 +7267,7 @@ XmlNode XmlNode::append_child(string_view_t name_)
 {
   XmlNode result = append_child(node_element);
 
-  result.set_name(name_);
+  result.setName(name_);
 
   return result;
 }
@@ -7276,7 +7276,7 @@ XmlNode XmlNode::prepend_child(string_view_t name_)
 {
   XmlNode result = prepend_child(node_element);
 
-  result.set_name(name_);
+  result.setName(name_);
 
   return result;
 }
@@ -7285,7 +7285,7 @@ XmlNode XmlNode::insert_child_after(string_view_t name_, const XmlNode &node)
 {
   XmlNode result = insert_child_after(node_element, node);
 
-  result.set_name(name_);
+  result.setName(name_);
 
   return result;
 }
@@ -7294,7 +7294,7 @@ XmlNode XmlNode::insert_child_before(string_view_t name_, const XmlNode &node)
 {
   XmlNode result = insert_child_before(node_element, node);
 
-  result.set_name(name_);
+  result.setName(name_);
 
   return result;
 }
@@ -8073,7 +8073,7 @@ bool XmlText::set(int rhs)
 {
   XmlNodeStruct *dn = _data_new();
 
-  return dn ? impl::set_value_integer< unsigned int >(
+  return dn ? impl::setValue_integer< unsigned int >(
                   dn->value, dn->header,
                   impl::xml_memory_page_value_allocated_mask, rhs, rhs < 0)
             : false;
@@ -8083,7 +8083,7 @@ bool XmlText::set(unsigned int rhs)
 {
   XmlNodeStruct *dn = _data_new();
 
-  return dn ? impl::set_value_integer< unsigned int >(
+  return dn ? impl::setValue_integer< unsigned int >(
                   dn->value, dn->header,
                   impl::xml_memory_page_value_allocated_mask, rhs, false)
             : false;
@@ -8093,7 +8093,7 @@ bool XmlText::set(long rhs)
 {
   XmlNodeStruct *dn = _data_new();
 
-  return dn ? impl::set_value_integer< unsigned long >(
+  return dn ? impl::setValue_integer< unsigned long >(
                   dn->value, dn->header,
                   impl::xml_memory_page_value_allocated_mask, rhs, rhs < 0)
             : false;
@@ -8103,7 +8103,7 @@ bool XmlText::set(unsigned long rhs)
 {
   XmlNodeStruct *dn = _data_new();
 
-  return dn ? impl::set_value_integer< unsigned long >(
+  return dn ? impl::setValue_integer< unsigned long >(
                   dn->value, dn->header,
                   impl::xml_memory_page_value_allocated_mask, rhs, false)
             : false;
@@ -8113,7 +8113,7 @@ bool XmlText::set(float rhs)
 {
   XmlNodeStruct *dn = _data_new();
 
-  return dn ? impl::set_value_convert(
+  return dn ? impl::setValue_convert(
                   dn->value, dn->header,
                   impl::xml_memory_page_value_allocated_mask, rhs,
                   default_float_precision)
@@ -8124,7 +8124,7 @@ bool XmlText::set(float rhs, int precision)
 {
   XmlNodeStruct *dn = _data_new();
 
-  return dn ? impl::set_value_convert(
+  return dn ? impl::setValue_convert(
                   dn->value, dn->header,
                   impl::xml_memory_page_value_allocated_mask, rhs, precision)
             : false;
@@ -8134,7 +8134,7 @@ bool XmlText::set(double rhs)
 {
   XmlNodeStruct *dn = _data_new();
 
-  return dn ? impl::set_value_convert(
+  return dn ? impl::setValue_convert(
                   dn->value, dn->header,
                   impl::xml_memory_page_value_allocated_mask, rhs,
                   default_double_precision)
@@ -8145,7 +8145,7 @@ bool XmlText::set(double rhs, int precision)
 {
   XmlNodeStruct *dn = _data_new();
 
-  return dn ? impl::set_value_convert(
+  return dn ? impl::setValue_convert(
                   dn->value, dn->header,
                   impl::xml_memory_page_value_allocated_mask, rhs, precision)
             : false;
@@ -8155,7 +8155,7 @@ bool XmlText::set(bool rhs)
 {
   XmlNodeStruct *dn = _data_new();
 
-  return dn ? impl::set_value_bool(dn->value, dn->header,
+  return dn ? impl::setValue_bool(dn->value, dn->header,
                                    impl::xml_memory_page_value_allocated_mask,
                                    rhs)
             : false;
@@ -8165,7 +8165,7 @@ bool XmlText::set(long long rhs)
 {
   XmlNodeStruct *dn = _data_new();
 
-  return dn ? impl::set_value_integer< unsigned long long >(
+  return dn ? impl::setValue_integer< unsigned long long >(
                   dn->value, dn->header,
                   impl::xml_memory_page_value_allocated_mask, rhs, rhs < 0)
             : false;
@@ -8175,7 +8175,7 @@ bool XmlText::set(unsigned long long rhs)
 {
   XmlNodeStruct *dn = _data_new();
 
-  return dn ? impl::set_value_integer< unsigned long long >(
+  return dn ? impl::setValue_integer< unsigned long long >(
                   dn->value, dn->header,
                   impl::xml_memory_page_value_allocated_mask, rhs, false)
             : false;

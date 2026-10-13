@@ -54,19 +54,19 @@ TEST(memory_custom_memory_management)
 		CHECK(page_allocs == 1 && page_deallocs == 0);
 
 		// modify document (no new page)
-		CHECK(doc.first_child().set_name(STR("foobars")));
+		CHECK(doc.first_child().setName(STR("foobars")));
 		CHECK(page_allocs == 1 && page_deallocs == 0);
 
 		// modify document (new page)
 		std::basic_string<char_t> s(65536, 'x');
 
-		CHECK(doc.first_child().set_name(s.c_str()));
+		CHECK(doc.first_child().setName(s.c_str()));
 		CHECK(page_allocs == 2 && page_deallocs == 0);
 
 		// modify document (new page, old one should die)
 		s += s;
 
-		CHECK(doc.first_child().set_name(s.c_str()));
+		CHECK(doc.first_child().setName(s.c_str()));
 		CHECK(page_allocs == 3 && page_deallocs == 1);
 	}
 
@@ -97,7 +97,7 @@ TEST(memory_large_allocations)
 		{
 			std::basic_string<char_t> s(i * 128, 'x');
 
-			CHECK(doc.append_child(node_pcdata).set_value(s.c_str()));
+			CHECK(doc.append_child(node_pcdata).setValue(s.c_str()));
 		}
 
 		CHECK(page_allocs > 0 && page_deallocs == 0);
@@ -112,7 +112,7 @@ TEST(memory_large_allocations)
 			{
 				std::basic_string<char_t> s = node.value();
 
-				CHECK(node.set_value((s + s).c_str()));
+				CHECK(node.setValue((s + s).c_str()));
 			}
 
 			// prune
@@ -201,13 +201,13 @@ TEST(memory_string_allocate_increasing)
 {
 	XmlDocument doc;
 
-	doc.append_child(node_pcdata).set_value(STR("x"));
+	doc.append_child(node_pcdata).setValue(STR("x"));
 
 	std::basic_string<char_t> s = STR("ab");
 
 	for (int i = 0; i < 17; ++i)
 	{
-		doc.append_child(node_pcdata).set_value(s.c_str());
+		doc.append_child(node_pcdata).setValue(s.c_str());
 
 		s += s;
 	}
@@ -235,10 +235,10 @@ TEST(memory_string_allocate_decreasing)
 	{
 		s.resize(s.size() / 2);
 
-		doc.append_child(node_pcdata).set_value(s.c_str());
+		doc.append_child(node_pcdata).setValue(s.c_str());
 	}
 
-	doc.append_child(node_pcdata).set_value(STR("x"));
+	doc.append_child(node_pcdata).setValue(STR("x"));
 
 	std::string result = save_narrow(doc, format_no_declaration | format_raw, encoding_utf8);
 
@@ -257,13 +257,13 @@ TEST(memory_string_allocate_increasing_inplace)
 
 	XmlNode node = doc.append_child(node_pcdata);
 
-	node.set_value(STR("x"));
+	node.setValue(STR("x"));
 
 	std::basic_string<char_t> s = STR("ab");
 
 	for (int i = 0; i < 17; ++i)
 	{
-		node.set_value(s.c_str());
+		node.setValue(s.c_str());
 
 		s += s;
 	}
@@ -292,10 +292,10 @@ TEST(memory_string_allocate_decreasing_inplace)
 	{
 		s.resize(s.size() / 2);
 
-		node.set_value(s.c_str());
+		node.setValue(s.c_str());
 	}
 
-	node.set_value(STR("x"));
+	node.setValue(STR("x"));
 
 	std::string result = save_narrow(doc, format_no_declaration | format_raw, encoding_utf8);
 

@@ -246,13 +246,13 @@ TEST(XPathVariables_evaluate_node_set_fail)
 TEST(XPathVariables_multiple_documents)
 {
 	XmlDocument doc;
-	doc.append_child().set_name(STR("node"));
+	doc.append_child().setName(STR("node"));
 
 	XmlDocument doc1;
-	doc1.append_child().set_name(STR("node"));
+	doc1.append_child().setName(STR("node"));
 
 	XmlDocument doc2;
-	doc2.append_child().set_name(STR("node"));
+	doc2.append_child().setName(STR("node"));
 
 	XPathVariableSet set;
 	set.set(STR("var1"), doc1.select_nodes(STR("*")));

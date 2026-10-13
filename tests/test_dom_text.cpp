@@ -228,7 +228,7 @@ TEST_XML(dom_text_get_no_state, "<node/>")
     CHECK(t);
     CHECK_STRING(t.get(), STR(""));
 
-    node.first_child().set_value(STR("test"));
+    node.first_child().setValue(STR("test"));
 
     CHECK(t);
     CHECK_STRING(t.get(), STR("test"));
@@ -403,7 +403,7 @@ TEST_XML(dom_text_assign, "<node/>")
 	CHECK_NODE(node, STR("<node><text1>v1</text1><text2>-2147483647</text2><text3>-2147483648</text3><text4>4294967295</text4><text5>4294967294</text5><text6>0.5</text6><text7>0.25</text7><text8>true</text8><text9>v2</text9></node>"));
 }
 
-TEST_XML(dom_text_set_value, "<node/>")
+TEST_XML(dom_text_setValue, "<node/>")
 {
 	XmlNode node = doc.child(STR("node"));
 
@@ -450,7 +450,7 @@ TEST_XML(dom_text_assign_long, "<node/>")
 	CHECK_NODE(node, STR("<node><text1>-9223372036854775807</text1><text2>-9223372036854775808</text2><text3>18446744073709551615</text3><text4>18446744073709551614</text4></node>"));
 }
 
-TEST_XML(dom_text_set_value_long, "<node/>")
+TEST_XML(dom_text_setValue_long, "<node/>")
 {
 	XmlNode node = doc.child(STR("node"));
 
@@ -480,7 +480,7 @@ TEST_XML(dom_text_assign_long, "<node/>")
 	CHECK_NODE(node, STR("<node><text1>-2147483647</text1><text2>-2147483648</text2><text3>4294967295</text3><text4>4294967294</text4></node>"));
 }
 
-TEST_XML(dom_text_set_value_long, "<node/>")
+TEST_XML(dom_text_setValue_long, "<node/>")
 {
 	XmlNode node = doc.child(STR("node"));
 
@@ -512,7 +512,7 @@ TEST_XML(dom_text_assign_llong, "<node/>")
 	CHECK_NODE(node, STR("<node><text1>-9223372036854775807</text1><text2>-9223372036854775808</text2><text3>18446744073709551615</text3><text4>18446744073709551614</text4></node>"));
 }
 
-TEST_XML(dom_text_set_value_llong, "<node/>")
+TEST_XML(dom_text_setValue_llong, "<node/>")
 {
 	XmlNode node = doc.child(STR("node"));
 

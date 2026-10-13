@@ -869,9 +869,9 @@ TEST_XML_FLAGS(
 TEST(xpath_string_value_empty)
 {
   XmlDocument doc;
-  doc.append_child(node_pcdata).set_value(STR("head"));
+  doc.append_child(node_pcdata).setValue(STR("head"));
   doc.append_child(node_pcdata);
-  doc.append_child(node_pcdata).set_value(STR("tail"));
+  doc.append_child(node_pcdata).setValue(STR("tail"));
 
   CHECK_XPATH_STRING(doc, STR("string()"), STR("headtail"));
 }

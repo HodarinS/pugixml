@@ -72,7 +72,7 @@ TEST(document_create_empty)
 TEST(document_create)
 {
 	XmlDocument doc;
-	doc.append_child().set_name(STR("node"));
+	doc.append_child().setName(STR("node"));
 	CHECK_NODE(doc, STR("<node/>"));
 }
 
@@ -708,7 +708,7 @@ TEST_XML(document_save_declaration_present_first, "<node/>")
 TEST_XML(document_save_declaration_present_second, "<node/>")
 {
 	doc.insert_child_before(node_declaration, doc.first_child()).append_attribute(STR("encoding")) = STR("utf8");
-	doc.insert_child_before(node_comment, doc.first_child()).set_value(STR("text"));
+	doc.insert_child_before(node_comment, doc.first_child()).setValue(STR("text"));
 
 	xml_writer_string writer;
 
