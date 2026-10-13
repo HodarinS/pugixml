@@ -53,12 +53,11 @@ using string_view_t = std::basic_string_view< char >;
 
 export constexpr short PUGIXML_VERSION = 1160;
 // The PugiXML namespace
-export namespace pugi
+namespace pugi
 {
 
 // Tree node types
-enum XmlNodeType
-{
+export enum XmlNodeType {
   node_null,        // Empty (null) node handle
   node_document,    // A document tree's absolute root
   node_element,     // Element tag, i.e. '<node/>'
@@ -71,99 +70,98 @@ enum XmlNodeType
 };
 
 // Parsing options
+export {
+  // Minimal parsing mode (equivalent to turning all other flags off).
+  // Only elements and PCDATA sections are added to the DOM tree, no text
+  // conversions are performed.
+  inline const unsigned int parse_minimal = 0x0000;
 
-// Minimal parsing mode (equivalent to turning all other flags off).
-// Only elements and PCDATA sections are added to the DOM tree, no text
-// conversions are performed.
-inline const unsigned int parse_minimal = 0x0000;
+  // This flag determines if processing instructions (node_pi) are added to the
+  // DOM tree. This flag is off by default.
+  inline const unsigned int parse_pi = 0x0001;
 
-// This flag determines if processing instructions (node_pi) are added to the
-// DOM tree. This flag is off by default.
-inline const unsigned int parse_pi = 0x0001;
+  // This flag determines if comments (node_comment) are added to the DOM tree.
+  // This flag is off by default.
+  inline const unsigned int parse_comments = 0x0002;
 
-// This flag determines if comments (node_comment) are added to the DOM tree.
-// This flag is off by default.
-inline const unsigned int parse_comments = 0x0002;
+  // This flag determines if CDATA sections (node_cdata) are added to the DOM
+  // tree. This flag is on by default.
+  inline const unsigned int parse_cdata = 0x0004;
 
-// This flag determines if CDATA sections (node_cdata) are added to the DOM
-// tree. This flag is on by default.
-inline const unsigned int parse_cdata = 0x0004;
+  // This flag determines if plain character data (node_pcdata) that consist
+  // only of whitespace are added to the DOM tree. This flag is off by default;
+  // turning it on usually results in slower parsing and more memory
+  // consumption.
+  inline const unsigned int parse_ws_pcdata = 0x0008;
 
-// This flag determines if plain character data (node_pcdata) that consist
-// only of whitespace are added to the DOM tree. This flag is off by default;
-// turning it on usually results in slower parsing and more memory
-// consumption.
-inline const unsigned int parse_ws_pcdata = 0x0008;
+  // This flag determines if character and entity references are expanded during
+  // parsing. This flag is on by default.
+  inline const unsigned int parse_escapes = 0x0010;
 
-// This flag determines if character and entity references are expanded during
-// parsing. This flag is on by default.
-inline const unsigned int parse_escapes = 0x0010;
+  // This flag determines if EOL characters are normalized (converted to #xA)
+  // during parsing. This flag is on by default.
+  inline const unsigned int parse_eol = 0x0020;
 
-// This flag determines if EOL characters are normalized (converted to #xA)
-// during parsing. This flag is on by default.
-inline const unsigned int parse_eol = 0x0020;
+  // This flag determines if attribute values are normalized using CDATA
+  // normalization rules during parsing. This flag is on by default.
+  inline const unsigned int parse_wconv_attribute = 0x0040;
 
-// This flag determines if attribute values are normalized using CDATA
-// normalization rules during parsing. This flag is on by default.
-inline const unsigned int parse_wconv_attribute = 0x0040;
+  // This flag determines if attribute values are normalized using NMTOKENS
+  // normalization rules during parsing. This flag is off by default.
+  inline const unsigned int parse_wnorm_attribute = 0x0080;
 
-// This flag determines if attribute values are normalized using NMTOKENS
-// normalization rules during parsing. This flag is off by default.
-inline const unsigned int parse_wnorm_attribute = 0x0080;
+  // This flag determines if document declaration (node_declaration) is added to
+  // the DOM tree. This flag is off by default.
+  inline const unsigned int parse_declaration = 0x0100;
 
-// This flag determines if document declaration (node_declaration) is added to
-// the DOM tree. This flag is off by default.
-inline const unsigned int parse_declaration = 0x0100;
+  // This flag determines if document type declaration (node_doctype) is added
+  // to the DOM tree. This flag is off by default.
+  inline const unsigned int parse_doctype = 0x0200;
 
-// This flag determines if document type declaration (node_doctype) is added
-// to the DOM tree. This flag is off by default.
-inline const unsigned int parse_doctype = 0x0200;
+  // This flag determines if plain character data (node_pcdata) that is the only
+  // child of the parent node and that consists only of whitespace is added to
+  // the DOM tree. This flag is off by default; turning it on may result in
+  // slower parsing and more memory consumption.
+  inline const unsigned int parse_ws_pcdata_single = 0x0400;
 
-// This flag determines if plain character data (node_pcdata) that is the only
-// child of the parent node and that consists only of whitespace is added to
-// the DOM tree. This flag is off by default; turning it on may result in
-// slower parsing and more memory consumption.
-inline const unsigned int parse_ws_pcdata_single = 0x0400;
+  // This flag determines if leading and trailing whitespace is to be removed
+  // from plain character data. This flag is off by default.
+  inline const unsigned int parse_trim_pcdata = 0x0800;
 
-// This flag determines if leading and trailing whitespace is to be removed
-// from plain character data. This flag is off by default.
-inline const unsigned int parse_trim_pcdata = 0x0800;
+  // This flag determines if plain character data that does not have a parent
+  // node is added to the DOM tree, and if an empty document is a valid
+  // document. This flag is off by default.
+  inline const unsigned int parse_fragment = 0x1000;
 
-// This flag determines if plain character data that does not have a parent
-// node is added to the DOM tree, and if an empty document is a valid
-// document. This flag is off by default.
-inline const unsigned int parse_fragment = 0x1000;
+  // This flag determines if plain character data is stored in the parent
+  // element's value. This significantly changes the structure of the document;
+  // this flag is only recommended for parsing documents with many PCDATA nodes
+  // in memory-constrained environments. This flag is off by default.
+  inline const unsigned int parse_embed_pcdata = 0x2000;
 
-// This flag determines if plain character data is stored in the parent
-// element's value. This significantly changes the structure of the document;
-// this flag is only recommended for parsing documents with many PCDATA nodes
-// in memory-constrained environments. This flag is off by default.
-inline const unsigned int parse_embed_pcdata = 0x2000;
+  // This flag determines whether two adjacent pcdata should be merged or not,
+  // if no intermediary data are parsed in the document. This flag is off by
+  // default.
+  inline const unsigned int parse_merge_pcdata = 0x4000;
 
-// This flag determines whether two adjacent pcdata should be merged or not,
-// if no intermediary data are parsed in the document. This flag is off by
-// default.
-inline const unsigned int parse_merge_pcdata = 0x4000;
+  // The default parsing mode.
+  // Elements, PCDATA and CDATA sections are added to the DOM tree,
+  // character/reference entities are expanded, End-of-Line characters are
+  // normalized, attribute values are normalized using CDATA normalization
+  // rules.
+  inline const unsigned int parse_default =
+      parse_cdata | parse_escapes | parse_wconv_attribute | parse_eol;
 
-// The default parsing mode.
-// Elements, PCDATA and CDATA sections are added to the DOM tree,
-// character/reference entities are expanded, End-of-Line characters are
-// normalized, attribute values are normalized using CDATA normalization
-// rules.
-inline const unsigned int parse_default =
-    parse_cdata | parse_escapes | parse_wconv_attribute | parse_eol;
-
-// The full parsing mode.
-// Nodes of all types are added to the DOM tree, character/reference entities
-// are expanded, End-of-Line characters are normalized, attribute values are
-// normalized using CDATA normalization rules.
-inline const unsigned int parse_full = parse_default | parse_pi |
-                                       parse_comments | parse_declaration |
-                                       parse_doctype;
-
+  // The full parsing mode.
+  // Nodes of all types are added to the DOM tree, character/reference entities
+  // are expanded, End-of-Line characters are normalized, attribute values are
+  // normalized using CDATA normalization rules.
+  inline const unsigned int parse_full = parse_default | parse_pi |
+                                         parse_comments | parse_declaration |
+                                         parse_doctype;
+}
 // These flags determine the encoding of input data for XML document
-enum XmlEncoding
-{
+export enum XmlEncoding {
   encoding_auto, // Auto-detect input encoding using BOM or < / <? detection;
                  // use UTF8 if BOM is not found
   encoding_utf8, // UTF8 encoding
@@ -178,78 +176,79 @@ enum XmlEncoding
 };
 
 // Formatting flags
+export {
+  // Indent the nodes that are written to output stream with as many indentation
+  // strings as deep the node is in DOM tree. This flag is on by default.
+  inline const unsigned int format_indent = 0x01;
 
-// Indent the nodes that are written to output stream with as many indentation
-// strings as deep the node is in DOM tree. This flag is on by default.
-inline const unsigned int format_indent = 0x01;
+  // Write encoding-specific BOM to the output stream. This flag is off by
+  // default.
+  inline const unsigned int format_write_bom = 0x02;
 
-// Write encoding-specific BOM to the output stream. This flag is off by
-// default.
-inline const unsigned int format_write_bom = 0x02;
+  // Use raw output mode (no indentation and no line breaks are written). This
+  // flag is off by default.
+  inline const unsigned int format_raw = 0x04;
 
-// Use raw output mode (no indentation and no line breaks are written). This
-// flag is off by default.
-inline const unsigned int format_raw = 0x04;
+  // Omit default XML declaration even if there is no declaration in the
+  // document. This flag is off by default.
+  inline const unsigned int format_no_declaration = 0x08;
 
-// Omit default XML declaration even if there is no declaration in the
-// document. This flag is off by default.
-inline const unsigned int format_no_declaration = 0x08;
+  // Don't escape attribute values and PCDATA contents. This flag is off by
+  // default.
+  inline const unsigned int format_no_escapes = 0x10;
 
-// Don't escape attribute values and PCDATA contents. This flag is off by
-// default.
-inline const unsigned int format_no_escapes = 0x10;
+  // Open file using text mode in XmlDocument::save_file. This enables special
+  // character (i.e. new-line) conversions on some systems. This flag is off by
+  // default.
+  inline const unsigned int format_save_file_text = 0x20;
 
-// Open file using text mode in XmlDocument::save_file. This enables special
-// character (i.e. new-line) conversions on some systems. This flag is off by
-// default.
-inline const unsigned int format_save_file_text = 0x20;
+  // Write every attribute on a new line with appropriate indentation. This flag
+  // is off by default.
+  inline const unsigned int format_indent_attributes = 0x40;
 
-// Write every attribute on a new line with appropriate indentation. This flag
-// is off by default.
-inline const unsigned int format_indent_attributes = 0x40;
+  // Don't output empty element tags, instead writing an explicit start and end
+  // tag even if there are no children. This flag is off by default.
+  inline const unsigned int format_no_empty_element_tags = 0x80;
 
-// Don't output empty element tags, instead writing an explicit start and end
-// tag even if there are no children. This flag is off by default.
-inline const unsigned int format_no_empty_element_tags = 0x80;
+  // Skip characters belonging to range [0; 32) instead of "&#xNN;" encoding.
+  // This flag is off by default.
+  inline const unsigned int format_skip_control_chars = 0x100;
 
-// Skip characters belonging to range [0; 32) instead of "&#xNN;" encoding.
-// This flag is off by default.
-inline const unsigned int format_skip_control_chars = 0x100;
+  // Use single quotes ' instead of double quotes " for enclosing attribute
+  // values. This flag is off by default.
+  inline const unsigned int format_attribute_single_quote = 0x200;
 
-// Use single quotes ' instead of double quotes " for enclosing attribute
-// values. This flag is off by default.
-inline const unsigned int format_attribute_single_quote = 0x200;
+  // The default set of formatting flags.
+  // Nodes are indented depending on their depth in DOM tree, a default
+  // declaration is output if document has none.
+  inline const unsigned int format_default = format_indent;
 
-// The default set of formatting flags.
-// Nodes are indented depending on their depth in DOM tree, a default
-// declaration is output if document has none.
-inline const unsigned int format_default = format_indent;
-
-inline const int default_double_precision = 17;
-inline const int default_float_precision = 9;
+  inline const int default_double_precision = 17;
+  inline const int default_float_precision = 9;
+}
 
 // Forward declarations
 struct XmlAttributeStruct;
 struct XmlNodeStruct;
 
-class XmlNodeIterator;
-class XmlAttributeIterator;
-class XmlNamedNodeIterator;
+export class XmlNodeIterator;
+export class XmlAttributeIterator;
+export class XmlNamedNodeIterator;
 
-class XmlTreeWalker;
+export class XmlTreeWalker;
 
-struct XmlParseResult;
+export struct XmlParseResult;
 
-class XmlNode;
+export class XmlNode;
 
-class XmlText;
-class XPathNode;
-class XPathNodeSet;
-class XPathQuery;
-class XPathVariableSet;
+export class XmlText;
+export class XPathNode;
+export class XPathNodeSet;
+export class XPathQuery;
+export class XPathVariableSet;
 
 // Range-based for loop support
-template < typename It > class XmlObjectRange
+export template < typename It > class XmlObjectRange
 {
 public:
   typedef It const_iterator;
@@ -280,7 +279,7 @@ private:
 };
 
 // Writer interface for node printing (see XmlNode::print)
-class PUGIXML_CLASS XmlWriter
+export class PUGIXML_CLASS XmlWriter
 {
 public:
   virtual ~XmlWriter();
@@ -290,7 +289,7 @@ public:
 };
 
 // XmlWriter implementation for FILE*
-class PUGIXML_CLASS XmlWriterFile : public XmlWriter
+export class PUGIXML_CLASS XmlWriterFile : public XmlWriter
 {
 public:
   // Construct writer from a FILE* object; void* is used to avoid header
@@ -304,7 +303,7 @@ private:
 };
 
 // XmlWriter implementation for streams
-class PUGIXML_CLASS XmlWriterStream : public XmlWriter
+export class PUGIXML_CLASS XmlWriterStream : public XmlWriter
 {
 public:
   // Construct writer from an output stream object
@@ -319,7 +318,7 @@ private:
 };
 
 // A light-weight handle for manipulating attributes in DOM tree
-class PUGIXML_CLASS XmlAttribute
+export class PUGIXML_CLASS XmlAttribute
 {
   friend class XmlAttributeIterator;
   friend class XmlNode;
@@ -525,15 +524,15 @@ public:
   XmlAttribute append_attribute(const char_t *name);
   XmlAttribute prepend_attribute(const char_t *name);
   XmlAttribute insert_attribute_after(const char_t *name,
-                                       const XmlAttribute &attr);
+                                      const XmlAttribute &attr);
   XmlAttribute insert_attribute_before(const char_t *name,
-                                        const XmlAttribute &attr);
+                                       const XmlAttribute &attr);
   XmlAttribute append_attribute(string_view_t name);
   XmlAttribute prepend_attribute(string_view_t name);
   XmlAttribute insert_attribute_after(string_view_t name,
-                                       const XmlAttribute &attr);
+                                      const XmlAttribute &attr);
   XmlAttribute insert_attribute_before(string_view_t name,
-                                        const XmlAttribute &attr);
+                                       const XmlAttribute &attr);
 
   // Get attribute with specified name, adding one if it does not exist.
   // Returns the existing or added attribute, or empty attribute on errors.
@@ -545,9 +544,9 @@ public:
   XmlAttribute append_copy(const XmlAttribute &proto);
   XmlAttribute prepend_copy(const XmlAttribute &proto);
   XmlAttribute insert_copy_after(const XmlAttribute &proto,
-                                  const XmlAttribute &attr);
+                                 const XmlAttribute &attr);
   XmlAttribute insert_copy_before(const XmlAttribute &proto,
-                                   const XmlAttribute &attr);
+                                  const XmlAttribute &attr);
 
   // Add child node with specified type. Returns added node, or empty node on
   // errors.
@@ -746,7 +745,7 @@ public:
 };
 
 // A helper for working with text inside PCDATA nodes
-class PUGIXML_CLASS XmlText
+export class PUGIXML_CLASS XmlText
 {
   friend class XmlNode;
 
@@ -977,7 +976,7 @@ public:
 };
 
 // Parsing status, returned as part of XmlParseResult object
-enum XmlParseStatus
+export enum XmlParseStatus
 {
   status_ok = 0, // No error
 
@@ -1015,7 +1014,7 @@ enum XmlParseStatus
 };
 
 // Parsing result
-struct PUGIXML_CLASS XmlParseResult
+export struct PUGIXML_CLASS XmlParseResult
 {
   // Parsing status (see XmlParseStatus)
   XmlParseStatus status;
@@ -1037,7 +1036,7 @@ struct PUGIXML_CLASS XmlParseResult
 };
 
 // Document class (DOM tree root)
-class PUGIXML_CLASS XmlDocument : public XmlNode
+export class PUGIXML_CLASS XmlDocument : public XmlNode
 {
 private:
   char_t *_buffer;
@@ -1137,7 +1136,7 @@ public:
 };
 
 // XPath query return type
-enum XPathValueType
+export enum XPathValueType
 {
   xpath_type_none,     // Unknown type (query failed to compile)
   xpath_type_node_set, // Node set (XPathNodeSet)
@@ -1147,7 +1146,7 @@ enum XPathValueType
 };
 
 // XPath parsing result
-struct PUGIXML_CLASS XPathParseResult
+export struct PUGIXML_CLASS XPathParseResult
 {
   // Error message (0 if no error)
   const char *error;
@@ -1166,7 +1165,7 @@ struct PUGIXML_CLASS XPathParseResult
 };
 
 // A single XPath variable
-class PUGIXML_CLASS XPathVariable
+export class PUGIXML_CLASS XPathVariable
 {
   friend class XPathVariableSet;
 
@@ -1204,7 +1203,7 @@ public:
 };
 
 // A set of XPath variables
-class PUGIXML_CLASS XPathVariableSet
+export class PUGIXML_CLASS XPathVariableSet
 {
 private:
   XPathVariable *_data[64];
@@ -1246,7 +1245,7 @@ public:
 };
 
 // A compiled XPath query object
-class PUGIXML_CLASS XPathQuery
+export class PUGIXML_CLASS XPathQuery
 {
 private:
   void *_impl;
@@ -1333,7 +1332,7 @@ public:
 #pragma warning(disable : 4275)
 #endif
 // XPath exception class
-class PUGIXML_CLASS xpath_exception : public std::exception
+export class PUGIXML_CLASS xpath_exception : public std::exception
 {
 private:
   XPathParseResult _result;
@@ -1354,7 +1353,7 @@ public:
 #endif
 
 // XPath node class (either XmlNode or XmlAttribute)
-class PUGIXML_CLASS XPathNode
+export class PUGIXML_CLASS XPathNode
 {
 private:
   XmlNode _node;
@@ -1389,7 +1388,7 @@ public:
 };
 
 // A fixed-size collection of XPath nodes
-class PUGIXML_CLASS XPathNodeSet
+export class PUGIXML_CLASS XPathNodeSet
 {
 public:
   // Collection type
@@ -1461,28 +1460,28 @@ private:
 };
 
 // Convert wide string to UTF8
-std::basic_string< char > PUGIXML_FUNCTION as_utf8(const wchar_t *str);
-std::basic_string< char >
+export std::basic_string< char > PUGIXML_FUNCTION as_utf8(const wchar_t *str);
+export std::basic_string< char >
     PUGIXML_FUNCTION as_utf8(const std::basic_string< wchar_t > &str);
 
 // Convert UTF8 to wide string
-std::basic_string< wchar_t > PUGIXML_FUNCTION as_wide(const char *str);
-std::basic_string< wchar_t >
+export std::basic_string< wchar_t > PUGIXML_FUNCTION as_wide(const char *str);
+export std::basic_string< wchar_t >
     PUGIXML_FUNCTION as_wide(const std::basic_string< char > &str);
 
 // Memory allocation function interface; returns pointer to allocated memory
 // or NULL on failure
-typedef void *(*allocation_function)(size_t size);
+export typedef void *(*allocation_function)(size_t size);
 
 // Memory deallocation function interface
-typedef void (*deallocation_function)(void *ptr);
+export typedef void (*deallocation_function)(void *ptr);
 
 // Override default memory management functions. All subsequent
 // allocations/deallocations will be performed via supplied functions.
-void PUGIXML_FUNCTION set_memory_management_functions(
+export void PUGIXML_FUNCTION set_memory_management_functions(
     allocation_function allocate, deallocation_function deallocate);
 
 // Get current memory management functions
-allocation_function PUGIXML_FUNCTION get_memory_allocation_function();
-deallocation_function PUGIXML_FUNCTION get_memory_deallocation_function();
+export allocation_function PUGIXML_FUNCTION get_memory_allocation_function();
+export deallocation_function PUGIXML_FUNCTION get_memory_deallocation_function();
 } // namespace pugi
