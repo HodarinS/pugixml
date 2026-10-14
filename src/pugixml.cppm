@@ -1300,34 +1300,6 @@ public:
 
 };
 
-#ifndef PUGIXML_NO_EXCEPTIONS
-#if defined(_MSC_VER)
-// C4275 can be ignored in Visual C++ if you are deriving
-// from a type in the Standard C++ Library
-#pragma warning(push)
-#pragma warning(disable : 4275)
-#endif
-// XPath exception class
-export class PUGIXML_CLASS xpath_exception : public std::exception
-{
-private:
-  XPathParseResult _result;
-
-public:
-  // Construct exception from parse result
-  explicit xpath_exception(const XPathParseResult &result);
-
-  // Get error message
-  virtual const char *what() const noexcept override;
-
-  // Get parse result
-  const XPathParseResult &result() const;
-};
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
-#endif
-
 // XPath node class (either XmlNode or XmlAttribute)
 export class PUGIXML_CLASS XPathNode
 {

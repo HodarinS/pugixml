@@ -132,6 +132,7 @@ typedef unsigned __int32 uint32_t;
 #include <stdint.h>
 #endif
 
+
 module pugixml;
 
 // Memory allocation
@@ -8669,11 +8670,7 @@ void XmlDocument::_move(XmlDocument &rhs) noexcept
     // pointerless encoding but we assume the worst here
     if (!other->_hash->reserve(other_children + 1))
     {
-#ifdef PUGIXML_NO_EXCEPTIONS
       return;
-#else
-      throw std::bad_alloc();
-#endif
     }
   }
 #endif
@@ -14361,14 +14358,7 @@ impl::xpath_ast_node *evaluate_node_set_prepare(xpath_query_impl *impl)
 
   if (impl->root->rettype() != xpath_type_node_set)
   {
-#ifdef PUGIXML_NO_EXCEPTIONS
     return 0;
-#else
-    XPathParseResult res;
-    res.error = "Expression does not evaluate to node set";
-
-    throw xpath_exception(res);
-#endif
   }
 
   return impl->root;
@@ -14377,23 +14367,7 @@ PUGI_IMPL_NS_END
 
 namespace pugi
 {
-#ifndef PUGIXML_NO_EXCEPTIONS
-xpath_exception::xpath_exception(const XPathParseResult &result_)
-    : _result(result_)
-{
-  assert(_result.error);
-}
 
-const char *xpath_exception::what() const noexcept
-{
-  return _result.error;
-}
-
-const XPathParseResult &xpath_exception::result() const
-{
-  return _result;
-}
-#endif
 
 XPathNode::XPathNode()
 {
@@ -14467,11 +14441,7 @@ void XPathNodeSet::_assign(const_iterator begin_, const_iterator end_,
 
   if (!storage)
   {
-#ifdef PUGIXML_NO_EXCEPTIONS
     return;
-#else
-    throw std::bad_alloc();
-#endif
   }
 
   // deallocate old buffer
@@ -14931,11 +14901,7 @@ XPathQuery::XPathQuery(const char_t *query, XPathVariableSet *variables)
 
   if (!qimpl)
   {
-#ifdef PUGIXML_NO_EXCEPTIONS
     _result.error = "Out of memory";
-#else
-    throw std::bad_alloc();
-#endif
   }
   else
   {
@@ -14955,14 +14921,8 @@ XPathQuery::XPathQuery(const char_t *query, XPathVariableSet *variables)
     }
     else
     {
-#ifdef PUGIXML_NO_EXCEPTIONS
       if (qimpl->oom)
         _result.error = "Out of memory";
-#else
-      if (qimpl->oom)
-        throw std::bad_alloc();
-      throw xpath_exception(_result);
-#endif
     }
   }
 }
@@ -15026,11 +14986,7 @@ bool XPathQuery::evaluate_boolean(const XPathNode &n) const
 
   if (sd.oom)
   {
-#ifdef PUGIXML_NO_EXCEPTIONS
     return false;
-#else
-    throw std::bad_alloc();
-#endif
   }
 
   return r;
@@ -15049,11 +15005,7 @@ double XPathQuery::evaluate_number(const XPathNode &n) const
 
   if (sd.oom)
   {
-#ifdef PUGIXML_NO_EXCEPTIONS
     return impl::gen_nan();
-#else
-    throw std::bad_alloc();
-#endif
   }
 
   return r;
@@ -15074,11 +15026,7 @@ string_t XPathQuery::evaluate_string(const XPathNode &n) const
 
   if (sd.oom)
   {
-#ifdef PUGIXML_NO_EXCEPTIONS
     return string_t();
-#else
-    throw std::bad_alloc();
-#endif
   }
 
   return string_t(r.c_str(), r.length());
@@ -15098,11 +15046,7 @@ size_t XPathQuery::evaluate_string(char_t *buffer, size_t capacity,
 
   if (sd.oom)
   {
-#ifdef PUGIXML_NO_EXCEPTIONS
     r = impl::xpath_string();
-#else
-    throw std::bad_alloc();
-#endif
   }
 
   size_t full_size = r.length() + 1;
@@ -15134,11 +15078,7 @@ XPathNodeSet XPathQuery::evaluate_node_set(const XPathNode &n) const
 
   if (sd.oom)
   {
-#ifdef PUGIXML_NO_EXCEPTIONS
     return XPathNodeSet();
-#else
-    throw std::bad_alloc();
-#endif
   }
 
   return XPathNodeSet(r.begin(), r.end(), r.type());
@@ -15159,11 +15099,7 @@ XPathNode XPathQuery::evaluate_node(const XPathNode &n) const
 
   if (sd.oom)
   {
-#ifdef PUGIXML_NO_EXCEPTIONS
     return XPathNode();
-#else
-    throw std::bad_alloc();
-#endif
   }
 
   return r.first();

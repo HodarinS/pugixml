@@ -227,20 +227,7 @@ TEST(XPathVariables_evaluate_node_set_fail)
   set.set(STR("var"), false);
 
   XPathQuery q(STR("$var"), &set);
-
-#ifdef PUGIXML_NO_EXCEPTIONS
   CHECK(q.evaluate_node_set(XmlNode()).empty());
-#else
-  try
-  {
-    q.evaluate_node_set(XmlNode());
-
-    CHECK_FORCE_FAIL("Expected exception");
-  }
-  catch (const xpath_exception &)
-  {
-  }
-#endif
 }
 
 TEST(XPathVariables_multiple_documents)
