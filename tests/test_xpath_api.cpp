@@ -410,7 +410,7 @@ TEST(xpath_api_empty)
 	CHECK(!q.evaluate_boolean(c));
 }
 
-#ifdef PUGIXML_HAS_MOVE
+
 TEST_XML(xpath_api_nodeset_move_ctor, "<node><foo/><foo/><bar/></node>")
 {
 	XPathNodeSet set = doc.select_nodes(STR("node/bar/preceding::*"));
@@ -642,5 +642,4 @@ TEST(xpath_api_query_vector)
 
 	CHECK(result == 45);
 }
-#endif
 #endif

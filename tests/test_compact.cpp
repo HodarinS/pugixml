@@ -123,10 +123,10 @@ TEST_XML(compact_pointer_attribute_list, "<n a='v'/>")
 	for (int i = 0; i < 1000; ++i)
 		doc.append_child(STR("x"));
 
-	// this requires extended encoding for prev_attribute_c/next_attribute
+	// this requires extended encoding for prev_attribute_c/nextAttribute
 	n.append_attribute(STR("b"));
 
-	// this requires extended encoding for first_attribute
+	// this requires extended encoding for firstAttribute
 	n.remove_attribute(a);
 
 	CHECK(!n.attribute(STR("a")));

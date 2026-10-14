@@ -514,7 +514,7 @@ TEST(XPathVariables_copy_out_of_memory_clone)
 	CHECK_ALLOC_FAIL(XPathVariableSet set3 = set1);
 }
 
-#ifdef PUGIXML_HAS_MOVE
+
 TEST_XML(XPathVariables_move, "<node />")
 {
 	XPathVariableSet set;
@@ -680,4 +680,3 @@ TEST_XML(XPathVariables_type_conversion, "<node>15</node>")
 	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("number($d) = 15"), &set, true);
 	CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("string($d) = '15'"), &set, true);
 }
-#endif

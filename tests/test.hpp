@@ -117,7 +117,7 @@ struct dummy_fixture
                                                                                \
     test_fixture_##name()                                                      \
     {                                                                          \
-      CHECK(doc.load_string(xml, flags));                                      \
+      CHECK(doc.loadString(xml, flags));                                      \
     }                                                                          \
                                                                                \
   private:                                                                     \

@@ -15,7 +15,7 @@ using namespace pugi;
 static void load_document_copy(XmlDocument& doc, const char_t* text)
 {
 	XmlDocument source;
-	CHECK(source.load_string(text));
+	CHECK(source.loadString(text));
 
 	doc.append_copy(source.first_child());
 }
@@ -144,7 +144,7 @@ TEST_XML(xpath_sort_attributes_docorder, "<node attr1='' attr2='value' attr4='va
 {
 	XmlNode n = doc.child(STR("node"));
 
-	n.first_attribute().setName(STR("attribute1"));
+	n.firstAttribute().setName(STR("attribute1"));
 	n.insert_attribute_after(STR("attr3"), n.attribute(STR("attr2")));
 
 	XPathNodeSet ns = n.select_nodes(STR("@* | @*"));
@@ -402,7 +402,7 @@ TEST(xpath_lexer_unknown_lexeme)
 TEST(xpath_large_node_set)
 {
 	XmlDocument doc;
-	CHECK(doc.load_file("tests/data/large.xml"));
+	CHECK(doc.loadFile("tests/data/large.xml"));
 
 	XPathNodeSet ns = doc.select_nodes(STR("//*"));
 
@@ -576,7 +576,7 @@ TEST(xpath_out_of_memory_evaluate_string_append)
 	buf += STR("</c></n>");
 
 	XmlDocument doc;
-	CHECK(doc.load_buffer_inplace(&buf[0], buf.size() * sizeof(char_t)));
+	CHECK(doc.loadBufferInplace(&buf[0], buf.size() * sizeof(char_t)));
 
 	XPathQuery q(STR("string(n)"));
 	CHECK(q);
@@ -699,10 +699,10 @@ TEST_XML(xpath_sort_append_buffer, "<node /><node />")
 TEST(xpath_sort_crossdoc)
 {
 	XmlDocument doc1;
-	CHECK(doc1.load_string(STR("<node />")));
+	CHECK(doc1.loadString(STR("<node />")));
 
 	XmlDocument doc2;
-	CHECK(doc2.load_string(STR("<node />")));
+	CHECK(doc2.loadString(STR("<node />")));
 
 	XPathNodeSet ns1 = doc1.select_nodes(STR("*"));
 	CHECK(ns1.size() == 1);

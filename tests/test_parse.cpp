@@ -14,10 +14,10 @@ TEST(parse_pi_skip)
 	{
 		unsigned int flags = flag_sets[i];
 
-		CHECK(doc.load_string(STR("<?pi?><?pi value?>"), flags));
+		CHECK(doc.loadString(STR("<?pi?><?pi value?>"), flags));
 		CHECK(!doc.first_child());
 
-		CHECK(doc.load_string(STR("<?pi <tag/> value?>"), flags));
+		CHECK(doc.loadString(STR("<?pi <tag/> value?>"), flags));
 		CHECK(!doc.first_child());
 	}
 }
@@ -25,7 +25,7 @@ TEST(parse_pi_skip)
 TEST(parse_pi_parse)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<?pi1?><?pi2 value?>"), parse_fragment | parse_pi));
+	CHECK(doc.loadString(STR("<?pi1?><?pi2 value?>"), parse_fragment | parse_pi));
 
 	XmlNode pi1 = doc.first_child();
 	XmlNode pi2 = doc.last_child();
@@ -42,7 +42,7 @@ TEST(parse_pi_parse)
 TEST(parse_pi_parse_spaces)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<?target  \r\n\t  value ?>"), parse_fragment | parse_pi));
+	CHECK(doc.loadString(STR("<?target  \r\n\t  value ?>"), parse_fragment | parse_pi));
 
 	XmlNode pi = doc.first_child();
 
@@ -61,33 +61,33 @@ TEST(parse_pi_error)
 	{
 		unsigned int flags = flag_sets[i];
 
-		CHECK(doc.load_string(STR("<?"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<??"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?>"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?#?>"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name>"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name ?"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name?"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name? "), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name?  "), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name "), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name  "), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name   "), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name value"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name value "), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name value  "), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name value  ?"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name value  ? "), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name value  ? >"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name value  ? > "), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name&"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?name&?"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<??"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?>"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?#?>"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name>"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name ?"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name?"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name? "), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name?  "), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name "), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name  "), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name   "), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name value"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name value "), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name value  "), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name value  ?"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name value  ? "), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name value  ? >"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name value  ? > "), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name&"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?name&?"), flags).status == status_bad_pi);
 	}
 
-	CHECK(doc.load_string(STR("<?xx#?>"), parse_fragment | parse_pi).status == status_bad_pi);
-	CHECK(doc.load_string(STR("<?name&?>"), parse_fragment | parse_pi).status == status_bad_pi);
-	CHECK(doc.load_string(STR("<?name& x?>"), parse_fragment | parse_pi).status == status_bad_pi);
+	CHECK(doc.loadString(STR("<?xx#?>"), parse_fragment | parse_pi).status == status_bad_pi);
+	CHECK(doc.loadString(STR("<?name&?>"), parse_fragment | parse_pi).status == status_bad_pi);
+	CHECK(doc.loadString(STR("<?name& x?>"), parse_fragment | parse_pi).status == status_bad_pi);
 }
 
 TEST(parse_pi_error_buffer_boundary)
@@ -96,21 +96,21 @@ TEST(parse_pi_error_buffer_boundary)
 	char buf2[] = "<?name?x";
 
 	XmlDocument doc;
-	CHECK(doc.load_buffer_inplace(buf1, 8, parse_fragment | parse_pi));
-	CHECK(doc.load_buffer_inplace(buf2, 8, parse_fragment | parse_pi).status == status_bad_pi);
+	CHECK(doc.loadBufferInplace(buf1, 8, parse_fragment | parse_pi));
+	CHECK(doc.loadBufferInplace(buf2, 8, parse_fragment | parse_pi).status == status_bad_pi);
 }
 
 TEST(parse_comments_skip)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<!----><!--value-->"), parse_fragment));
+	CHECK(doc.loadString(STR("<!----><!--value-->"), parse_fragment));
 	CHECK(!doc.first_child());
 }
 
 TEST(parse_comments_parse)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<!----><!--value-->"), parse_fragment | parse_comments));
+	CHECK(doc.loadString(STR("<!----><!--value-->"), parse_fragment | parse_comments));
 
 	XmlNode c1 = doc.first_child();
 	XmlNode c2 = doc.last_child();
@@ -127,7 +127,7 @@ TEST(parse_comments_parse)
 TEST(parse_comments_parse_no_eol)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<!--\r\rval1\rval2\r\nval3\nval4\r\r-->"), parse_fragment | parse_comments));
+	CHECK(doc.loadString(STR("<!--\r\rval1\rval2\r\nval3\nval4\r\r-->"), parse_fragment | parse_comments));
 
 	XmlNode c = doc.first_child();
 	CHECK(c.type() == node_comment);
@@ -137,7 +137,7 @@ TEST(parse_comments_parse_no_eol)
 TEST(parse_comments_parse_eol)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<!--\r\rval1\rval2\r\nval3\nval4\r\r-->"), parse_fragment | parse_comments | parse_eol));
+	CHECK(doc.loadString(STR("<!--\r\rval1\rval2\r\nval3\nval4\r\r-->"), parse_fragment | parse_comments | parse_eol));
 
 	XmlNode c = doc.first_child();
 	CHECK(c.type() == node_comment);
@@ -154,33 +154,33 @@ TEST(parse_comments_error)
 	{
 		unsigned int flags = flag_sets[i];
 
-		CHECK(doc.load_string(STR("<!-"), flags).status == status_bad_comment);
-		CHECK(doc.load_string(STR("<!--"), flags).status == status_bad_comment);
-		CHECK(doc.load_string(STR("<!--v"), flags).status == status_bad_comment);
-		CHECK(doc.load_string(STR("<!-->"), flags).status == status_bad_comment);
-		CHECK(doc.load_string(STR("<!--->"), flags).status == status_bad_comment);
-		CHECK(doc.load_string(STR("<!-- <!-- --><!- -->"), flags).status == status_bad_comment);
+		CHECK(doc.loadString(STR("<!-"), flags).status == status_bad_comment);
+		CHECK(doc.loadString(STR("<!--"), flags).status == status_bad_comment);
+		CHECK(doc.loadString(STR("<!--v"), flags).status == status_bad_comment);
+		CHECK(doc.loadString(STR("<!-->"), flags).status == status_bad_comment);
+		CHECK(doc.loadString(STR("<!--->"), flags).status == status_bad_comment);
+		CHECK(doc.loadString(STR("<!-- <!-- --><!- -->"), flags).status == status_bad_comment);
 	}
 }
 
 TEST(parse_cdata_skip)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<![CDATA[]]><![CDATA[value]]>"), parse_fragment));
+	CHECK(doc.loadString(STR("<![CDATA[]]><![CDATA[value]]>"), parse_fragment));
 	CHECK(!doc.first_child());
 }
 
 TEST(parse_cdata_skip_contents)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node><![CDATA[]]>hello<![CDATA[value]]>, world!</node>"), parse_fragment));
+	CHECK(doc.loadString(STR("<node><![CDATA[]]>hello<![CDATA[value]]>, world!</node>"), parse_fragment));
 	CHECK_NODE(doc, STR("<node>hello, world!</node>"));
 }
 
 TEST(parse_cdata_parse)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<![CDATA[]]><![CDATA[value]]>"), parse_fragment | parse_cdata));
+	CHECK(doc.loadString(STR("<![CDATA[]]><![CDATA[value]]>"), parse_fragment | parse_cdata));
 
 	XmlNode c1 = doc.first_child();
 	XmlNode c2 = doc.last_child();
@@ -197,7 +197,7 @@ TEST(parse_cdata_parse)
 TEST(parse_cdata_parse_no_eol)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<![CDATA[\r\rval1\rval2\r\nval3\nval4\r\r]]>"), parse_fragment | parse_cdata));
+	CHECK(doc.loadString(STR("<![CDATA[\r\rval1\rval2\r\nval3\nval4\r\r]]>"), parse_fragment | parse_cdata));
 
 	XmlNode c = doc.first_child();
 	CHECK(c.type() == node_cdata);
@@ -207,7 +207,7 @@ TEST(parse_cdata_parse_no_eol)
 TEST(parse_cdata_parse_eol)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<![CDATA[\r\rval1\rval2\r\nval3\nval4\r\r]]>"), parse_fragment | parse_cdata | parse_eol));
+	CHECK(doc.loadString(STR("<![CDATA[\r\rval1\rval2\r\nval3\nval4\r\r]]>"), parse_fragment | parse_cdata | parse_eol));
 
 	XmlNode c = doc.first_child();
 	CHECK(c.type() == node_cdata);
@@ -224,29 +224,29 @@ TEST(parse_cdata_error)
 	{
 		unsigned int flags = flag_sets[i];
 
-		CHECK(doc.load_string(STR("<!["), flags).status == status_bad_cdata);
-		CHECK(doc.load_string(STR("<![C"), flags).status == status_bad_cdata);
-		CHECK(doc.load_string(STR("<![CD"), flags).status == status_bad_cdata);
-		CHECK(doc.load_string(STR("<![CDA"), flags).status == status_bad_cdata);
-		CHECK(doc.load_string(STR("<![CDAT"), flags).status == status_bad_cdata);
-		CHECK(doc.load_string(STR("<![CDATA"), flags).status == status_bad_cdata);
-		CHECK(doc.load_string(STR("<![CDATA["), flags).status == status_bad_cdata);
-		CHECK(doc.load_string(STR("<![CDATA[]"), flags).status == status_bad_cdata);
-		CHECK(doc.load_string(STR("<![CDATA[data"), flags).status == status_bad_cdata);
-		CHECK(doc.load_string(STR("<![CDATA[data]"), flags).status == status_bad_cdata);
-		CHECK(doc.load_string(STR("<![CDATA[data]]"), flags).status == status_bad_cdata);
-		CHECK(doc.load_string(STR("<![CDATA[>"), flags).status == status_bad_cdata);
-		CHECK(doc.load_string(STR("<![CDATA[ <![CDATA[]]><![CDATA ]]>"), flags).status == status_bad_cdata);
+		CHECK(doc.loadString(STR("<!["), flags).status == status_bad_cdata);
+		CHECK(doc.loadString(STR("<![C"), flags).status == status_bad_cdata);
+		CHECK(doc.loadString(STR("<![CD"), flags).status == status_bad_cdata);
+		CHECK(doc.loadString(STR("<![CDA"), flags).status == status_bad_cdata);
+		CHECK(doc.loadString(STR("<![CDAT"), flags).status == status_bad_cdata);
+		CHECK(doc.loadString(STR("<![CDATA"), flags).status == status_bad_cdata);
+		CHECK(doc.loadString(STR("<![CDATA["), flags).status == status_bad_cdata);
+		CHECK(doc.loadString(STR("<![CDATA[]"), flags).status == status_bad_cdata);
+		CHECK(doc.loadString(STR("<![CDATA[data"), flags).status == status_bad_cdata);
+		CHECK(doc.loadString(STR("<![CDATA[data]"), flags).status == status_bad_cdata);
+		CHECK(doc.loadString(STR("<![CDATA[data]]"), flags).status == status_bad_cdata);
+		CHECK(doc.loadString(STR("<![CDATA[>"), flags).status == status_bad_cdata);
+		CHECK(doc.loadString(STR("<![CDATA[ <![CDATA[]]><![CDATA ]]>"), flags).status == status_bad_cdata);
 	}
 }
 
 TEST(parse_ws_pcdata_skip)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("  "), parse_fragment));
+	CHECK(doc.loadString(STR("  "), parse_fragment));
 	CHECK(!doc.first_child());
 
-	CHECK(doc.load_string(STR("<root>  <node>  </node>  </root>"), parse_minimal));
+	CHECK(doc.loadString(STR("<root>  <node>  </node>  </root>"), parse_minimal));
 
 	XmlNode root = doc.child(STR("root"));
 
@@ -257,7 +257,7 @@ TEST(parse_ws_pcdata_skip)
 TEST(parse_ws_pcdata_parse)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<root>  <node>  </node>  </root>"), parse_minimal | parse_ws_pcdata));
+	CHECK(doc.loadString(STR("<root>  <node>  </node>  </root>"), parse_minimal | parse_ws_pcdata));
 
 	XmlNode root = doc.child(STR("root"));
 
@@ -346,7 +346,7 @@ TEST(parse_ws_pcdata_permutations)
                 unsigned int flags[] = {parse_default, parse_default | parse_ws_pcdata, parse_default | parse_ws_pcdata_single};
 
                 XmlDocument doc;
-                CHECK((td.nodes > 0) == doc.load_string(td.source, flags[flag]));
+                CHECK((td.nodes > 0) == doc.loadString(td.source, flags[flag]));
                 CHECK_NODE(doc, td.result);
 
                 int nodes = get_tree_node_count(doc);
@@ -397,7 +397,7 @@ TEST(parse_ws_pcdata_fragment_permutations)
                 unsigned int flags[] = {parse_default, parse_default | parse_ws_pcdata, parse_default | parse_ws_pcdata_single};
 
                 XmlDocument doc;
-                CHECK((td.nodes > 0) == doc.load_string(td.source, flags[flag] | parse_fragment));
+                CHECK((td.nodes > 0) == doc.loadString(td.source, flags[flag] | parse_fragment));
                 CHECK_NODE(doc, td.result);
 
                 int nodes = get_tree_node_count(doc);
@@ -410,7 +410,7 @@ TEST(parse_ws_pcdata_fragment_permutations)
 TEST(parse_pcdata_no_eol)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<root>\r\rval1\rval2\r\nval3\nval4\r\r</root>"), parse_minimal));
+	CHECK(doc.loadString(STR("<root>\r\rval1\rval2\r\nval3\nval4\r\r</root>"), parse_minimal));
 
 	CHECK_STRING(doc.child_value(STR("root")), STR("\r\rval1\rval2\r\nval3\nval4\r\r"));
 }
@@ -418,7 +418,7 @@ TEST(parse_pcdata_no_eol)
 TEST(parse_pcdata_eol)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<root>\r\rval1\rval2\r\nval3\nval4\r\r</root>"), parse_minimal | parse_eol));
+	CHECK(doc.loadString(STR("<root>\r\rval1\rval2\r\nval3\nval4\r\r</root>"), parse_minimal | parse_eol));
 
 	CHECK_STRING(doc.child_value(STR("root")), STR("\n\nval1\nval2\nval3\nval4\n\n"));
 }
@@ -426,7 +426,7 @@ TEST(parse_pcdata_eol)
 TEST(parse_pcdata_skip_ext)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("pre<root/>post"), parse_minimal));
+	CHECK(doc.loadString(STR("pre<root/>post"), parse_minimal));
 	CHECK(doc.first_child() == doc.last_child());
 	CHECK(doc.first_child().type() == node_element);
 }
@@ -434,7 +434,7 @@ TEST(parse_pcdata_skip_ext)
 TEST(parse_pcdata_error)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<root>pcdata"), parse_minimal).status == status_end_element_mismatch);
+	CHECK(doc.loadString(STR("<root>pcdata"), parse_minimal).status == status_end_element_mismatch);
 }
 
 TEST(parse_pcdata_trim)
@@ -472,9 +472,9 @@ TEST(parse_pcdata_trim)
         const test_data_t& td = test_data[i];
 
         XmlDocument doc;
-        CHECK(doc.load_string(td.source, td.flags | parse_trim_pcdata));
+        CHECK(doc.loadString(td.source, td.flags | parse_trim_pcdata));
 
-        const char_t* value = doc.child(STR("node")) ? doc.child_value(STR("node")) : doc.text().get();
+        const char_t* value = doc.child(STR("node")) ? doc.child_value(STR("node")) : doc.text().value();
         CHECK_STRING(value, td.result);
     }
 }
@@ -486,7 +486,7 @@ TEST(parse_pcdata_trim_empty)
 	for (size_t i = 0; i < sizeof(flags) / sizeof(flags[0]); ++i)
 	{
 		XmlDocument doc;
-		CHECK(doc.load_string(STR("<node>   </node>"), flags[i] | parse_trim_pcdata));
+		CHECK(doc.loadString(STR("<node>   </node>"), flags[i] | parse_trim_pcdata));
 
 		XmlNode node = doc.child(STR("node"));
 		CHECK(node);
@@ -497,14 +497,14 @@ TEST(parse_pcdata_trim_empty)
 TEST(parse_escapes_skip)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node id='&lt;&gt;&amp;&apos;&quot;'>&lt;&gt;&amp;&apos;&quot;</node>"), parse_minimal));
+	CHECK(doc.loadString(STR("<node id='&lt;&gt;&amp;&apos;&quot;'>&lt;&gt;&amp;&apos;&quot;</node>"), parse_minimal));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR("&lt;&gt;&amp;&apos;&quot;"));
 }
 
 TEST(parse_escapes_parse)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node id='&lt;&gt;&amp;&apos;&quot;'>&lt;&gt;&amp;&apos;&quot;</node>"), parse_minimal | parse_escapes));
+	CHECK(doc.loadString(STR("<node id='&lt;&gt;&amp;&apos;&quot;'>&lt;&gt;&amp;&apos;&quot;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("<>&'\""));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR("<>&'\""));
 }
@@ -512,28 +512,28 @@ TEST(parse_escapes_parse)
 TEST(parse_escapes_code)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node>&#1;&#32;&#x20;</node>"), parse_minimal | parse_escapes));
+	CHECK(doc.loadString(STR("<node>&#1;&#32;&#x20;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("\01  "));
 }
 
 TEST(parse_escapes_code_exhaustive_dec)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node>&#/;&#01;&#2;&#3;&#4;&#5;&#6;&#7;&#8;&#9;&#:;&#a;&#A;&#XA;</node>"), parse_minimal | parse_escapes));
+	CHECK(doc.loadString(STR("<node>&#/;&#01;&#2;&#3;&#4;&#5;&#6;&#7;&#8;&#9;&#:;&#a;&#A;&#XA;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&#/;\x1\x2\x3\x4\x5\x6\x7\x8\x9&#:;&#a;&#A;&#XA;"));
 }
 
 TEST(parse_escapes_code_exhaustive_hex)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node>&#x/;&#x01;&#x2;&#x3;&#x4;&#x5;&#x6;&#x7;&#x8;&#x9;&#x:;&#x@;&#xA;&#xB;&#xC;&#xD;&#xE;&#xF;&#xG;&#x`;&#xa;&#xb;&#xc;&#xd;&#xe;&#xf;&#xg;</node>"), parse_minimal | parse_escapes));
+	CHECK(doc.loadString(STR("<node>&#x/;&#x01;&#x2;&#x3;&#x4;&#x5;&#x6;&#x7;&#x8;&#x9;&#x:;&#x@;&#xA;&#xB;&#xC;&#xD;&#xE;&#xF;&#xG;&#x`;&#xa;&#xb;&#xc;&#xd;&#xe;&#xf;&#xg;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&#x/;\x1\x2\x3\x4\x5\x6\x7\x8\x9&#x:;&#x@;\xa\xb\xc\xd\xe\xf&#xG;&#x`;\xa\xb\xc\xd\xe\xf&#xg;"));
 }
 
 TEST(parse_escapes_code_restore)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node>&#1&#32;&#x1&#32;&#1-&#32;&#x1-&#32;</node>"), parse_minimal | parse_escapes));
+	CHECK(doc.loadString(STR("<node>&#1&#32;&#x1&#32;&#1-&#32;&#x1-&#32;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&#1 &#x1 &#1- &#x1- "));
 }
 
@@ -541,26 +541,26 @@ TEST(parse_escapes_char_restore)
 {
 	XmlDocument doc;
 
-	CHECK(doc.load_string(STR("<node>&q&#32;&qu&#32;&quo&#32;&quot&#32;</node>"), parse_minimal | parse_escapes));
+	CHECK(doc.loadString(STR("<node>&q&#32;&qu&#32;&quo&#32;&quot&#32;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&q &qu &quo &quot "));
 
-	CHECK(doc.load_string(STR("<node>&a&#32;&ap&#32;&apo&#32;&apos&#32;</node>"), parse_minimal | parse_escapes));
+	CHECK(doc.loadString(STR("<node>&a&#32;&ap&#32;&apo&#32;&apos&#32;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&a &ap &apo &apos "));
 
-	CHECK(doc.load_string(STR("<node>&a&#32;&am&#32;&amp&#32;</node>"), parse_minimal | parse_escapes));
+	CHECK(doc.loadString(STR("<node>&a&#32;&am&#32;&amp&#32;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&a &am &amp "));
 
-	CHECK(doc.load_string(STR("<node>&l&#32;&lt&#32;</node>"), parse_minimal | parse_escapes));
+	CHECK(doc.loadString(STR("<node>&l&#32;&lt&#32;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&l &lt "));
 
-	CHECK(doc.load_string(STR("<node>&g&#32;&gt&#32;</node>"), parse_minimal | parse_escapes));
+	CHECK(doc.loadString(STR("<node>&g&#32;&gt&#32;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&g &gt "));
 }
 
 TEST(parse_escapes_unicode)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node>&#x03B3;&#x03b3;&#x24B62;</node>"), parse_minimal | parse_escapes));
+	CHECK(doc.loadString(STR("<node>&#x03B3;&#x03b3;&#x24B62;</node>"), parse_minimal | parse_escapes));
 
 #ifdef PUGIXML_WCHAR_MODE
 	const char_t* v = doc.child_value(STR("node"));
@@ -576,23 +576,23 @@ TEST(parse_escapes_unicode)
 TEST(parse_escapes_error)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node>&#x03g;&#ab;&quot</node>"), parse_minimal | parse_escapes));
+	CHECK(doc.loadString(STR("<node>&#x03g;&#ab;&quot</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&#x03g;&#ab;&quot"));
 
-	CHECK(!doc.load_string(STR("<node id='&#x12")));
-	CHECK(!doc.load_string(STR("<node id='&g")));
-	CHECK(!doc.load_string(STR("<node id='&gt")));
-	CHECK(!doc.load_string(STR("<node id='&l")));
-	CHECK(!doc.load_string(STR("<node id='&lt")));
-	CHECK(!doc.load_string(STR("<node id='&a")));
-	CHECK(!doc.load_string(STR("<node id='&amp")));
-	CHECK(!doc.load_string(STR("<node id='&apos")));
+	CHECK(!doc.loadString(STR("<node id='&#x12")));
+	CHECK(!doc.loadString(STR("<node id='&g")));
+	CHECK(!doc.loadString(STR("<node id='&gt")));
+	CHECK(!doc.loadString(STR("<node id='&l")));
+	CHECK(!doc.loadString(STR("<node id='&lt")));
+	CHECK(!doc.loadString(STR("<node id='&a")));
+	CHECK(!doc.loadString(STR("<node id='&amp")));
+	CHECK(!doc.loadString(STR("<node id='&apos")));
 }
 
 TEST(parse_escapes_code_invalid)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node>&#;&#x;&;&#x-;&#-;</node>"), parse_minimal | parse_escapes));
+	CHECK(doc.loadString(STR("<node>&#;&#x;&;&#x-;&#-;</node>"), parse_minimal | parse_escapes));
 	CHECK_STRING(doc.child_value(STR("node")), STR("&#;&#x;&;&#x-;&#-;"));
 }
 
@@ -610,7 +610,7 @@ TEST(parse_escapes_attribute)
 				flags |= (eol ? parse_eol : 0);
 				flags |= (wconv ? parse_wconv_attribute : 0);
 
-				CHECK(doc.load_string(STR("<node id='&quot;'/>"), flags));
+				CHECK(doc.loadString(STR("<node id='&quot;'/>"), flags));
 				CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR("\""));
 			}
 }
@@ -618,7 +618,7 @@ TEST(parse_escapes_attribute)
 TEST(parse_attribute_spaces)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node id1='v1' id2 ='v2' id3= 'v3' id4 = 'v4' id5 \n\r\t = \r\t\n 'v5' />"), parse_minimal));
+	CHECK(doc.loadString(STR("<node id1='v1' id2 ='v2' id3= 'v3' id4 = 'v4' id5 \n\r\t = \r\t\n 'v5' />"), parse_minimal));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id1")).value(), STR("v1"));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id2")).value(), STR("v2"));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id3")).value(), STR("v3"));
@@ -629,7 +629,7 @@ TEST(parse_attribute_spaces)
 TEST(parse_attribute_quot)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node id1='v1' id2=\"v2\"/>"), parse_minimal));
+	CHECK(doc.loadString(STR("<node id1='v1' id2=\"v2\"/>"), parse_minimal));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id1")).value(), STR("v1"));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id2")).value(), STR("v2"));
 }
@@ -637,28 +637,28 @@ TEST(parse_attribute_quot)
 TEST(parse_attribute_no_eol_no_wconv)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node id=' \t\r\rval1  \rval2\r\nval3\nval4\r\r'/>"), parse_minimal));
+	CHECK(doc.loadString(STR("<node id=' \t\r\rval1  \rval2\r\nval3\nval4\r\r'/>"), parse_minimal));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR(" \t\r\rval1  \rval2\r\nval3\nval4\r\r"));
 }
 
 TEST(parse_attribute_eol_no_wconv)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node id=' \t\r\rval1  \rval2\r\nval3\nval4\r\r'/>"), parse_minimal | parse_eol));
+	CHECK(doc.loadString(STR("<node id=' \t\r\rval1  \rval2\r\nval3\nval4\r\r'/>"), parse_minimal | parse_eol));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR(" \t\n\nval1  \nval2\nval3\nval4\n\n"));
 }
 
 TEST(parse_attribute_no_eol_wconv)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node id=' \t\r\rval1  \rval2\r\nval3\nval4\r\r'/>"), parse_minimal | parse_wconv_attribute));
+	CHECK(doc.loadString(STR("<node id=' \t\r\rval1  \rval2\r\nval3\nval4\r\r'/>"), parse_minimal | parse_wconv_attribute));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR("    val1   val2 val3 val4  "));
 }
 
 TEST(parse_attribute_eol_wconv)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node id=' \t\r\rval1  \rval2\r\nval3\nval4\r\r'/>"), parse_minimal | parse_eol | parse_wconv_attribute));
+	CHECK(doc.loadString(STR("<node id=' \t\r\rval1  \rval2\r\nval3\nval4\r\r'/>"), parse_minimal | parse_eol | parse_wconv_attribute));
 	CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR("    val1   val2 val3 val4  "));
 }
 
@@ -670,7 +670,7 @@ TEST(parse_attribute_wnorm)
 		for (int wconv = 0; wconv < 2; ++wconv)
 		{
 			unsigned int flags = parse_minimal | parse_wnorm_attribute | (eol ? parse_eol : 0) | (wconv ? parse_wconv_attribute : 0);
-			CHECK(doc.load_string(STR("<node id=' \t\r\rval1  \rval2\r\nval3\nval4\r\r'/>"), flags));
+			CHECK(doc.loadString(STR("<node id=' \t\r\rval1  \rval2\r\nval3\nval4\r\r'/>"), flags));
 			CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR("val1 val2 val3 val4"));
 		}
 }
@@ -691,7 +691,7 @@ TEST(parse_attribute_variations)
 					flags |= (wconv ? parse_wconv_attribute : 0);
 					flags |= (escapes ? parse_escapes : 0);
 
-					CHECK(doc.load_string(STR("<node id='1'/>"), flags));
+					CHECK(doc.loadString(STR("<node id='1'/>"), flags));
 					CHECK_STRING(doc.child(STR("node")).attribute(STR("id")).value(), STR("1"));
 				}
 }
@@ -700,24 +700,24 @@ TEST(parse_attribute_variations)
 TEST(parse_attribute_error)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node id"), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node id "), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node id  "), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node id   "), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node id/"), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node id/>"), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node id?/>"), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node id=/>"), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node id='/>"), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node id=\"/>"), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node id=\"'/>"), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node id='\"/>"), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node id='\"/>"), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node #/>"), parse_minimal).status == status_bad_start_element);
-	CHECK(doc.load_string(STR("<node#/>"), parse_minimal).status == status_bad_start_element);
-	CHECK(doc.load_string(STR("<node id1='1'id2='2'/>"), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node id&='1'/>"), parse_minimal).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<node &='1'/>"), parse_minimal).status == status_bad_start_element);
+	CHECK(doc.loadString(STR("<node id"), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node id "), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node id  "), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node id   "), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node id/"), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node id/>"), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node id?/>"), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node id=/>"), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node id='/>"), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node id=\"/>"), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node id=\"'/>"), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node id='\"/>"), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node id='\"/>"), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node #/>"), parse_minimal).status == status_bad_start_element);
+	CHECK(doc.loadString(STR("<node#/>"), parse_minimal).status == status_bad_start_element);
+	CHECK(doc.loadString(STR("<node id1='1'id2='2'/>"), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node id&='1'/>"), parse_minimal).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<node &='1'/>"), parse_minimal).status == status_bad_start_element);
 }
 
 TEST(parse_attribute_termination_error)
@@ -734,7 +734,7 @@ TEST(parse_attribute_termination_error)
 				flags |= (eol ? parse_eol : 0);
 				flags |= (wconv ? parse_wconv_attribute : 0);
 
-				CHECK(doc.load_string(STR("<node id='value"), flags).status == status_bad_attribute);
+				CHECK(doc.loadString(STR("<node id='value"), flags).status == status_bad_attribute);
 			}
 }
 
@@ -752,7 +752,7 @@ TEST(parse_attribute_quot_inside)
 				flags |= (eol ? parse_eol : 0);
 				flags |= (wconv ? parse_wconv_attribute : 0);
 
-				CHECK(doc.load_string(STR("<node id1='\"' id2=\"'\"/>"), flags));
+				CHECK(doc.loadString(STR("<node id1='\"' id2=\"'\"/>"), flags));
 				CHECK_STRING(doc.child(STR("node")).attribute(STR("id1")).value(), STR("\""));
 				CHECK_STRING(doc.child(STR("node")).attribute(STR("id2")).value(), STR("'"));
 			}
@@ -761,90 +761,90 @@ TEST(parse_attribute_quot_inside)
 TEST(parse_attribute_wnorm_coverage)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<n a1='v' a2=' ' a3='x y' a4='x  y' a5='x   y' />"), parse_wnorm_attribute));
+	CHECK(doc.loadString(STR("<n a1='v' a2=' ' a3='x y' a4='x  y' a5='x   y' />"), parse_wnorm_attribute));
 	CHECK_NODE(doc, STR("<n a1=\"v\" a2=\"\" a3=\"x y\" a4=\"x y\" a5=\"x y\"/>"));
 
-	CHECK(doc.load_string(STR("<n a1='v' a2=' ' a3='x y' a4='x  y' a5='x   y' />"), parse_wnorm_attribute | parse_escapes));
+	CHECK(doc.loadString(STR("<n a1='v' a2=' ' a3='x y' a4='x  y' a5='x   y' />"), parse_wnorm_attribute | parse_escapes));
 	CHECK_NODE(doc, STR("<n a1=\"v\" a2=\"\" a3=\"x y\" a4=\"x y\" a5=\"x y\"/>"));
 }
 
 TEST(parse_attribute_wconv_coverage)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<n a1='v' a2='\r' a3='\r\n\n' a4='\n' />"), parse_wconv_attribute));
+	CHECK(doc.loadString(STR("<n a1='v' a2='\r' a3='\r\n\n' a4='\n' />"), parse_wconv_attribute));
 	CHECK_NODE(doc, STR("<n a1=\"v\" a2=\" \" a3=\"  \" a4=\" \"/>"));
 
-	CHECK(doc.load_string(STR("<n a1='v' a2='\r' a3='\r\n\n' a4='\n' />"), parse_wconv_attribute | parse_escapes));
+	CHECK(doc.loadString(STR("<n a1='v' a2='\r' a3='\r\n\n' a4='\n' />"), parse_wconv_attribute | parse_escapes));
 	CHECK_NODE(doc, STR("<n a1=\"v\" a2=\" \" a3=\"  \" a4=\" \"/>"));
 }
 
 TEST(parse_attribute_eol_coverage)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<n a1='v' a2='\r' a3='\r\n\n' a4='\n' />"), parse_eol));
+	CHECK(doc.loadString(STR("<n a1='v' a2='\r' a3='\r\n\n' a4='\n' />"), parse_eol));
 	CHECK_NODE(doc, STR("<n a1=\"v\" a2=\"&#10;\" a3=\"&#10;&#10;\" a4=\"&#10;\"/>"));
 
-	CHECK(doc.load_string(STR("<n a1='v' a2='\r' a3='\r\n\n' a4='\n' />"), parse_eol | parse_escapes));
+	CHECK(doc.loadString(STR("<n a1='v' a2='\r' a3='\r\n\n' a4='\n' />"), parse_eol | parse_escapes));
 	CHECK_NODE(doc, STR("<n a1=\"v\" a2=\"&#10;\" a3=\"&#10;&#10;\" a4=\"&#10;\"/>"));
 }
 
 TEST(parse_tag_single)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node/><node /><node\n/>"), parse_minimal));
+	CHECK(doc.loadString(STR("<node/><node /><node\n/>"), parse_minimal));
 	CHECK_NODE(doc, STR("<node/><node/><node/>"));
 }
 
 TEST(parse_tag_hierarchy)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node><n1><n2/></n1><n3><n4><n5></n5></n4></n3 \r\n></node>"), parse_minimal));
+	CHECK(doc.loadString(STR("<node><n1><n2/></n1><n3><n4><n5></n5></n4></n3 \r\n></node>"), parse_minimal));
 	CHECK_NODE(doc, STR("<node><n1><n2/></n1><n3><n4><n5/></n4></n3></node>"));
 }
 
 TEST(parse_tag_error)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<"), parse_minimal).status == status_unrecognized_tag);
-	CHECK(doc.load_string(STR("<!"), parse_minimal).status == status_unrecognized_tag);
-	CHECK(doc.load_string(STR("<!D"), parse_minimal).status == status_unrecognized_tag);
-	CHECK(doc.load_string(STR("<#"), parse_minimal).status == status_unrecognized_tag);
-	CHECK(doc.load_string(STR("<node#"), parse_minimal).status == status_bad_start_element);
-	CHECK(doc.load_string(STR("<node"), parse_minimal).status == status_bad_start_element);
-	CHECK(doc.load_string(STR("<node/"), parse_minimal).status == status_bad_start_element);
-	CHECK(doc.load_string(STR("<node /"), parse_minimal).status == status_bad_start_element);
-	CHECK(doc.load_string(STR("<node / "), parse_minimal).status == status_bad_start_element);
-	CHECK(doc.load_string(STR("<node / >"), parse_minimal).status == status_bad_start_element);
-	CHECK(doc.load_string(STR("<node/ >"), parse_minimal).status == status_bad_start_element);
-	CHECK(doc.load_string(STR("</ node>"), parse_minimal).status == status_end_element_mismatch);
-	CHECK(doc.load_string(STR("</node"), parse_minimal).status == status_end_element_mismatch);
-	CHECK(doc.load_string(STR("</node "), parse_minimal).status == status_end_element_mismatch);
-	CHECK(doc.load_string(STR("<node></ node>"), parse_minimal).status == status_end_element_mismatch);
-	CHECK(doc.load_string(STR("<node></node"), parse_minimal).status == status_bad_end_element);
-	CHECK(doc.load_string(STR("<node></node "), parse_minimal).status == status_bad_end_element);
-	CHECK(doc.load_string(STR("<node></nodes>"), parse_minimal).status == status_end_element_mismatch);
-	CHECK(doc.load_string(STR("<node>"), parse_minimal).status == status_end_element_mismatch);
-	CHECK(doc.load_string(STR("<node/><"), parse_minimal).status == status_unrecognized_tag);
-	CHECK(doc.load_string(STR("<node attr='value'>"), parse_minimal).status == status_end_element_mismatch);
-	CHECK(doc.load_string(STR("</></node>"), parse_minimal).status == status_end_element_mismatch);
-	CHECK(doc.load_string(STR("</node>"), parse_minimal).status == status_end_element_mismatch);
-	CHECK(doc.load_string(STR("</>"), parse_minimal).status == status_end_element_mismatch);
-	CHECK(doc.load_string(STR("<node></node v>"), parse_minimal).status == status_bad_end_element);
-	CHECK(doc.load_string(STR("<node&/>"), parse_minimal).status == status_bad_start_element);
-	CHECK(doc.load_string(STR("<node& v='1'/>"), parse_minimal).status == status_bad_start_element);
+	CHECK(doc.loadString(STR("<"), parse_minimal).status == status_unrecognized_tag);
+	CHECK(doc.loadString(STR("<!"), parse_minimal).status == status_unrecognized_tag);
+	CHECK(doc.loadString(STR("<!D"), parse_minimal).status == status_unrecognized_tag);
+	CHECK(doc.loadString(STR("<#"), parse_minimal).status == status_unrecognized_tag);
+	CHECK(doc.loadString(STR("<node#"), parse_minimal).status == status_bad_start_element);
+	CHECK(doc.loadString(STR("<node"), parse_minimal).status == status_bad_start_element);
+	CHECK(doc.loadString(STR("<node/"), parse_minimal).status == status_bad_start_element);
+	CHECK(doc.loadString(STR("<node /"), parse_minimal).status == status_bad_start_element);
+	CHECK(doc.loadString(STR("<node / "), parse_minimal).status == status_bad_start_element);
+	CHECK(doc.loadString(STR("<node / >"), parse_minimal).status == status_bad_start_element);
+	CHECK(doc.loadString(STR("<node/ >"), parse_minimal).status == status_bad_start_element);
+	CHECK(doc.loadString(STR("</ node>"), parse_minimal).status == status_end_element_mismatch);
+	CHECK(doc.loadString(STR("</node"), parse_minimal).status == status_end_element_mismatch);
+	CHECK(doc.loadString(STR("</node "), parse_minimal).status == status_end_element_mismatch);
+	CHECK(doc.loadString(STR("<node></ node>"), parse_minimal).status == status_end_element_mismatch);
+	CHECK(doc.loadString(STR("<node></node"), parse_minimal).status == status_bad_end_element);
+	CHECK(doc.loadString(STR("<node></node "), parse_minimal).status == status_bad_end_element);
+	CHECK(doc.loadString(STR("<node></nodes>"), parse_minimal).status == status_end_element_mismatch);
+	CHECK(doc.loadString(STR("<node>"), parse_minimal).status == status_end_element_mismatch);
+	CHECK(doc.loadString(STR("<node/><"), parse_minimal).status == status_unrecognized_tag);
+	CHECK(doc.loadString(STR("<node attr='value'>"), parse_minimal).status == status_end_element_mismatch);
+	CHECK(doc.loadString(STR("</></node>"), parse_minimal).status == status_end_element_mismatch);
+	CHECK(doc.loadString(STR("</node>"), parse_minimal).status == status_end_element_mismatch);
+	CHECK(doc.loadString(STR("</>"), parse_minimal).status == status_end_element_mismatch);
+	CHECK(doc.loadString(STR("<node></node v>"), parse_minimal).status == status_bad_end_element);
+	CHECK(doc.loadString(STR("<node&/>"), parse_minimal).status == status_bad_start_element);
+	CHECK(doc.loadString(STR("<node& v='1'/>"), parse_minimal).status == status_bad_start_element);
 }
 
 TEST(parse_declaration_cases)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<?xml?><?xmL?><?xMl?><?xML?><?Xml?><?XmL?><?XMl?><?XML?>"), parse_fragment | parse_pi));
+	CHECK(doc.loadString(STR("<?xml?><?xmL?><?xMl?><?xML?><?Xml?><?XmL?><?XMl?><?XML?>"), parse_fragment | parse_pi));
 	CHECK(!doc.first_child());
 }
 
 TEST(parse_declaration_attr_cases)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<?xml ?><?xmL ?><?xMl ?><?xML ?><?Xml ?><?XmL ?><?XMl ?><?XML ?>"), parse_fragment | parse_pi));
+	CHECK(doc.loadString(STR("<?xml ?><?xmL ?><?xMl ?><?xML ?><?Xml ?><?XmL ?><?XMl ?><?XML ?>"), parse_fragment | parse_pi));
 	CHECK(!doc.first_child());
 }
 
@@ -858,10 +858,10 @@ TEST(parse_declaration_skip)
 	{
 		unsigned int flags = flag_sets[i];
 
-		CHECK(doc.load_string(STR("<?xml?><?xml version='1.0'?>"), flags));
+		CHECK(doc.loadString(STR("<?xml?><?xml version='1.0'?>"), flags));
 		CHECK(!doc.first_child());
 
-		CHECK(doc.load_string(STR("<?xml <tag/> ?>"), flags));
+		CHECK(doc.loadString(STR("<?xml <tag/> ?>"), flags));
 		CHECK(!doc.first_child());
 	}
 }
@@ -869,7 +869,7 @@ TEST(parse_declaration_skip)
 TEST(parse_declaration_parse)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<?xml?><?xml version='1.0'?>"), parse_fragment | parse_declaration));
+	CHECK(doc.loadString(STR("<?xml?><?xml version='1.0'?>"), parse_fragment | parse_declaration));
 
 	XmlNode d1 = doc.first_child();
 	XmlNode d2 = doc.last_child();
@@ -892,22 +892,22 @@ TEST(parse_declaration_error)
 	{
 		unsigned int flags = flag_sets[i];
 
-		CHECK(doc.load_string(STR("<?xml"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?xml?"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?xml>"), flags).status == status_bad_pi);
-		CHECK(doc.load_string(STR("<?xml version='1>"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?xml"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?xml?"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?xml>"), flags).status == status_bad_pi);
+		CHECK(doc.loadString(STR("<?xml version='1>"), flags).status == status_bad_pi);
 	}
 
-	CHECK(doc.load_string(STR("<?xml version='1?>"), parse_fragment | parse_declaration).status == status_bad_attribute);
-	CHECK(doc.load_string(STR("<foo><?xml version='1'?></foo>"), parse_fragment | parse_declaration).status == status_bad_pi);
+	CHECK(doc.loadString(STR("<?xml version='1?>"), parse_fragment | parse_declaration).status == status_bad_attribute);
+	CHECK(doc.loadString(STR("<foo><?xml version='1'?></foo>"), parse_fragment | parse_declaration).status == status_bad_pi);
 }
 
 TEST(parse_empty)
 {
 	XmlDocument doc;
 
-	CHECK(doc.load_string(STR("")).status == status_no_document_element && !doc.first_child());
-	CHECK(doc.load_string(STR(""), parse_fragment) && !doc.first_child());
+	CHECK(doc.loadString(STR("")).status == status_no_document_element && !doc.first_child());
+	CHECK(doc.loadString(STR(""), parse_fragment) && !doc.first_child());
 }
 
 TEST(parse_out_of_memory)
@@ -915,7 +915,7 @@ TEST(parse_out_of_memory)
 	test_runner::_memory_fail_threshold = 256;
 
 	XmlDocument doc;
-	CHECK_ALLOC_FAIL(CHECK(doc.load_string(STR("<foo a='1'/>")).status == status_out_of_memory));
+	CHECK_ALLOC_FAIL(CHECK(doc.loadString(STR("<foo a='1'/>")).status == status_out_of_memory));
 	CHECK(!doc.first_child());
 }
 
@@ -935,7 +935,7 @@ TEST(parse_out_of_memory_halfway_node)
 	test_runner::_memory_fail_threshold = 65536;
 
 	XmlDocument doc;
-	CHECK_ALLOC_FAIL(CHECK(doc.load_buffer_inplace(text, sizeof(text)).status == status_out_of_memory));
+	CHECK_ALLOC_FAIL(CHECK(doc.loadBufferInplace(text, sizeof(text)).status == status_out_of_memory));
 	CHECK_NODE(doc.first_child(), STR("<n/>"));
 }
 
@@ -962,10 +962,10 @@ TEST(parse_out_of_memory_halfway_attr)
 	test_runner::_memory_fail_threshold = 65536;
 
 	XmlDocument doc;
-	CHECK_ALLOC_FAIL(CHECK(doc.load_buffer_inplace(text, sizeof(text)).status == status_out_of_memory));
+	CHECK_ALLOC_FAIL(CHECK(doc.loadBufferInplace(text, sizeof(text)).status == status_out_of_memory));
 	CHECK_STRING(doc.first_child().name(), STR("n"));
-	CHECK_STRING(doc.first_child().first_attribute().name(), STR("a"));
-	CHECK_STRING(doc.first_child().last_attribute().name(), STR("a"));
+	CHECK_STRING(doc.first_child().firstAttribute().name(), STR("a"));
+	CHECK_STRING(doc.first_child().lastAttribute().name(), STR("a"));
 }
 
 TEST(parse_out_of_memory_conversion)
@@ -973,7 +973,7 @@ TEST(parse_out_of_memory_conversion)
 	test_runner::_memory_fail_threshold = 1;
 
 	XmlDocument doc;
-	CHECK_ALLOC_FAIL(CHECK(doc.load_buffer("<foo\x90/>", 7, parse_default, encoding_latin1).status == status_out_of_memory));
+	CHECK_ALLOC_FAIL(CHECK(doc.loadBuffer("<foo\x90/>", 7, parse_default, encoding_latin1).status == status_out_of_memory));
 	CHECK(!doc.first_child());
 }
 
@@ -993,7 +993,7 @@ TEST(parse_out_of_memory_allocator_state_sync)
 	test_runner::_memory_fail_threshold = 65536;
 
 	XmlDocument doc;
-	CHECK_ALLOC_FAIL(CHECK(doc.load_buffer_inplace(text, sizeof(text)).status == status_out_of_memory));
+	CHECK_ALLOC_FAIL(CHECK(doc.loadBufferInplace(text, sizeof(text)).status == status_out_of_memory));
 	CHECK_NODE(doc.first_child(), STR("<n/>"));
 
 	test_runner::_memory_fail_threshold = 0;
@@ -1005,7 +1005,7 @@ TEST(parse_out_of_memory_allocator_state_sync)
 static bool test_offset(const char_t* contents, unsigned int options, XmlParseStatus status, ptrdiff_t offset)
 {
 	XmlDocument doc;
-	XmlParseResult res = doc.load_string(contents, options);
+	XmlParseResult res = doc.loadString(contents, options);
 
 	return res.status == status && res.offset == offset;
 }
@@ -1088,8 +1088,8 @@ TEST(parse_bom_fragment)
 	for (size_t i = 0; i < sizeof(data) / sizeof(data[0]); ++i)
 	{
 		XmlDocument doc;
-		CHECK(doc.load_buffer(data[i].data, data[i].size, parse_fragment, data[i].encoding));
-		CHECK_STRING(doc.text().get(), data[i].text);
+		CHECK(doc.loadBuffer(data[i].data, data[i].size, parse_fragment, data[i].encoding));
+		CHECK_STRING(doc.text().value(), data[i].text);
 		CHECK(save_narrow(doc, format_no_declaration | format_raw | format_write_bom, data[i].encoding) == std::string(data[i].data, data[i].size));
 	}
 }
@@ -1098,9 +1098,9 @@ TEST(parse_bom_fragment_invalid_utf8)
 {
 	XmlDocument doc;
 
-	CHECK(doc.load_buffer("\xef\xbb\xbb", 3, parse_fragment, encoding_utf8));
+	CHECK(doc.loadBuffer("\xef\xbb\xbb", 3, parse_fragment, encoding_utf8));
 
-	const char_t* value = doc.text().get();
+	const char_t* value = doc.text().value();
 
 #ifdef PUGIXML_WCHAR_MODE
 	CHECK(value[0] == wchar_cast(0xfefb) && value[1] == 0);
@@ -1113,9 +1113,9 @@ TEST(parse_bom_fragment_invalid_utf16)
 {
 	XmlDocument doc;
 
-	CHECK(doc.load_buffer("\xff\xfe", 2, parse_fragment, encoding_utf16_be));
+	CHECK(doc.loadBuffer("\xff\xfe", 2, parse_fragment, encoding_utf16_be));
 
-	const char_t* value = doc.text().get();
+	const char_t* value = doc.text().value();
 
 #ifdef PUGIXML_WCHAR_MODE
 	CHECK(value[0] == wchar_cast(0xfffe) && value[1] == 0);
@@ -1128,9 +1128,9 @@ TEST(parse_bom_fragment_invalid_utf32)
 {
 	XmlDocument doc;
 
-	CHECK(doc.load_buffer("\xff\xff\x00\x00", 4, parse_fragment, encoding_utf32_le));
+	CHECK(doc.loadBuffer("\xff\xff\x00\x00", 4, parse_fragment, encoding_utf32_le));
 
-	const char_t* value = doc.text().get();
+	const char_t* value = doc.text().value();
 
 #ifdef PUGIXML_WCHAR_MODE
 	CHECK(value[0] == wchar_cast(0xffff) && value[1] == 0);
@@ -1142,8 +1142,8 @@ TEST(parse_bom_fragment_invalid_utf32)
 TEST(parse_pcdata_gap_fragment)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("a&amp;b"), parse_fragment | parse_escapes));
-	CHECK_STRING(doc.text().get(), STR("a&b"));
+	CHECK(doc.loadString(STR("a&amp;b"), parse_fragment | parse_escapes));
+	CHECK_STRING(doc.text().value(), STR("a&b"));
 }
 
 TEST(parse_name_end_eof)
@@ -1151,7 +1151,7 @@ TEST(parse_name_end_eof)
 	char_t test[] = STR("<node>");
 
 	XmlDocument doc;
-	CHECK(doc.load_buffer_inplace(test, 6 * sizeof(char_t)).status == status_end_element_mismatch);
+	CHECK(doc.loadBufferInplace(test, 6 * sizeof(char_t)).status == status_end_element_mismatch);
 	CHECK_STRING(doc.first_child().name(), STR("node"));
 }
 
@@ -1161,10 +1161,10 @@ TEST(parse_close_tag_eof)
 	char_t test2[] = STR("<node></nodx");
 
 	XmlDocument doc;
-	CHECK(doc.load_buffer_inplace(test1, 12 * sizeof(char_t)).status == status_bad_end_element);
+	CHECK(doc.loadBufferInplace(test1, 12 * sizeof(char_t)).status == status_bad_end_element);
 	CHECK_STRING(doc.first_child().name(), STR("node"));
 
-	CHECK(doc.load_buffer_inplace(test2, 12 * sizeof(char_t)).status == status_end_element_mismatch);
+	CHECK(doc.loadBufferInplace(test2, 12 * sizeof(char_t)).status == status_end_element_mismatch);
 	CHECK_STRING(doc.first_child().name(), STR("node"));
 }
 
@@ -1179,7 +1179,7 @@ TEST(parse_fuzz_doctype)
 	};
 
 	XmlDocument doc;
-	CHECK(doc.load_buffer(data, sizeof(data)).status == status_bad_doctype);
+	CHECK(doc.loadBuffer(data, sizeof(data)).status == status_bad_doctype);
 }
 
 TEST(parse_embed_pcdata)
@@ -1190,7 +1190,7 @@ TEST(parse_embed_pcdata)
 		unsigned int flags = (i == 0) ? parse_default : parse_default | parse_embed_pcdata;
 
 		XmlDocument doc;
-		XmlParseResult res = doc.load_string(STR("<node><key>value</key><child><inner1>value1</inner1><inner2>value2</inner2>outer</child><two>text<data /></two></node>"), flags);
+		XmlParseResult res = doc.loadString(STR("<node><key>value</key><child><inner1>value1</inner1><inner2>value2</inner2>outer</child><two>text<data /></two></node>"), flags);
 		CHECK(res);
 
 		XmlNode child = doc.child(STR("node")).child(STR("child"));
@@ -1209,8 +1209,8 @@ TEST(parse_embed_pcdata)
 		}
 
 		// higher-level APIs work the same though
-		CHECK_STRING(child.text().get(), STR("outer"));
-		CHECK_STRING(child.child(STR("inner1")).text().get(), STR("value1"));
+		CHECK_STRING(child.text().value(), STR("outer"));
+		CHECK_STRING(child.child(STR("inner1")).text().value(), STR("value1"));
 
 		CHECK_STRING(child.child_value(), STR("outer"));
 		CHECK_STRING(child.child_value(STR("inner2")), STR("value2"));
@@ -1261,7 +1261,7 @@ TEST(parse_merge_pcdata)
 		unsigned int flags = parse_merge_pcdata | flag_sets[i];
 
 		XmlDocument doc;
-		XmlParseResult res = doc.load_string(STR("<node>First text<!-- here is a mesh node -->Second text<![CDATA[someothertext]]>some more text<?include somedata?>Last text</node>"), flags);
+		XmlParseResult res = doc.loadString(STR("<node>First text<!-- here is a mesh node -->Second text<![CDATA[someothertext]]>some more text<?include somedata?>Last text</node>"), flags);
 		CHECK(res);
 
 		XmlNode child = doc.child(STR("node"));
@@ -1298,7 +1298,7 @@ TEST(parse_merge_pcdata)
 TEST(parse_merge_pcdata_escape)
 {
 	XmlDocument doc;
-	XmlParseResult res = doc.load_string(STR("<node>First &amp;lt; <!-- comment 1 --> Second &amp;gt; <!-- comment 2 --> Third &amp;quot;</node>"), parse_default | parse_merge_pcdata);
+	XmlParseResult res = doc.loadString(STR("<node>First &amp;lt; <!-- comment 1 --> Second &amp;gt; <!-- comment 2 --> Third &amp;quot;</node>"), parse_default | parse_merge_pcdata);
 	CHECK(res);
 
 	CHECK_STRING(doc.child(STR("node")).child_value(), STR("First &lt;  Second &gt;  Third &quot;"));
@@ -1313,7 +1313,7 @@ TEST(parse_merge_pcdata_whitespace)
 		unsigned int flags = parse_merge_pcdata | flag_sets[i];
 
 		XmlDocument doc;
-		XmlParseResult res = doc.load_string(STR("<node><child1>  <!-- comment 1 -->\t<!-- comment 2 -->\n</child1><child2>text<!-- comment 1-->\t<!-- comment2 --> end</child2></node>"), flags);
+		XmlParseResult res = doc.loadString(STR("<node><child1>  <!-- comment 1 -->\t<!-- comment 2 -->\n</child1><child2>text<!-- comment 1-->\t<!-- comment2 --> end</child2></node>"), flags);
 		CHECK(res);
 
 		if (flags & parse_ws_pcdata)
@@ -1353,7 +1353,7 @@ TEST(parse_merge_pcdata_append)
 TEST(parse_merge_pcdata_overlap)
 {
 	XmlDocument doc;
-	XmlParseResult res = doc.load_string(STR("<node>short <!-- --> this string is very long so long that copying it will overlap itself</node>"), parse_merge_pcdata);
+	XmlParseResult res = doc.loadString(STR("<node>short <!-- --> this string is very long so long that copying it will overlap itself</node>"), parse_merge_pcdata);
 	CHECK(res);
 	CHECK_STRING(doc.child_value(STR("node")), STR("short  this string is very long so long that copying it will overlap itself"));
 }
@@ -1363,7 +1363,7 @@ TEST(parse_encoding_detect)
 	char test[] = "<?xml version='1.0' encoding='utf-8'?><n/>";
 
 	XmlDocument doc;
-	CHECK(doc.load_buffer(test, sizeof(test)));
+	CHECK(doc.loadBuffer(test, sizeof(test)));
 }
 
 TEST(parse_encoding_detect_latin1)
@@ -1375,11 +1375,11 @@ TEST(parse_encoding_detect_latin1)
 	char test4[] = "<?xml version='1.0' encoding = \"LATIN1\"?><n/>";
 
 	XmlDocument doc;
-	CHECK(doc.load_buffer(test0, sizeof(test0)).encoding == encoding_utf8);
-	CHECK(doc.load_buffer(test1, sizeof(test1)).encoding == encoding_latin1);
-	CHECK(doc.load_buffer(test2, sizeof(test2)).encoding == encoding_latin1);
-	CHECK(doc.load_buffer(test3, sizeof(test3)).encoding == encoding_latin1);
-	CHECK(doc.load_buffer(test4, sizeof(test4)).encoding == encoding_latin1);
+	CHECK(doc.loadBuffer(test0, sizeof(test0)).encoding == encoding_utf8);
+	CHECK(doc.loadBuffer(test1, sizeof(test1)).encoding == encoding_latin1);
+	CHECK(doc.loadBuffer(test2, sizeof(test2)).encoding == encoding_latin1);
+	CHECK(doc.loadBuffer(test3, sizeof(test3)).encoding == encoding_latin1);
+	CHECK(doc.loadBuffer(test4, sizeof(test4)).encoding == encoding_latin1);
 }
 
 TEST(parse_encoding_detect_auto)
@@ -1413,7 +1413,7 @@ TEST(parse_encoding_detect_auto)
 	for (size_t i = 0; i < sizeof(data) / sizeof(data[0]); ++i)
 	{
 		XmlDocument doc;
-		XmlParseResult result = doc.load_buffer(data[i].contents, data[i].size, parse_fragment);
+		XmlParseResult result = doc.loadBuffer(data[i].contents, data[i].size, parse_fragment);
 
 		CHECK(result);
 		CHECK(result.encoding == data[i].encoding);
@@ -1455,7 +1455,7 @@ TEST(parse_encoding_detect_auto_incomplete)
 	for (size_t i = 0; i < sizeof(data) / sizeof(data[0]); ++i)
 	{
 		XmlDocument doc;
-		XmlParseResult result = doc.load_buffer(data[i].contents, data[i].size, parse_fragment);
+		XmlParseResult result = doc.loadBuffer(data[i].contents, data[i].size, parse_fragment);
 
 		CHECK(result);
 		CHECK(result.encoding == data[i].encoding);

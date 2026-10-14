@@ -29,36 +29,36 @@ TEST_XML_FLAGS(dom_text_get, "<node><a>foo</a><b><node/><![CDATA[bar]]></b><c><?
 {
     XmlNode node = doc.child(STR("node"));
 
-    CHECK_STRING(node.child(STR("a")).text().get(), STR("foo"));
-    CHECK_STRING(node.child(STR("a")).first_child().text().get(), STR("foo"));
+    CHECK_STRING(node.child(STR("a")).text().value(), STR("foo"));
+    CHECK_STRING(node.child(STR("a")).first_child().text().value(), STR("foo"));
 
-    CHECK_STRING(node.child(STR("b")).text().get(), STR("bar"));
-    CHECK_STRING(node.child(STR("b")).last_child().text().get(), STR("bar"));
+    CHECK_STRING(node.child(STR("b")).text().value(), STR("bar"));
+    CHECK_STRING(node.child(STR("b")).last_child().text().value(), STR("bar"));
 
-    CHECK_STRING(node.child(STR("c")).text().get(), STR(""));
-    CHECK_STRING(node.child(STR("c")).first_child().text().get(), STR(""));
+    CHECK_STRING(node.child(STR("c")).text().value(), STR(""));
+    CHECK_STRING(node.child(STR("c")).first_child().text().value(), STR(""));
 
-    CHECK_STRING(node.child(STR("d")).text().get(), STR(""));
+    CHECK_STRING(node.child(STR("d")).text().value(), STR(""));
 
-    CHECK_STRING(XmlNode().text().get(), STR(""));
+    CHECK_STRING(XmlNode().text().value(), STR(""));
 }
 
 TEST_XML_FLAGS(dom_text_as_string, "<node><a>foo</a><b><node/><![CDATA[bar]]></b><c><?pi value?></c><d/></node>", parse_default | parse_pi)
 {
     XmlNode node = doc.child(STR("node"));
 
-    CHECK_STRING(node.child(STR("a")).text().as_string(), STR("foo"));
-    CHECK_STRING(node.child(STR("a")).first_child().text().as_string(), STR("foo"));
+    CHECK_STRING(node.child(STR("a")).text().value(), STR("foo"));
+    CHECK_STRING(node.child(STR("a")).first_child().text().value(), STR("foo"));
 
-    CHECK_STRING(node.child(STR("b")).text().as_string(), STR("bar"));
-    CHECK_STRING(node.child(STR("b")).last_child().text().as_string(), STR("bar"));
+    CHECK_STRING(node.child(STR("b")).text().value(), STR("bar"));
+    CHECK_STRING(node.child(STR("b")).last_child().text().value(), STR("bar"));
 
-    CHECK_STRING(node.child(STR("c")).text().as_string(), STR(""));
-    CHECK_STRING(node.child(STR("c")).first_child().text().as_string(), STR(""));
+    CHECK_STRING(node.child(STR("c")).text().value(), STR(""));
+    CHECK_STRING(node.child(STR("c")).first_child().text().value(), STR(""));
 
-    CHECK_STRING(node.child(STR("d")).text().as_string(), STR(""));
+    CHECK_STRING(node.child(STR("d")).text().value(), STR(""));
 
-    CHECK_STRING(XmlNode().text().as_string(), STR(""));
+    CHECK_STRING(XmlNode().text().value(), STR(""));
 }
 
 TEST_XML(dom_text_as_int, "<node><text1>1</text1><text2>-1</text2><text3>-2147483648</text3><text4>2147483647</text4><text5>0</text5></node>")
@@ -164,7 +164,7 @@ TEST_XML(dom_text_as_bool, "<node><text1>0</text1><text2>1</text2><text3>true</t
 	CHECK(text.text().as_bool(true) == true);
 }
 
-#ifdef PUGIXML_HAS_LONG_LONG
+
 TEST_XML(dom_text_as_llong, "<node><text1>1</text1><text2>-1</text2><text3>-9223372036854775808</text3><text4>9223372036854775807</text4><text5>0</text5></node>")
 {
 	XmlNode node = doc.child(STR("node"));
@@ -212,7 +212,6 @@ TEST_XML(dom_text_as_ullong_hex, "<node><text1>0777</text1><text2>0x5ab</text2><
 	CHECK(node.child(STR("text5")).text().as_ullong() == 18446744073709551615ull);
 	CHECK(node.child(STR("text6")).text().as_ullong() == 0);
 }
-#endif
 
 TEST_XML(dom_text_get_no_state, "<node/>")
 {
@@ -220,18 +219,18 @@ TEST_XML(dom_text_get_no_state, "<node/>")
     XmlText t = node.text();
 
     CHECK(!t);
-    CHECK(t.get() && *t.get() == 0);
+    CHECK(t.value() && *t.value() == 0);
     CHECK(!node.first_child());
 
     node.append_child(node_pcdata);
 
     CHECK(t);
-    CHECK_STRING(t.get(), STR(""));
+    CHECK_STRING(t.value(), STR(""));
 
     node.first_child().setValue(STR("test"));
 
     CHECK(t);
-    CHECK_STRING(t.get(), STR("test"));
+    CHECK_STRING(t.value(), STR("test"));
 }
 
 TEST_XML(dom_text_set, "<node/>")
@@ -306,7 +305,7 @@ TEST_XML(dom_text_set_partially_with_size, "<node/>")
     CHECK_NODE(node, STR("<node/>"));
 }
 
-#ifdef PUGIXML_HAS_STRING_VIEW
+
 TEST_XML(dom_text_set_with_string_view, "<node/>")
 {
 	XmlNode node = doc.child(STR("node"));
@@ -367,7 +366,6 @@ TEST_XML(dom_text_set_partially_with_string_view, "<node/>")
 	CHECK(node.first_child().type() == node_pcdata);
 	CHECK_NODE(node, STR("<node/>"));
 }
-#endif
 
 TEST_XML(dom_text_assign, "<node/>")
 {
@@ -393,12 +391,9 @@ TEST_XML(dom_text_assign, "<node/>")
 	node.append_child(STR("text8")).text() = true;
 	XmlText() = true;
 
-#ifdef PUGIXML_HAS_STRING_VIEW
+
 	node.append_child(string_view_t(STR("text9"))).text() = string_view_t(STR("v2"));
 	XmlText() = string_view_t(STR("text9"));
-#else
-	node.append_child(STR("text9")).text() = STR("v2");
-#endif
 
 	CHECK_NODE(node, STR("<node><text1>v1</text1><text2>-2147483647</text2><text3>-2147483648</text3><text4>4294967295</text4><text5>4294967294</text5><text6>0.5</text6><text7>0.25</text7><text8>true</text8><text9>v2</text9></node>"));
 }
@@ -410,9 +405,8 @@ TEST_XML(dom_text_setValue, "<node/>")
 	CHECK(node.append_child(STR("text1")).text().set(STR("v1")));
 	CHECK(!XmlText().set(STR("v1")));
 	CHECK(!XmlText().set(STR("v1"), 2));
-#ifdef PUGIXML_HAS_STRING_VIEW
+
 	CHECK(!XmlText().set(string_view_t(STR("v1"))));
-#endif
 
 	CHECK(node.append_child(STR("text2")).text().set(-2147483647));
 	CHECK(node.append_child(STR("text3")).text().set(-2147483647 - 1));
@@ -496,7 +490,7 @@ TEST_XML(dom_text_setValue_long, "<node/>")
 }
 #endif
 
-#ifdef PUGIXML_HAS_LONG_LONG
+
 TEST_XML(dom_text_assign_llong, "<node/>")
 {
 	XmlNode node = doc.child(STR("node"));
@@ -526,14 +520,13 @@ TEST_XML(dom_text_setValue_llong, "<node/>")
 
 	CHECK_NODE(node, STR("<node><text1>-9223372036854775807</text1><text2>-9223372036854775808</text2><text3>18446744073709551615</text3><text4>18446744073709551614</text4></node>"));
 }
-#endif
 
 TEST_XML(dom_text_middle, "<node><c1>notthisone</c1>text<c2/></node>")
 {
     XmlNode node = doc.child(STR("node"));
     XmlText t = node.text();
 
-    CHECK_STRING(t.get(), STR("text"));
+    CHECK_STRING(t.value(), STR("text"));
     t.set(STR("notext"));
 
     CHECK_NODE(node, STR("<node><c1>notthisone</c1>notext<c2/></node>"));
@@ -549,13 +542,13 @@ TEST_XML(dom_text_middle, "<node><c1>notthisone</c1>text<c2/></node>")
     CHECK(t.data() == node.last_child());
 }
 
-#ifdef PUGIXML_HAS_STRING_VIEW
+
 TEST_XML(dom_text_middle_string_view, "<node><c1>notthisone</c1>text<c2/></node>")
 {
 	XmlNode node = doc.child(STR("node"));
 	XmlText t = node.text();
 
-	CHECK_STRING(t.get(), STR("text"));
+	CHECK_STRING(t.value(), STR("text"));
 	t.set(string_view_t(STR("notext")));
 
 	CHECK_NODE(node, STR("<node><c1>notthisone</c1>notext<c2/></node>"));
@@ -570,7 +563,6 @@ TEST_XML(dom_text_middle_string_view, "<node><c1>notthisone</c1>text<c2/></node>
 	CHECK_NODE(node, STR("<node><c1>notthisone</c1><c2/>yestext</node>"));
 	CHECK(t.data() == node.last_child());
 }
-#endif
 
 TEST_XML_FLAGS(dom_text_data, "<node><a>foo</a><b><![CDATA[bar]]></b><c><?pi value?></c><d/></node>", parse_default | parse_pi)
 {
@@ -587,15 +579,12 @@ TEST(dom_text_defaults)
 {
     XmlText text;
 
-    CHECK_STRING(text.as_string(STR("foo")), STR("foo"));
+    CHECK_STRING(text.value(STR("foo")), STR("foo"));
     CHECK(text.as_int(42) == 42);
     CHECK(text.as_uint(42) == 42);
     CHECK(text.as_double(42) == 42);
     CHECK(text.as_float(42) == 42);
     CHECK(text.as_bool(true) == true);
-
-#ifdef PUGIXML_HAS_LONG_LONG
     CHECK(text.as_llong(42) == 42);
     CHECK(text.as_ullong(42) == 42);
-#endif
 }

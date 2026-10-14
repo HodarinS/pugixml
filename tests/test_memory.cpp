@@ -49,7 +49,7 @@ TEST(memory_custom_memory_management)
 
 		CHECK(page_allocs == 0 && page_deallocs == 0);
 
-		CHECK(doc.load_string(STR("<node />")));
+		CHECK(doc.loadString(STR("<node />")));
 
 		CHECK(page_allocs == 1 && page_deallocs == 0);
 
@@ -129,7 +129,7 @@ TEST(memory_large_allocations)
 		CHECK(page_allocs == page_deallocs + 1); // only one live page left (it waits for new allocations)
 
 		char buffer;
-		CHECK(doc.load_buffer_inplace(&buffer, 0, parse_fragment, get_native_encoding()));
+		CHECK(doc.loadBufferInplace(&buffer, 0, parse_fragment, get_native_encoding()));
 
 		CHECK(page_allocs == page_deallocs); // no live pages left
 	}
@@ -186,7 +186,7 @@ TEST(memory_page_management)
 		CHECK(page_allocs == page_deallocs + 1); // only one live page left (it waits for new allocations)
 
 		char buffer;
-		CHECK(doc.load_buffer_inplace(&buffer, 0, parse_fragment, get_native_encoding()));
+		CHECK(doc.loadBufferInplace(&buffer, 0, parse_fragment, get_native_encoding()));
 
 		CHECK(page_allocs == page_deallocs); // no live pages left
 	}

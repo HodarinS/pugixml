@@ -57,14 +57,14 @@ TEST_XML(dom_attr_next_previous_attribute, "<node attr1='1' attr2='2' />")
 	XmlAttribute attr1 = doc.child(STR("node")).attribute(STR("attr1"));
 	XmlAttribute attr2 = doc.child(STR("node")).attribute(STR("attr2"));
 
-	CHECK(attr1.next_attribute() == attr2);
-	CHECK(attr2.next_attribute() == XmlAttribute());
+	CHECK(attr1.nextAttribute() == attr2);
+	CHECK(attr2.nextAttribute() == XmlAttribute());
 
-	CHECK(attr1.previous_attribute() == XmlAttribute());
-	CHECK(attr2.previous_attribute() == attr1);
+	CHECK(attr1.previousAttribute() == XmlAttribute());
+	CHECK(attr2.previousAttribute() == attr1);
 
-	CHECK(XmlAttribute().next_attribute() == XmlAttribute());
-	CHECK(XmlAttribute().previous_attribute() == XmlAttribute());
+	CHECK(XmlAttribute().nextAttribute() == XmlAttribute());
+	CHECK(XmlAttribute().previousAttribute() == XmlAttribute());
 }
 
 TEST_XML(dom_attr_name_value, "<node attr='1'/>")
@@ -79,8 +79,8 @@ TEST_XML(dom_attr_as_string, "<node attr='1'/>")
 {
 	XmlAttribute attr = doc.child(STR("node")).attribute(STR("attr"));
 
-	CHECK_STRING(attr.as_string(), STR("1"));
-	CHECK_STRING(XmlAttribute().as_string(), STR(""));
+	CHECK_STRING(attr.value(), STR("1"));
+	CHECK_STRING(XmlAttribute().value(), STR(""));
 }
 
 TEST_XML(dom_attr_as_int, "<node attr1='1' attr2='-1' attr3='-2147483648' attr4='2147483647' attr5='0'/>")
@@ -140,9 +140,8 @@ TEST_XML(dom_attr_as_integer_space, "<node attr1=' \t1234' attr2='\t 0x123' attr
 	CHECK(node.attribute(STR("attr3")).as_int() == 0);
 	CHECK(node.attribute(STR("attr4")).as_int() == 0);
 
-#ifdef PUGIXML_HAS_LONG_LONG
+
 	CHECK(node.attribute(STR("attr1")).as_llong() == 1234);
-#endif
 }
 
 TEST_XML(dom_attr_as_float, "<node attr1='0' attr2='1' attr3='0.12' attr4='-5.1' attr5='3e-4' attr6='3.14159265358979323846'/>")
@@ -188,7 +187,7 @@ TEST_XML(dom_attr_as_bool, "<node attr1='0' attr2='1' attr3='true' attr4='True' 
 	CHECK(attr.as_bool(true) == true);
 }
 
-#ifdef PUGIXML_HAS_LONG_LONG
+
 TEST_XML(dom_attr_as_llong, "<node attr1='1' attr2='-1' attr3='-9223372036854775808' attr4='9223372036854775807' attr5='0'/>")
 {
 	XmlNode node = doc.child(STR("node"));
@@ -236,23 +235,22 @@ TEST_XML(dom_attr_as_ullong_hex, "<node attr1='0777' attr2='0x5ab' attr3='0XFf' 
 	CHECK(node.attribute(STR("attr5")).as_ullong() == 18446744073709551615ull);
 	CHECK(node.attribute(STR("attr6")).as_ullong() == 0);
 }
-#endif
 
 TEST(dom_attr_defaults)
 {
     XmlAttribute attr;
 
-    CHECK_STRING(attr.as_string(STR("foo")), STR("foo"));
+    CHECK_STRING(attr.value(STR("foo")), STR("foo"));
     CHECK(attr.as_int(42) == 42);
     CHECK(attr.as_uint(42) == 42);
     CHECK(attr.as_double(42) == 42);
     CHECK(attr.as_float(42) == 42);
     CHECK(attr.as_bool(true) == true);
 
-#ifdef PUGIXML_HAS_LONG_LONG
+
     CHECK(attr.as_llong(42) == 42);
     CHECK(attr.as_ullong(42) == 42);
-#endif
+
 }
 
 TEST_XML(dom_attr_iterator, "<node><node1 attr1='0'/><node2 attr1='0' attr2='1'/><node3/></node>")
@@ -334,7 +332,7 @@ TEST_XML(dom_attr_iterator_invalidate, "<node><node1 attr1='0'/><node2 attr1='0'
 	// removing both attributes, it3 is now equal to the begin
 	node2.remove_attribute(*it1);
 	node2.remove_attribute(*it2new);
-	CHECK(!node2.first_attribute());
+	CHECK(!node2.firstAttribute());
 
 	CHECK(node2.attributes_begin() == it3);
 	CHECK(node2.attributes_end() == it3);
@@ -539,7 +537,7 @@ TEST_XML(dom_node_child, "<node><child1/><child2/></node>")
 	CHECK(doc.child(STR("node")).child(STR("child2")) == doc.child(STR("node")).last_child());
 }
 
-#ifdef PUGIXML_HAS_STRING_VIEW
+
 TEST_XML(dom_node_child_stringview, "<node><child1/><child2/></node>")
 {
 	CHECK(XmlNode().child(string_view_t(STR("n"))) == XmlNode());
@@ -573,7 +571,7 @@ TEST_XML(dom_node_child_interior_null, "<node><child1/><child2/></node>")
 	CHECK(doc.child(string_view_t(name, 5)) == XmlNode()); // "node\0" view including null
 	CHECK(doc.child(string_view_t(name, len)) == XmlNode()); // "node\0extra" view
 }
-#endif
+
 
 TEST_XML(dom_node_attribute, "<node attr1='0' attr2='1'/>")
 {
@@ -583,10 +581,9 @@ TEST_XML(dom_node_attribute, "<node attr1='0' attr2='1'/>")
 
 	CHECK(node.attribute(STR("n")) == XmlAttribute());
 	CHECK_NAME_VALUE(node.attribute(STR("attr1")), STR("attr1"), STR("0"));
-	CHECK(node.attribute(STR("attr2")) == node.last_attribute());
+	CHECK(node.attribute(STR("attr2")) == node.lastAttribute());
 }
 
-#ifdef PUGIXML_HAS_STRING_VIEW
 TEST_XML(dom_node_attribute_stringview, "<node attr1='0' attr2='1'/>")
 {
 	CHECK(XmlNode().attribute(string_view_t(STR("a"))) == XmlAttribute());
@@ -596,7 +593,7 @@ TEST_XML(dom_node_attribute_stringview, "<node attr1='0' attr2='1'/>")
 	CHECK(node.attribute(string_view_t()) == XmlAttribute());
 	CHECK(node.attribute(string_view_t(STR("n"))) == XmlAttribute());
 	CHECK_NAME_VALUE(node.attribute(string_view_t(STR("attr1"))), STR("attr1"), STR("0"));
-	CHECK(node.attribute(string_view_t(STR("attr2"))) == node.last_attribute());
+	CHECK(node.attribute(string_view_t(STR("attr2"))) == node.lastAttribute());
 
 	// verify only the characters in the view of the string view are included in the comparison
 	CHECK_NAME_VALUE(node.attribute(string_view_t(STR("attr1_andextratext"), 5)), STR("attr1"), STR("0"));
@@ -624,7 +621,6 @@ TEST_XML(dom_node_attribute_interior_null, "<node attr1='0' attr2='1'/>")
 	CHECK(node.attribute(string_view_t(name, 6)) == XmlAttribute()); // "attr2\0" view including null
 	CHECK(node.attribute(string_view_t(name, len)) == XmlAttribute()); // "attr2\0extra" view
 }
-#endif
 
 TEST_XML(dom_node_next_previous_sibling, "<node><child1/><child2/><child3/></node>")
 {
@@ -646,17 +642,15 @@ TEST_XML(dom_node_next_previous_sibling, "<node><child1/><child2/><child3/></nod
 
 	CHECK(child1.next_sibling(STR("child3")) == child3);
 	CHECK(child1.next_sibling(STR("child")) == XmlNode());
-#ifdef PUGIXML_HAS_STRING_VIEW
+
 	CHECK(child1.next_sibling(string_view_t(STR("child3"))) == child3);
 	CHECK(child1.next_sibling(string_view_t(STR("child"))) == XmlNode());
-#endif
 
 	CHECK(child3.previous_sibling(STR("child1")) == child1);
 	CHECK(child3.previous_sibling(STR("child")) == XmlNode());
-#ifdef PUGIXML_HAS_STRING_VIEW
+
 	CHECK(child3.previous_sibling(string_view_t(STR("child1"))) == child1);
 	CHECK(child3.previous_sibling(string_view_t(STR("child"))) == XmlNode());
-#endif
 }
 
 TEST_XML(dom_node_child_value, "<node><novalue/><child1>value1</child1><child2>value2<n/></child2><child3><![CDATA[value3]]></child3>value4</node>")
@@ -678,14 +672,14 @@ TEST_XML(dom_node_first_last_attribute, "<node attr1='0' attr2='1'/>")
 {
 	XmlNode node = doc.child(STR("node"));
 
-	CHECK(node.first_attribute() == node.attribute(STR("attr1")));
-	CHECK(node.last_attribute() == node.attribute(STR("attr2")));
+	CHECK(node.firstAttribute() == node.attribute(STR("attr1")));
+	CHECK(node.lastAttribute() == node.attribute(STR("attr2")));
 
-	CHECK(XmlNode().first_attribute() == XmlAttribute());
-	CHECK(XmlNode().last_attribute() == XmlAttribute());
+	CHECK(XmlNode().firstAttribute() == XmlAttribute());
+	CHECK(XmlNode().lastAttribute() == XmlAttribute());
 
-	CHECK(doc.first_attribute() == XmlAttribute());
-	CHECK(doc.last_attribute() == XmlAttribute());
+	CHECK(doc.firstAttribute() == XmlAttribute());
+	CHECK(doc.lastAttribute() == XmlAttribute());
 }
 
 TEST_XML(dom_node_first_last_child, "<node><child1/><child2/></node>")
@@ -782,10 +776,10 @@ TEST_XML(dom_node_find_attribute, "<node attr1='0' attr2='1'/>")
 	XmlNode node = doc.child(STR("node"));
 
 	CHECK(doc.find_attribute(find_predicate_const(true)) == XmlAttribute());
-	CHECK(node.find_attribute(find_predicate_const(true)) == node.first_attribute());
+	CHECK(node.find_attribute(find_predicate_const(true)) == node.firstAttribute());
 	CHECK(node.find_attribute(find_predicate_const(false)) == XmlAttribute());
-	CHECK(node.find_attribute(find_predicate_prefix(STR("attr2"))) == node.last_attribute());
-	CHECK(node.find_attribute(find_predicate_prefix(STR("attr"))) == node.first_attribute());
+	CHECK(node.find_attribute(find_predicate_prefix(STR("attr2"))) == node.lastAttribute());
+	CHECK(node.find_attribute(find_predicate_prefix(STR("attr"))) == node.firstAttribute());
 }
 
 TEST_XML(dom_node_find_child, "<node><child1/><child2/></node>")
@@ -1030,7 +1024,7 @@ TEST(dom_offset_debug_encoding)
 	char buf[] = { 0, '<', 0, 'n', 0, '/', 0, '>' };
 
 	XmlDocument doc;
-	CHECK(doc.load_buffer(buf, sizeof(buf)));
+	CHECK(doc.loadBuffer(buf, sizeof(buf)));
 
 	CHECK(doc.offset_debug() == 0);
 	CHECK(doc.first_child().offset_debug() == 1);
@@ -1065,7 +1059,7 @@ TEST_XML(dom_offset_debug_append_buffer, "<node/>")
 TEST_XML(dom_internal_object, "<node attr='value'>value</node>")
 {
 	XmlNode node = doc.child(STR("node"));
-	XmlAttribute attr = node.first_attribute();
+	XmlAttribute attr = node.firstAttribute();
 	XmlNode value = node.first_child();
 
 	CHECK(XmlNode().internal_object() == 0);
@@ -1087,7 +1081,7 @@ TEST_XML(dom_internal_object, "<node attr='value'>value</node>")
 TEST_XML(dom_hash_value, "<node attr='value'>value</node>")
 {
 	XmlNode node = doc.child(STR("node"));
-	XmlAttribute attr = node.first_attribute();
+	XmlAttribute attr = node.firstAttribute();
 	XmlNode value = node.first_child();
 
 	CHECK(XmlNode().hash_value() == 0);
@@ -1229,7 +1223,7 @@ TEST_XML(dom_node_attribute_hinted, "<node attr1='1' attr2='2' attr3='3' />")
 	CHECK(!node.attribute(STR("attr"), hint) && hint == attr2);
 }
 
-#ifdef PUGIXML_HAS_STRING_VIEW
+
 TEST_XML(dom_node_attribute_hinted_stringview, "<node attr1='1' attr2='2' attr3='3' />")
 {
 	XmlNode node = doc.first_child();
@@ -1285,7 +1279,7 @@ TEST_XML(dom_node_attribute_hint_interior_null, "<node attr1='1' attr2='2' attr3
 	CHECK(!node.attribute(string_view_t(name, 6), hint) && hint == attr3); // "attr2\0"
 	CHECK(!node.attribute(string_view_t(name, len), hint) && hint == attr3); // "attr2\0extra"
 }
-#endif
+
 
 TEST_XML(dom_as_int_overflow, "<node attr1='-2147483649' attr2='2147483648' attr3='-4294967296' />")
 {
@@ -1339,7 +1333,7 @@ TEST_XML(dom_as_int_hex_many_digits, "<node attr1='0x000000000000000000000000000
 	CHECK(node.attribute(STR("attr1")).as_uint() == 1);
 }
 
-#ifdef PUGIXML_HAS_LONG_LONG
+
 TEST_XML(dom_as_llong_overflow, "<node attr1='-9223372036854775809' attr2='9223372036854775808' attr3='-18446744073709551616' />")
 {
 	XmlNode node = doc.child(STR("node"));
@@ -1391,7 +1385,7 @@ TEST_XML(dom_as_llong_hex_many_digits, "<node attr1='0x0000000000000000000000000
 	CHECK(node.attribute(STR("attr1")).as_llong() == 1);
 	CHECK(node.attribute(STR("attr1")).as_ullong() == 1);
 }
-#endif
+
 
 TEST_XML(dom_as_int_plus, "<node attr1='+1' attr2='+0xa' />")
 {
@@ -1402,12 +1396,12 @@ TEST_XML(dom_as_int_plus, "<node attr1='+1' attr2='+0xa' />")
 	CHECK(node.attribute(STR("attr2")).as_int() == 10);
 	CHECK(node.attribute(STR("attr2")).as_uint() == 10);
 
-#ifdef PUGIXML_HAS_LONG_LONG
+
 	CHECK(node.attribute(STR("attr1")).as_llong() == 1);
 	CHECK(node.attribute(STR("attr1")).as_ullong() == 1);
 	CHECK(node.attribute(STR("attr2")).as_llong() == 10);
 	CHECK(node.attribute(STR("attr2")).as_ullong() == 10);
-#endif
+
 }
 
 TEST(dom_node_anonymous)
@@ -1435,10 +1429,10 @@ TEST_XML(dom_node_anonymous_child, "<node></node>")
 
 	// searching for empty string does not find a node with empty name
 	CHECK(doc.child(STR("")) == XmlNode());
-#ifdef PUGIXML_HAS_STRING_VIEW
+
 	CHECK(doc.child(string_view_t()) == XmlNode());
 	CHECK(doc.child(string_view_t(STR("hi"), 0)) == XmlNode());
-#endif
+
 }
 
 TEST_XML(dom_node_anonymous_attribute, "<node attr='0'/>")
@@ -1447,11 +1441,11 @@ TEST_XML(dom_node_anonymous_attribute, "<node attr='0'/>")
 	CHECK(attr != XmlAttribute());
 	attr.setName(STR(""));
 	CHECK_NODE(doc, STR("<node :anonymous=\"0\"/>"));
-	CHECK_NAME_VALUE(doc.first_child().first_attribute(), STR(""), STR("0"));
+	CHECK_NAME_VALUE(doc.first_child().firstAttribute(), STR(""), STR("0"));
 
 	CHECK(doc.first_child().attribute(STR("")) == XmlAttribute());
-#ifdef PUGIXML_HAS_STRING_VIEW
+
 	CHECK(doc.first_child().attribute(string_view_t()) == XmlAttribute());
 	CHECK(doc.first_child().attribute(string_view_t(STR("hi"), 0)) == XmlAttribute());
-#endif
+
 }

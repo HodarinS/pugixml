@@ -31,7 +31,7 @@
 
 using namespace pugi;
 
-static bool load_file_in_memory(const char* path, char*& data, size_t& size)
+static bool loadFile_in_memory(const char* path, char*& data, size_t& size)
 {
 	FILE* file = fopen(path, "rb");
 	if (!file) return false;
@@ -54,7 +54,7 @@ static bool test_file_contents(const char* path, const char* data, size_t size)
 {
     char* fdata;
     size_t fsize;
-    if (!load_file_in_memory(path, fdata, fsize)) return false;
+    if (!loadFile_in_memory(path, fdata, fsize)) return false;
 
     bool result = (size == fsize && memcmp(data, fdata, size) == 0);
 
@@ -179,7 +179,7 @@ TEST(document_load_stream_exceptions)
 TEST(document_load_stream_error_previous)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node/>")));
+	CHECK(doc.loadString(STR("<node/>")));
 	CHECK(doc.first_child());
 
 	std::ifstream fs1("filedoesnotexist");
@@ -190,7 +190,7 @@ TEST(document_load_stream_error_previous)
 TEST(document_load_stream_wide_error_previous)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node/>")));
+	CHECK(doc.loadString(STR("<node/>")));
 	CHECK(doc.first_child());
 
 	std::basic_ifstream<wchar_t> fs1("filedoesnotexist");
@@ -465,46 +465,46 @@ TEST(document_load_stream_wide_seekable_fail_read)
 #endif
 #endif
 
-TEST(document_load_string)
+TEST(document_loadString)
 {
 	XmlDocument doc;
 
-	CHECK(doc.load_string(STR("<node/>")));
+	CHECK(doc.loadString(STR("<node/>")));
 	CHECK_NODE(doc, STR("<node/>"));
 }
 
-TEST(document_load_string_empty)
+TEST(document_loadString_empty)
 {
 	XmlDocument doc;
 
-	CHECK(doc.load_string(STR("")).status == status_no_document_element);
+	CHECK(doc.loadString(STR("")).status == status_no_document_element);
 	CHECK(!doc.first_child());
 
-	CHECK(doc.load_string(STR(""), parse_fragment));
+	CHECK(doc.loadString(STR(""), parse_fragment));
 	CHECK(!doc.first_child());
 }
 
-TEST(document_load_file)
+TEST(document_loadFile)
 {
 	XmlDocument doc;
 
-	CHECK(doc.load_file("tests/data/small.xml"));
+	CHECK(doc.loadFile("tests/data/small.xml"));
 	CHECK_NODE(doc, STR("<node/>"));
 }
 
-TEST(document_load_file_empty)
+TEST(document_loadFile_empty)
 {
 	XmlDocument doc;
 
-	CHECK(doc.load_file("tests/data/empty.xml").status == status_no_document_element);
+	CHECK(doc.loadFile("tests/data/empty.xml").status == status_no_document_element);
 	CHECK(!doc.first_child());
 }
 
-TEST(document_load_file_large)
+TEST(document_loadFile_large)
 {
 	XmlDocument doc;
 
-	CHECK(doc.load_file("tests/data/large.xml"));
+	CHECK(doc.loadFile("tests/data/large.xml"));
 
 	std::basic_string<char_t> str;
 	str += STR("<node>");
@@ -514,80 +514,80 @@ TEST(document_load_file_large)
 	CHECK_NODE(doc, str.c_str());
 }
 
-TEST(document_load_file_error)
+TEST(document_loadFile_error)
 {
 	XmlDocument doc;
 
-	CHECK(doc.load_file("filedoesnotexist").status == status_file_not_found);
+	CHECK(doc.loadFile("filedoesnotexist").status == status_file_not_found);
 }
 
-TEST(document_load_file_out_of_memory)
+TEST(document_loadFile_out_of_memory)
 {
 	test_runner::_memory_fail_threshold = 1;
 
 	XmlDocument doc;
-	CHECK_ALLOC_FAIL(CHECK(doc.load_file("tests/data/small.xml").status == status_out_of_memory));
+	CHECK_ALLOC_FAIL(CHECK(doc.loadFile("tests/data/small.xml").status == status_out_of_memory));
 }
 
-TEST(document_load_file_out_of_memory_file_leak)
+TEST(document_loadFile_out_of_memory_file_leak)
 {
 	test_runner::_memory_fail_threshold = 1;
 
 	XmlDocument doc;
 
 	for (int i = 0; i < 256; ++i)
-		CHECK_ALLOC_FAIL(CHECK(doc.load_file("tests/data/small.xml").status == status_out_of_memory));
+		CHECK_ALLOC_FAIL(CHECK(doc.loadFile("tests/data/small.xml").status == status_out_of_memory));
 
 	test_runner::_memory_fail_threshold = 0;
 
-	CHECK(doc.load_file("tests/data/small.xml"));
+	CHECK(doc.loadFile("tests/data/small.xml"));
 	CHECK_NODE(doc, STR("<node/>"));
 }
 
-TEST(document_load_file_wide_out_of_memory_file_leak)
+TEST(document_loadFile_wide_out_of_memory_file_leak)
 {
 	test_runner::_memory_fail_threshold = 256;
 
 	XmlDocument doc;
 
 	for (int i = 0; i < 256; ++i)
-		CHECK_ALLOC_FAIL(CHECK(doc.load_file(L"tests/data/small.xml").status == status_out_of_memory));
+		CHECK_ALLOC_FAIL(CHECK(doc.loadFile(L"tests/data/small.xml").status == status_out_of_memory));
 
 	test_runner::_memory_fail_threshold = 0;
 
-	CHECK(doc.load_file(L"tests/data/small.xml"));
+	CHECK(doc.loadFile(L"tests/data/small.xml"));
 	CHECK_NODE(doc, STR("<node/>"));
 }
 
-TEST(document_load_file_error_previous)
+TEST(document_loadFile_error_previous)
 {
 	XmlDocument doc;
-	CHECK(doc.load_string(STR("<node/>")));
+	CHECK(doc.loadString(STR("<node/>")));
 	CHECK(doc.first_child());
 
-	CHECK(doc.load_file("filedoesnotexist").status == status_file_not_found);
+	CHECK(doc.loadFile("filedoesnotexist").status == status_file_not_found);
 	CHECK(!doc.first_child());
 }
 
-TEST(document_load_file_wide_ascii)
+TEST(document_loadFile_wide_ascii)
 {
 	XmlDocument doc;
 
-	CHECK(doc.load_file(L"tests/data/small.xml"));
+	CHECK(doc.loadFile(L"tests/data/small.xml"));
 	CHECK_NODE(doc, STR("<node/>"));
 }
 
 #if !defined(__DMC__) && !defined(__MWERKS__) && !(defined(__MINGW32__) && defined(__STRICT_ANSI__) && !defined(__MINGW64_VERSION_MAJOR)) && !defined(__BORLANDC__)
-TEST(document_load_file_wide_unicode)
+TEST(document_loadFile_wide_unicode)
 {
 	XmlDocument doc;
 
-	CHECK(doc.load_file(L"tests/data/\x0442\x0435\x0441\x0442.xml"));
+	CHECK(doc.loadFile(L"tests/data/\x0442\x0435\x0441\x0442.xml"));
 	CHECK_NODE(doc, STR("<node/>"));
 }
 #endif
 
-TEST(document_load_file_wide_out_of_memory)
+TEST(document_loadFile_wide_out_of_memory)
 {
 	test_runner::_memory_fail_threshold = 1;
 
@@ -595,32 +595,32 @@ TEST(document_load_file_wide_out_of_memory)
 
 	XmlParseResult result;
 	result.status = status_out_of_memory;
-	CHECK_ALLOC_FAIL(result = doc.load_file(L"tests/data/small.xml"));
+	CHECK_ALLOC_FAIL(result = doc.loadFile(L"tests/data/small.xml"));
 
 	CHECK(result.status == status_out_of_memory || result.status == status_file_not_found);
 }
 
 #if defined(__linux__) || defined(__APPLE__)
-TEST(document_load_file_special_folder)
+TEST(document_loadFile_special_folder)
 {
 	XmlDocument doc;
-	XmlParseResult result = doc.load_file(".");
+	XmlParseResult result = doc.loadFile(".");
 	CHECK(result.status == status_io_error);
 }
 #endif
 
 #if defined(__linux__)
-TEST(document_load_file_special_device)
+TEST(document_loadFile_special_device)
 {
 	XmlDocument doc;
-	XmlParseResult result = doc.load_file("/dev/tty");
+	XmlParseResult result = doc.loadFile("/dev/tty");
 	CHECK(result.status == status_file_not_found || result.status == status_io_error);
 }
 
-TEST(document_load_file_special_sysfs)
+TEST(document_loadFile_special_sysfs)
 {
 	XmlDocument doc;
-	XmlParseResult result = doc.load_file("/sys/kernel/fscaps");
+	XmlParseResult result = doc.loadFile("/sys/kernel/fscaps");
 	CHECK(result.status == status_file_not_found || result.status == status_io_error);
 }
 #endif
@@ -770,17 +770,17 @@ struct temp_file
 	}
 };
 
-TEST_XML(document_save_file, "<node/>")
+TEST_XML(document_saveFile, "<node/>")
 {
 	temp_file f;
 
-	CHECK(doc.save_file(f.path));
+	CHECK(doc.saveFile(f.path));
 
-	CHECK(doc.load_file(f.path, parse_default | parse_declaration));
+	CHECK(doc.loadFile(f.path, parse_default | parse_declaration));
 	CHECK_NODE(doc, STR("<?xml version=\"1.0\"?><node/>"));
 }
 
-TEST_XML(document_save_file_wide, "<node/>")
+TEST_XML(document_saveFile_wide, "<node/>")
 {
 	temp_file f;
 
@@ -788,29 +788,29 @@ TEST_XML(document_save_file_wide, "<node/>")
 	wchar_t wpath[sizeof(f.path)];
 	std::copy(f.path, f.path + strlen(f.path) + 1, wpath + 0);
 
-	CHECK(doc.save_file(wpath));
+	CHECK(doc.saveFile(wpath));
 
-	CHECK(doc.load_file(f.path, parse_default | parse_declaration));
+	CHECK(doc.loadFile(f.path, parse_default | parse_declaration));
 	CHECK_NODE(doc, STR("<?xml version=\"1.0\"?><node/>"));
 }
 
-TEST_XML(document_save_file_error, "<node/>")
+TEST_XML(document_saveFile_error, "<node/>")
 {
-	CHECK(!doc.save_file("tests/data/unknown/output.xml"));
+	CHECK(!doc.saveFile("tests/data/unknown/output.xml"));
 }
 
-TEST_XML(document_save_file_text, "<node/>")
+TEST_XML(document_saveFile_text, "<node/>")
 {
 	temp_file f;
 
-	CHECK(doc.save_file(f.path, STR(""), format_no_declaration | format_save_file_text));
+	CHECK(doc.saveFile(f.path, STR(""), format_no_declaration | format_save_file_text));
     CHECK(test_file_contents(f.path, "<node />\n", 9) || test_file_contents(f.path, "<node />\r\n", 10));
 
-	CHECK(doc.save_file(f.path, STR(""), format_no_declaration));
+	CHECK(doc.saveFile(f.path, STR(""), format_no_declaration));
     CHECK(test_file_contents(f.path, "<node />\n", 9));
 }
 
-TEST_XML(document_save_file_wide_text, "<node/>")
+TEST_XML(document_saveFile_wide_text, "<node/>")
 {
 	temp_file f;
 
@@ -818,22 +818,22 @@ TEST_XML(document_save_file_wide_text, "<node/>")
 	wchar_t wpath[sizeof(f.path)];
 	std::copy(f.path, f.path + strlen(f.path) + 1, wpath + 0);
 
-	CHECK(doc.save_file(wpath, STR(""), format_no_declaration | format_save_file_text));
+	CHECK(doc.saveFile(wpath, STR(""), format_no_declaration | format_save_file_text));
     CHECK(test_file_contents(f.path, "<node />\n", 9) || test_file_contents(f.path, "<node />\r\n", 10));
 
-	CHECK(doc.save_file(wpath, STR(""), format_no_declaration));
+	CHECK(doc.saveFile(wpath, STR(""), format_no_declaration));
     CHECK(test_file_contents(f.path, "<node />\n", 9));
 }
 
-TEST_XML(document_save_file_leak, "<node/>")
+TEST_XML(document_saveFile_leak, "<node/>")
 {
 	temp_file f;
 
 	for (int i = 0; i < 256; ++i)
-		CHECK(doc.save_file(f.path));
+		CHECK(doc.saveFile(f.path));
 }
 
-TEST_XML(document_save_file_wide_leak, "<node/>")
+TEST_XML(document_saveFile_wide_leak, "<node/>")
 {
 	temp_file f;
 
@@ -842,30 +842,30 @@ TEST_XML(document_save_file_wide_leak, "<node/>")
 	std::copy(f.path, f.path + strlen(f.path) + 1, wpath + 0);
 
 	for (int i = 0; i < 256; ++i)
-		CHECK(doc.save_file(wpath));
+		CHECK(doc.saveFile(wpath));
 }
 
-TEST(document_load_buffer)
+TEST(document_loadBuffer)
 {
 	const char_t text[] = STR("<?xml?><node/>");
 
 	XmlDocument doc;
 
-	CHECK(doc.load_buffer(text, sizeof(text)));
+	CHECK(doc.loadBuffer(text, sizeof(text)));
 	CHECK_NODE(doc, STR("<node/>"));
 }
 
-TEST(document_load_buffer_inplace)
+TEST(document_loadBufferInplace)
 {
 	char_t text[] = STR("<?xml?><node/>");
 
 	XmlDocument doc;
 
-	CHECK(doc.load_buffer_inplace(text, sizeof(text)));
+	CHECK(doc.loadBufferInplace(text, sizeof(text)));
 	CHECK_NODE(doc, STR("<node/>"));
 }
 
-TEST(document_load_buffer_inplace_own)
+TEST(document_loadBufferInplaceOwn)
 {
 	allocation_function alloc = get_memory_allocation_function();
 
@@ -878,11 +878,11 @@ TEST(document_load_buffer_inplace_own)
 
 	XmlDocument doc;
 
-	CHECK(doc.load_buffer_inplace_own(text, size));
+	CHECK(doc.loadBufferInplaceOwn(text, size));
 	CHECK_NODE(doc, STR("<node/>"));
 }
 
-TEST(document_load_buffer_inplace_own_empty)
+TEST(document_loadBufferInplaceOwn_empty)
 {
 	allocation_function alloc = get_memory_allocation_function();
 
@@ -891,8 +891,8 @@ TEST(document_load_buffer_inplace_own_empty)
 	CHECK(text1 && text2);
 
 	XmlDocument doc;
-	CHECK(doc.load_buffer_inplace_own(text1, 0, parse_fragment));
-	CHECK(doc.load_buffer_inplace_own(text2, 0).status == status_no_document_element);
+	CHECK(doc.loadBufferInplaceOwn(text1, 0, parse_fragment));
+	CHECK(doc.loadBufferInplaceOwn(text2, 0).status == status_no_document_element);
 }
 
 TEST(document_parse_result_bool)
@@ -928,7 +928,7 @@ TEST(document_parse_result_description)
 TEST(document_load_fail)
 {
 	XmlDocument doc;
-	CHECK(!doc.load_string(STR("<foo><bar/>")));
+	CHECK(!doc.loadString(STR("<foo><bar/>")));
 	CHECK(doc.child(STR("foo")).child(STR("bar")));
 }
 
@@ -956,7 +956,7 @@ inline void check_utftest_document(const XmlDocument& doc)
 #endif
 }
 
-TEST(document_load_file_convert_auto)
+TEST(document_loadFile_convert_auto)
 {
 	const char* files[] =
 	{
@@ -989,7 +989,7 @@ TEST(document_load_file_convert_auto)
 	for (unsigned int i = 0; i < sizeof(files) / sizeof(files[0]); ++i)
 	{
 		XmlDocument doc;
-		XmlParseResult res = doc.load_file(files[i]);
+		XmlParseResult res = doc.loadFile(files[i]);
 
 		CHECK(res);
 		CHECK(res.encoding == encodings[i]);
@@ -997,7 +997,7 @@ TEST(document_load_file_convert_auto)
 	}
 }
 
-TEST(document_load_file_convert_specific)
+TEST(document_loadFile_convert_specific)
 {
 	const char* files[] =
 	{
@@ -1034,7 +1034,7 @@ TEST(document_load_file_convert_specific)
 			XmlEncoding encoding = encodings[j];
 
 			XmlDocument doc;
-			XmlParseResult res = doc.load_file(files[i], parse_default, encoding);
+			XmlParseResult res = doc.loadFile(files[i], parse_default, encoding);
 
 			if (encoding == encodings[i])
 			{
@@ -1051,7 +1051,7 @@ TEST(document_load_file_convert_specific)
 	}
 }
 
-TEST(document_load_file_convert_native_endianness)
+TEST(document_loadFile_convert_native_endianness)
 {
 	const char* files[2][6] =
 	{
@@ -1091,7 +1091,7 @@ TEST(document_load_file_convert_native_endianness)
 			// check file with right endianness
 			{
 				XmlDocument doc;
-				XmlParseResult res = doc.load_file(right_file, parse_default, encoding);
+				XmlParseResult res = doc.loadFile(right_file, parse_default, encoding);
 
 				if (encoding == encodings[i])
 				{
@@ -1108,7 +1108,7 @@ TEST(document_load_file_convert_native_endianness)
 			// check file with wrong endianness
 			{
 				XmlDocument doc;
-				doc.load_file(wrong_file, parse_default, encoding);
+				doc.loadFile(wrong_file, parse_default, encoding);
 				CHECK(!doc.first_child());
 			}
 		}
@@ -1139,7 +1139,7 @@ TEST(document_contents_preserve)
 	// load files in memory
 	for (unsigned int i = 0; i < sizeof(files) / sizeof(files[0]); ++i)
 	{
-		CHECK(load_file_in_memory(files[i].path, files[i].data, files[i].size));
+		CHECK(loadFile_in_memory(files[i].path, files[i].data, files[i].size));
 	}
 
 	// convert each file to each format and compare bitwise
@@ -1149,7 +1149,7 @@ TEST(document_contents_preserve)
 		{
 			// parse into document (preserve comments, declaration and whitespace pcdata)
 			XmlDocument doc;
-			CHECK(doc.load_buffer(files[src].data, files[src].size, parse_default | parse_ws_pcdata | parse_declaration | parse_comments));
+			CHECK(doc.loadBuffer(files[src].data, files[src].size, parse_default | parse_ws_pcdata | parse_declaration | parse_comments));
 
 			// compare saved document with the original (raw formatting, without extra declaration, write bom if it was in original file)
 			CHECK(test_save_narrow(doc, format_raw | format_no_declaration | format_write_bom, files[dst].encoding, files[dst].data, files[dst].size));
@@ -1174,7 +1174,7 @@ TEST(document_contents_preserve_latin1)
 	// load files in memory
 	for (unsigned int i = 0; i < sizeof(files) / sizeof(files[0]); ++i)
 	{
-		CHECK(load_file_in_memory(files[i].path, files[i].data, files[i].size));
+		CHECK(loadFile_in_memory(files[i].path, files[i].data, files[i].size));
 	}
 
 	// convert each file to each format and compare bitwise
@@ -1184,7 +1184,7 @@ TEST(document_contents_preserve_latin1)
 		{
 			// parse into document (preserve comments, declaration and whitespace pcdata)
 			XmlDocument doc;
-			CHECK(doc.load_buffer(files[src].data, files[src].size, parse_default | parse_ws_pcdata | parse_declaration | parse_comments));
+			CHECK(doc.loadBuffer(files[src].data, files[src].size, parse_default | parse_ws_pcdata | parse_declaration | parse_comments));
 
 			// compare saved document with the original (raw formatting, without extra declaration, write bom if it was in original file)
 			CHECK(test_save_narrow(doc, format_raw | format_no_declaration | format_write_bom, files[dst].encoding, files[dst].data, files[dst].size));
@@ -1206,7 +1206,7 @@ static bool test_parse_fail(const void* buffer, size_t size, XmlEncoding encodin
 
 	// check that this parses without buffer overflows (yielding an error)
 	XmlDocument doc;
-	bool result = doc.load_buffer_inplace(temp, size, parse_default, encoding);
+	bool result = doc.loadBufferInplace(temp, size, parse_default, encoding);
 
 	free(temp);
 
@@ -1246,7 +1246,7 @@ TEST(document_convert_invalid_utf16)
 	CHECK(test_parse_fail("<\x00\x24\xde", 4, encoding_utf16_le));
 }
 
-TEST(document_load_buffer_empty)
+TEST(document_loadBuffer_empty)
 {
 	XmlEncoding encodings[] =
 	{
@@ -1269,20 +1269,20 @@ TEST(document_load_buffer_empty)
 		XmlEncoding encoding = encodings[i];
 
 		XmlDocument doc;
-		CHECK(doc.load_buffer(buffer, 0, parse_default, encoding).status == status_no_document_element && !doc.first_child());
-		CHECK(doc.load_buffer(0, 0, parse_default, encoding).status == status_no_document_element && !doc.first_child());
+		CHECK(doc.loadBuffer(buffer, 0, parse_default, encoding).status == status_no_document_element && !doc.first_child());
+		CHECK(doc.loadBuffer(0, 0, parse_default, encoding).status == status_no_document_element && !doc.first_child());
 
-		CHECK(doc.load_buffer_inplace(buffer, 0, parse_default, encoding).status == status_no_document_element && !doc.first_child());
-		CHECK(doc.load_buffer_inplace(0, 0, parse_default, encoding).status == status_no_document_element && !doc.first_child());
+		CHECK(doc.loadBufferInplace(buffer, 0, parse_default, encoding).status == status_no_document_element && !doc.first_child());
+		CHECK(doc.loadBufferInplace(0, 0, parse_default, encoding).status == status_no_document_element && !doc.first_child());
 
 		void* own_buffer = get_memory_allocation_function()(1);
 
-		CHECK(doc.load_buffer_inplace_own(own_buffer, 0, parse_default, encoding).status == status_no_document_element && !doc.first_child());
-		CHECK(doc.load_buffer_inplace_own(0, 0, parse_default, encoding).status == status_no_document_element && !doc.first_child());
+		CHECK(doc.loadBufferInplaceOwn(own_buffer, 0, parse_default, encoding).status == status_no_document_element && !doc.first_child());
+		CHECK(doc.loadBufferInplaceOwn(0, 0, parse_default, encoding).status == status_no_document_element && !doc.first_child());
 	}
 }
 
-TEST(document_load_buffer_empty_fragment)
+TEST(document_loadBuffer_empty_fragment)
 {
 	XmlEncoding encodings[] =
 	{
@@ -1305,37 +1305,37 @@ TEST(document_load_buffer_empty_fragment)
 		XmlEncoding encoding = encodings[i];
 
 		XmlDocument doc;
-		CHECK(doc.load_buffer(buffer, 0, parse_fragment, encoding) && !doc.first_child());
-		CHECK(doc.load_buffer(0, 0, parse_fragment, encoding) && !doc.first_child());
+		CHECK(doc.loadBuffer(buffer, 0, parse_fragment, encoding) && !doc.first_child());
+		CHECK(doc.loadBuffer(0, 0, parse_fragment, encoding) && !doc.first_child());
 
-		CHECK(doc.load_buffer_inplace(buffer, 0, parse_fragment, encoding) && !doc.first_child());
-		CHECK(doc.load_buffer_inplace(0, 0, parse_fragment, encoding) && !doc.first_child());
+		CHECK(doc.loadBufferInplace(buffer, 0, parse_fragment, encoding) && !doc.first_child());
+		CHECK(doc.loadBufferInplace(0, 0, parse_fragment, encoding) && !doc.first_child());
 
 		void* own_buffer = get_memory_allocation_function()(1);
 
-		CHECK(doc.load_buffer_inplace_own(own_buffer, 0, parse_fragment, encoding) && !doc.first_child());
-		CHECK(doc.load_buffer_inplace_own(0, 0, parse_fragment, encoding) && !doc.first_child());
+		CHECK(doc.loadBufferInplaceOwn(own_buffer, 0, parse_fragment, encoding) && !doc.first_child());
+		CHECK(doc.loadBufferInplaceOwn(0, 0, parse_fragment, encoding) && !doc.first_child());
 	}
 }
 
-TEST(document_load_buffer_empty_encoding)
+TEST(document_loadBuffer_empty_encoding)
 {
 	XmlDocument doc;
-	XmlParseResult result = doc.load_buffer(0, 0, parse_fragment);
+	XmlParseResult result = doc.loadBuffer(0, 0, parse_fragment);
 
 	CHECK(result.status == status_ok);
 	CHECK(result.encoding == encoding_utf8);
 }
 
-TEST(document_load_buffer_null)
+TEST(document_loadBuffer_null)
 {
 	XmlDocument doc;
 
-	CHECK(doc.load_buffer(0, 12).status == status_io_error && !doc.first_child());
-	CHECK(doc.load_buffer(0, 12, parse_fragment).status == status_io_error && !doc.first_child());
+	CHECK(doc.loadBuffer(0, 12).status == status_io_error && !doc.first_child());
+	CHECK(doc.loadBuffer(0, 12, parse_fragment).status == status_io_error && !doc.first_child());
 
-	CHECK(doc.load_buffer_inplace(0, 12).status == status_io_error && !doc.first_child());
-	CHECK(doc.load_buffer_inplace_own(0, 12).status == status_io_error && !doc.first_child());
+	CHECK(doc.loadBufferInplace(0, 12).status == status_io_error && !doc.first_child());
+	CHECK(doc.loadBufferInplaceOwn(0, 12).status == status_io_error && !doc.first_child());
 }
 
 TEST(document_progressive_truncation)
@@ -1343,7 +1343,7 @@ TEST(document_progressive_truncation)
 	char* original_data;
 	size_t original_size;
 
-	CHECK(load_file_in_memory("tests/data/truncation.xml", original_data, original_size));
+	CHECK(loadFile_in_memory("tests/data/truncation.xml", original_data, original_size));
 
 	char* buffer = new char[original_size];
 
@@ -1356,7 +1356,7 @@ TEST(document_progressive_truncation)
 			memcpy(truncated_data, original_data, i);
 
 			XmlDocument doc;
-			bool result = doc.load_buffer_inplace(truncated_data, i);
+			bool result = doc.loadBufferInplace(truncated_data, i);
 
 			// only eof is parseable
 			CHECK((i == original_size) ? result : !result);
@@ -1367,7 +1367,7 @@ TEST(document_progressive_truncation)
 			memcpy(truncated_data, original_data, i);
 
 			XmlDocument doc;
-			bool result = doc.load_buffer_inplace(truncated_data, i, parse_default | parse_fragment);
+			bool result = doc.loadBufferInplace(truncated_data, i, parse_default | parse_fragment);
 
 			// some truncate locations are parseable - those that come after declaration, declaration + doctype, declaration + doctype + comment and eof
 			CHECK(((i >= 21 && i <= 23) || (i >= 66 && i <= 68) || (i >= 95 && i <= 97) || i == original_size) ? result : !result);
@@ -1378,53 +1378,53 @@ TEST(document_progressive_truncation)
 	delete[] original_data;
 }
 
-TEST(document_load_buffer_short)
+TEST(document_loadBuffer_short)
 {
 	char* data = new char[4];
 	memcpy(data, "abcd", 4);
 
 	XmlDocument doc;
 
-	CHECK(doc.load_buffer(data, 4).status == status_no_document_element);
-	CHECK(doc.load_buffer(data + 1, 3).status == status_no_document_element);
-	CHECK(doc.load_buffer(data + 2, 2).status == status_no_document_element);
-	CHECK(doc.load_buffer(data + 3, 1).status == status_no_document_element);
-	CHECK(doc.load_buffer(data + 4, 0).status == status_no_document_element);
-	CHECK(doc.load_buffer(0, 0).status == status_no_document_element);
+	CHECK(doc.loadBuffer(data, 4).status == status_no_document_element);
+	CHECK(doc.loadBuffer(data + 1, 3).status == status_no_document_element);
+	CHECK(doc.loadBuffer(data + 2, 2).status == status_no_document_element);
+	CHECK(doc.loadBuffer(data + 3, 1).status == status_no_document_element);
+	CHECK(doc.loadBuffer(data + 4, 0).status == status_no_document_element);
+	CHECK(doc.loadBuffer(0, 0).status == status_no_document_element);
 
 	delete[] data;
 }
 
-TEST(document_load_buffer_short_fragment)
+TEST(document_loadBuffer_short_fragment)
 {
 	char* data = new char[4];
 	memcpy(data, "abcd", 4);
 
 	XmlDocument doc;
 
-	CHECK(doc.load_buffer(data, 4, parse_fragment) && test_string_equal(doc.text().get(), STR("abcd")));
-	CHECK(doc.load_buffer(data + 1, 3, parse_fragment) && test_string_equal(doc.text().get(), STR("bcd")));
-	CHECK(doc.load_buffer(data + 2, 2, parse_fragment) && test_string_equal(doc.text().get(), STR("cd")));
-	CHECK(doc.load_buffer(data + 3, 1, parse_fragment) && test_string_equal(doc.text().get(), STR("d")));
-	CHECK(doc.load_buffer(data + 4, 0, parse_fragment) && !doc.first_child());
-	CHECK(doc.load_buffer(0, 0, parse_fragment) && !doc.first_child());
+	CHECK(doc.loadBuffer(data, 4, parse_fragment) && test_string_equal(doc.text().value(), STR("abcd")));
+	CHECK(doc.loadBuffer(data + 1, 3, parse_fragment) && test_string_equal(doc.text().value(), STR("bcd")));
+	CHECK(doc.loadBuffer(data + 2, 2, parse_fragment) && test_string_equal(doc.text().value(), STR("cd")));
+	CHECK(doc.loadBuffer(data + 3, 1, parse_fragment) && test_string_equal(doc.text().value(), STR("d")));
+	CHECK(doc.loadBuffer(data + 4, 0, parse_fragment) && !doc.first_child());
+	CHECK(doc.loadBuffer(0, 0, parse_fragment) && !doc.first_child());
 
 	delete[] data;
 }
 
-TEST(document_load_buffer_inplace_short)
+TEST(document_loadBufferInplace_short)
 {
 	char* data = new char[4];
 	memcpy(data, "abcd", 4);
 
 	XmlDocument doc;
 
-	CHECK(doc.load_buffer_inplace(data, 4).status == status_no_document_element);
-	CHECK(doc.load_buffer_inplace(data + 1, 3).status == status_no_document_element);
-	CHECK(doc.load_buffer_inplace(data + 2, 2).status == status_no_document_element);
-	CHECK(doc.load_buffer_inplace(data + 3, 1).status == status_no_document_element);
-	CHECK(doc.load_buffer_inplace(data + 4, 0).status == status_no_document_element);
-	CHECK(doc.load_buffer_inplace(0, 0).status == status_no_document_element);
+	CHECK(doc.loadBufferInplace(data, 4).status == status_no_document_element);
+	CHECK(doc.loadBufferInplace(data + 1, 3).status == status_no_document_element);
+	CHECK(doc.loadBufferInplace(data + 2, 2).status == status_no_document_element);
+	CHECK(doc.loadBufferInplace(data + 3, 1).status == status_no_document_element);
+	CHECK(doc.loadBufferInplace(data + 4, 0).status == status_no_document_element);
+	CHECK(doc.loadBufferInplace(0, 0).status == status_no_document_element);
 
 	delete[] data;
 }
@@ -1437,7 +1437,7 @@ TEST(document_load_exceptions)
     try
     {
         XmlDocument doc;
-        if (!doc.load_string(STR("<node attribute='value"))) throw std::bad_alloc();
+        if (!doc.loadString(STR("<node attribute='value"))) throw std::bad_alloc();
 
         CHECK_FORCE_FAIL("Expected parsing failure");
     }
@@ -1450,14 +1450,14 @@ TEST(document_load_exceptions)
 }
 #endif
 
-TEST_XML_FLAGS(document_element, "<?xml version='1.0'?><node><child/></node><!---->", parse_default | parse_declaration | parse_comments)
+TEST_XML_FLAGS(documentElement, "<?xml version='1.0'?><node><child/></node><!---->", parse_default | parse_declaration | parse_comments)
 {
-    CHECK(doc.document_element() == doc.child(STR("node")));
+    CHECK(doc.documentElement() == doc.child(STR("node")));
 }
 
-TEST_XML_FLAGS(document_element_absent, "<!---->", parse_comments | parse_fragment)
+TEST_XML_FLAGS(documentElement_absent, "<!---->", parse_comments | parse_fragment)
 {
-    CHECK(doc.document_element() == XmlNode());
+    CHECK(doc.documentElement() == XmlNode());
 }
 
 TEST_XML(document_reset, "<node><child/></node>")
@@ -1472,7 +1472,7 @@ TEST_XML(document_reset, "<node><child/></node>")
     CHECK(!doc.first_child());
     CHECK_NODE(doc, STR(""));
 
-    CHECK(doc.load_string(STR("<node/>")));
+    CHECK(doc.loadString(STR("<node/>")));
     CHECK(doc.first_child());
     CHECK_NODE(doc, STR("<node/>"));
 
@@ -1519,7 +1519,7 @@ TEST_XML(document_reset_copy_self, "<node><child/></node>")
     CHECK_NODE(doc, STR(""));
 }
 
-TEST(document_load_buffer_utf_truncated)
+TEST(document_loadBuffer_utf_truncated)
 {
 	const unsigned char utf8[] = {'<', 0xe2, 0x82, 0xac, '/', '>'};
 	const unsigned char utf16_be[] = {0, '<', 0x20, 0xac, 0, '/', 0, '>'};
@@ -1554,7 +1554,7 @@ TEST(document_load_buffer_utf_truncated)
 			memcpy(buffer, d.data, j);
 
 			XmlDocument doc;
-			XmlParseResult res = doc.load_buffer(buffer, j, parse_default, d.encoding);
+			XmlParseResult res = doc.loadBuffer(buffer, j, parse_default, d.encoding);
 
 			if (j == d.size)
 			{
@@ -1626,7 +1626,7 @@ TEST(document_alignment)
 	{
 		XmlDocument* doc = new (buf + offset) XmlDocument;
 
-		CHECK(doc->load_string(STR("<node />")));
+		CHECK(doc->loadString(STR("<node />")));
 		CHECK_NODE(*doc, STR("<node/>"));
 
 		doc->~XmlDocument();
@@ -1648,7 +1648,7 @@ TEST(document_convert_out_of_memory)
 	// load files in memory
 	for (unsigned int i = 0; i < sizeof(files) / sizeof(files[0]); ++i)
 	{
-		CHECK(load_file_in_memory(files[i].path, files[i].data, files[i].size));
+		CHECK(loadFile_in_memory(files[i].path, files[i].data, files[i].size));
 	}
 
 	// disallow allocations
@@ -1657,7 +1657,7 @@ TEST(document_convert_out_of_memory)
 	for (unsigned int src = 0; src < sizeof(files) / sizeof(files[0]); ++src)
 	{
 		XmlDocument doc;
-		CHECK_ALLOC_FAIL(CHECK(doc.load_buffer(files[src].data, files[src].size, parse_default, files[src].encoding).status == status_out_of_memory));
+		CHECK_ALLOC_FAIL(CHECK(doc.loadBuffer(files[src].data, files[src].size, parse_default, files[src].encoding).status == status_out_of_memory));
 	}
 
 	// cleanup
@@ -1667,7 +1667,7 @@ TEST(document_convert_out_of_memory)
 	}
 }
 
-#ifdef PUGIXML_HAS_MOVE
+
 TEST_XML(document_move_ctor, "<node1/><node2/>")
 {
 	XmlDocument other = std::move(doc);
@@ -1684,7 +1684,7 @@ TEST_XML(document_move_ctor, "<node1/><node2/>")
 TEST_XML(document_move_assign, "<node1/><node2/>")
 {
 	XmlDocument other;
-	CHECK(other.load_string(STR("<node3/>")));
+	CHECK(other.loadString(STR("<node3/>")));
 
 	other = std::move(doc);
 
@@ -1715,7 +1715,7 @@ TEST_XML(document_move_zero_alloc, "<node1/><node2/>")
 TEST(document_move_append_buffer)
 {
 	XmlDocument* doc = new XmlDocument();
-	CHECK(doc->load_string(STR("<node1 attr1='value1'><node2/></node1>")));
+	CHECK(doc->loadString(STR("<node1 attr1='value1'><node2/></node1>")));
 	CHECK(doc->child(STR("node1")).append_buffer("<node3/>", 8));
 	CHECK(doc->child(STR("node1")).append_buffer("<node4/>", 8));
 
@@ -1731,7 +1731,7 @@ TEST(document_move_append_buffer)
 TEST(document_move_append_child)
 {
 	XmlDocument* doc = new XmlDocument();
-	CHECK(doc->load_string(STR("<node1 attr1='value1'><node2/></node1>")));
+	CHECK(doc->loadString(STR("<node1 attr1='value1'><node2/></node1>")));
 
 	XmlDocument other = std::move(*doc);
 	delete doc;
@@ -1813,7 +1813,7 @@ TEST(document_move_repeated_zero_alloc)
 {
 	XmlDocument docs[32];
 
-	CHECK(docs[0].load_string(STR("<node><child/></node>")));
+	CHECK(docs[0].loadString(STR("<node><child/></node>")));
 
 	test_runner::_memory_fail_threshold = 1;
 
@@ -1832,7 +1832,7 @@ TEST(document_move_compact_fail)
 {
 	XmlDocument docs[32];
 
-	CHECK(docs[0].load_string(STR("<node><child/></node>")));
+	CHECK(docs[0].loadString(STR("<node><child/></node>")));
 
 	test_runner::_memory_fail_threshold = 1;
 
@@ -1861,9 +1861,8 @@ TEST(document_move_assign_empty)
 
 	CHECK_NODE(doc, STR("<node2/>"));
 }
-#endif
 
-TEST(document_load_buffer_convert_out_of_memory)
+TEST(document_loadBuffer_convert_out_of_memory)
 {
 	const char* source = "<node>\xe7</node>";
 	size_t size = strlen(source);
@@ -1874,12 +1873,12 @@ TEST(document_load_buffer_convert_out_of_memory)
 
 	XmlParseResult result;
 	result.status = status_out_of_memory;
-	CHECK_ALLOC_FAIL(result = doc.load_buffer(source, size, pugi::parse_default, pugi::encoding_latin1));
+	CHECK_ALLOC_FAIL(result = doc.loadBuffer(source, size, pugi::parse_default, pugi::encoding_latin1));
 
 	CHECK(result.status == status_out_of_memory);
 }
 
-TEST(document_load_buffer_own_convert_out_of_memory)
+TEST(document_loadBuffer_own_convert_out_of_memory)
 {
 	const char* source = "<node>\xe7</node>";
 	size_t size = strlen(source);
@@ -1894,17 +1893,17 @@ TEST(document_load_buffer_own_convert_out_of_memory)
 
 	XmlParseResult result;
 	result.status = status_out_of_memory;
-	CHECK_ALLOC_FAIL(result = doc.load_buffer_inplace_own(buffer, size, pugi::parse_default, pugi::encoding_latin1));
+	CHECK_ALLOC_FAIL(result = doc.loadBufferInplaceOwn(buffer, size, pugi::parse_default, pugi::encoding_latin1));
 
 	CHECK(result.status == status_out_of_memory);
 }
 
-TEST(document_load_buffer_wide_truncated)
+TEST(document_loadBuffer_wide_truncated)
 {
 	XmlDocument doc;
 
 	char buf[1] = {};
-	CHECK(doc.load_buffer_inplace(buf, 1, parse_default, encoding_wchar).status == status_no_document_element);
-	CHECK(doc.load_buffer_inplace(buf, 1, parse_fragment, encoding_wchar).status == status_ok);
+	CHECK(doc.loadBufferInplace(buf, 1, parse_default, encoding_wchar).status == status_no_document_element);
+	CHECK(doc.loadBufferInplace(buf, 1, parse_fragment, encoding_wchar).status == status_ok);
 	CHECK(!doc.first_child());
 }

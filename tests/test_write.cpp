@@ -204,7 +204,7 @@ TEST_XML(write_escape_roundtrip, "<node attr=''>text</node>")
 
 	std::string contents = write_narrow(doc, format_raw, encoding_utf8);
 
-	CHECK(doc.load_buffer(contents.c_str(), contents.size()));
+	CHECK(doc.loadBuffer(contents.c_str(), contents.size()));
 
 	// Note: this string is almost identical to the string from write_escape with the exception of \r
 	// \r in PCDATA doesn't roundtrip because it has to go through newline conversion (which could be disabled, but is active by default)
@@ -294,7 +294,7 @@ TEST(write_encodings)
 	static char s_utf8[] = "<\x54\xC2\xA2\xE2\x82\xAC\xF0\xA4\xAD\xA2/>";
 
 	XmlDocument doc;
-	CHECK(doc.load_buffer(s_utf8, sizeof(s_utf8), parse_default, encoding_utf8));
+	CHECK(doc.loadBuffer(s_utf8, sizeof(s_utf8), parse_default, encoding_utf8));
 
 	CHECK(write_narrow(doc, format_default, encoding_utf8) == "<\x54\xC2\xA2\xE2\x82\xAC\xF0\xA4\xAD\xA2 />\n");
 
@@ -334,7 +334,7 @@ TEST(write_encoding_huge)
 	s_utf16 += std::string("\x00/\x00>", 4);
 
 	XmlDocument doc;
-	CHECK(doc.load_buffer(&s_utf16[0], s_utf16.length(), parse_default, encoding_utf16_be));
+	CHECK(doc.loadBuffer(&s_utf16[0], s_utf16.length(), parse_default, encoding_utf16_be));
 
 	std::string s_utf8 = "<";
 
@@ -377,7 +377,7 @@ TEST(write_encoding_huge)
 	s_utf8 += "/>";
 
 	XmlDocument doc;
-	CHECK(doc.load_buffer(&s_utf8[0], s_utf8.length(), parse_default, encoding_utf8));
+	CHECK(doc.loadBuffer(&s_utf8[0], s_utf8.length(), parse_default, encoding_utf8));
 
 	std::string s_utf16 = std::string("\x00<", 2);
 
@@ -411,7 +411,7 @@ TEST(write_unicode_escape)
 	char s_utf8[] = "<\xE2\x82\xAC \xC2\xA2='\"\xF0\xA4\xAD\xA2&#x0a;\"'>&amp;\x14\xF0\xA4\xAD\xA2&lt;</\xE2\x82\xAC>";
 
 	XmlDocument doc;
-	CHECK(doc.load_buffer(s_utf8, sizeof(s_utf8), parse_default, encoding_utf8));
+	CHECK(doc.loadBuffer(s_utf8, sizeof(s_utf8), parse_default, encoding_utf8));
 
 	CHECK(write_narrow(doc, format_default, encoding_utf8) == "<\xE2\x82\xAC \xC2\xA2=\"&quot;\xF0\xA4\xAD\xA2&#10;&quot;\">&amp;&#20;\xF0\xA4\xAD\xA2&lt;</\xE2\x82\xAC>\n");
 }
@@ -552,7 +552,7 @@ TEST(write_stackless)
 		data += STR("</a>");
 
 	XmlDocument doc;
-	CHECK(doc.load_string(data.c_str()));
+	CHECK(doc.loadString(data.c_str()));
 
 	CHECK_NODE(doc, data.c_str());
 }
@@ -626,14 +626,14 @@ TEST(write_pcdata_whitespace_fixedpoint)
 	for (unsigned int i = 0; i < sizeof(flags_parse) / sizeof(flags_parse[0]); ++i)
 	{
 		XmlDocument doc;
-		CHECK(doc.load_string(data, flags_parse[i]));
+		CHECK(doc.loadString(data, flags_parse[i]));
 
 		for (unsigned int j = 0; j < sizeof(flags_format) / sizeof(flags_format[0]); ++j)
 		{
 			std::string saved = write_narrow(doc, flags_format[j], encoding_auto);
 
 			XmlDocument rdoc;
-			CHECK(rdoc.load_buffer(&saved[0], saved.size(), flags_parse[i]));
+			CHECK(rdoc.loadBuffer(&saved[0], saved.size(), flags_parse[i]));
 
 			std::string rsaved = write_narrow(rdoc, flags_format[j], encoding_auto);
 
@@ -672,11 +672,11 @@ TEST_XML_FLAGS(write_roundtrip, "<node><child1 attr1='value1' attr2='value2'/><c
 		std::string contents = write_narrow(doc, flags, encoding_utf8);
 
 		XmlDocument verify;
-		CHECK(verify.load_buffer(contents.c_str(), contents.size(), parse_full));
+		CHECK(verify.loadBuffer(contents.c_str(), contents.size(), parse_full));
 		CHECK(test_write_narrow(verify, flags, encoding_utf8, contents.c_str(), contents.size()));
 
 		XmlDocument verifyws;
-		CHECK(verifyws.load_buffer(contents.c_str(), contents.size(), parse_full | parse_ws_pcdata));
+		CHECK(verifyws.loadBuffer(contents.c_str(), contents.size(), parse_full | parse_ws_pcdata));
 		CHECK(test_write_narrow(verifyws, flags, encoding_utf8, contents.c_str(), contents.size()));
 	}
 }

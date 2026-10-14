@@ -334,7 +334,7 @@ public:
   // Constructs attribute from internal pointer
   explicit XmlAttribute(XmlAttributeStruct *attr);
 
-  operator bool() const;
+  explicit operator bool() const;
 
   // Comparison operators (compares wrapped attribute pointers)
   bool operator==(const XmlAttribute &r) const;
@@ -349,10 +349,7 @@ public:
 
   // Get attribute name/value, or "" if attribute is empty
   const char_t *name() const;
-  const char_t *value() const;
-
-  // Get attribute value, or the default value if attribute is empty
-  const char_t *as_string(const char_t *def = "") const;
+  const char_t *value(const char_t *def = "") const;
 
   // Get attribute value as a number, or the default value if conversion did
   // not succeed or attribute is empty
@@ -404,8 +401,8 @@ public:
   XmlAttribute &operator=(unsigned long long rhs);
 
   // Get next/previous attribute in the attribute list of the parent node
-  XmlAttribute next_attribute() const;
-  XmlAttribute previous_attribute() const;
+  XmlAttribute nextAttribute() const;
+  XmlAttribute previousAttribute() const;
 
   // Get hash value (unique for handles to the same object)
   size_t hash_value() const;
@@ -458,8 +455,8 @@ public:
   const char_t *value() const;
 
   // Get attribute list
-  XmlAttribute first_attribute() const;
-  XmlAttribute last_attribute() const;
+  XmlAttribute firstAttribute() const;
+  XmlAttribute lastAttribute() const;
 
   // Get children list
   XmlNode first_child() const;
@@ -609,8 +606,8 @@ public:
     if (!_root)
       return XmlAttribute();
 
-    for (XmlAttribute attrib = first_attribute(); attrib;
-         attrib = attrib.next_attribute())
+    for (XmlAttribute attrib = firstAttribute(); attrib;
+         attrib = attrib.nextAttribute())
       if (pred(attrib))
         return attrib;
 
@@ -758,10 +755,7 @@ public:
   bool empty() const;
 
   // Get text, or "" if object is empty
-  const char_t *get() const;
-
-  // Get text, or the default value if object is empty
-  const char_t *as_string(const char_t *def = "") const;
+  const char_t *value(const char_t *def = "") const;
 
   // Get text as a number, or the default value if conversion did not succeed
   // or object is empty
@@ -1062,20 +1056,20 @@ public:
 
   // Load document from zero-terminated string. No encoding conversions are
   // applied.
-  XmlParseResult load_string(const char_t *contents,
+  XmlParseResult loadString(const char_t *contents,
                              unsigned int options = parse_default);
 
   // Load document from file
-  XmlParseResult load_file(const char *path,
+  XmlParseResult loadFile(const char *path,
                            unsigned int options = parse_default,
                            XmlEncoding encoding = encoding_auto);
-  XmlParseResult load_file(const wchar_t *path,
+  XmlParseResult loadFile(const wchar_t *path,
                            unsigned int options = parse_default,
                            XmlEncoding encoding = encoding_auto);
 
   // Load document from buffer. Copies/converts the buffer, so it may be
   // deleted or changed after the function returns.
-  XmlParseResult load_buffer(const void *contents, size_t size,
+  XmlParseResult loadBuffer(const void *contents, size_t size,
                              unsigned int options = parse_default,
                              XmlEncoding encoding = encoding_auto);
 
@@ -1083,7 +1077,7 @@ public:
   // buffer is modified and used for storage of document data). You should
   // ensure that buffer data will persist throughout the document's lifetime,
   // and free the buffer memory manually once document is destroyed.
-  XmlParseResult load_buffer_inplace(void *contents, size_t size,
+  XmlParseResult loadBufferInplace(void *contents, size_t size,
                                      unsigned int options = parse_default,
                                      XmlEncoding encoding = encoding_auto);
 
@@ -1091,7 +1085,7 @@ public:
   // buffer is modified and used for storage of document data). You should
   // allocate the buffer with pugixml allocation function; document will free
   // the buffer when it is no longer needed (you can't use it anymore).
-  XmlParseResult load_buffer_inplace_own(void *contents, size_t size,
+  XmlParseResult loadBufferInplaceOwn(void *contents, size_t size,
                                          unsigned int options = parse_default,
                                          XmlEncoding encoding = encoding_auto);
 
@@ -1110,15 +1104,15 @@ public:
             unsigned int flags = format_default) const;
 
   // Save XML to file
-  bool save_file(const char *path, const char_t *indent = "\t",
+  bool saveFile(const char *path, const char_t *indent = "\t",
                  unsigned int flags = format_default,
                  XmlEncoding encoding = encoding_auto) const;
-  bool save_file(const wchar_t *path, const char_t *indent = "\t",
+  bool saveFile(const wchar_t *path, const char_t *indent = "\t",
                  unsigned int flags = format_default,
                  XmlEncoding encoding = encoding_auto) const;
 
   // Get document element
-  XmlNode document_element() const;
+  XmlNode documentElement() const;
 };
 
 // XPath query return type
