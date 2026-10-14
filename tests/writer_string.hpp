@@ -2,8 +2,8 @@
 #define HEADER_TEST_WRITER_STRING_HPP
 
 import pugixml;
-
-#include <string>
+import std;
+import std.compat;
 
 struct xml_writer_string: public pugi::XmlWriter
 {

@@ -1,7 +1,5 @@
 #include "test.hpp"
 
-#include <string>
-
 using namespace pugi;
 
 // letters taken from http://www.utf8-chartable.de/

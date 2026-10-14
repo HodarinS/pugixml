@@ -1169,10 +1169,10 @@ public:
   // Get variable value; no type conversion is performed, default value
   // (false, NaN, empty string, empty node set) is returned on type mismatch
   // error
-  bool get_boolean() const;
-  double get_number() const;
-  const char_t *get_string() const;
-  const XPathNodeSet &get_node_set() const;
+  bool toBool() const;
+  double toNumber() const;
+  const char_t *toString() const;
+  const XPathNodeSet &toNodeSet() const;
 
   // Set variable value; no type conversion is performed, false is returned on
   // type mismatch error

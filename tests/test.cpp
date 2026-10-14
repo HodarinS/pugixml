@@ -5,14 +5,6 @@
 
 #include "writer_string.hpp"
 
-#include <math.h>
-#include <float.h>
-#include <string.h>
-#include <wchar.h>
-
-#include <algorithm>
-#include <vector>
-
 #ifndef PUGIXML_NO_XPATH
 static void build_document_order(std::vector<pugi::XPathNode>& result, pugi::XmlNode root)
 {

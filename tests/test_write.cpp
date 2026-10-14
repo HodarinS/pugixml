@@ -2,10 +2,6 @@
 
 #include "writer_string.hpp"
 
-#include <string>
-#include <sstream>
-#include <stdexcept>
-
 using namespace pugi;
 
 TEST_XML(write_simple, "<node attr='1'><child>text</child></node>")

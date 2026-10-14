@@ -2,8 +2,8 @@
 #define HEADER_TEST_HELPERS_HPP
 
 #include "test.hpp"
+import std;
 
-#include <utility>
 
 template <typename T> static void generic_bool_ops_test(const T& obj)
 {

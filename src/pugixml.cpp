@@ -12425,7 +12425,7 @@ public:
     {
       const char_t *value = (_right->_type == ast_string_constant)
                                 ? _right->_data.string
-                                : _right->_data.variable->get_string();
+                                : _right->_data.variable->toString();
 
       XmlAttribute attr = c.n.node().attribute(_left->_data.nodetest);
 
@@ -12437,7 +12437,7 @@ public:
       assert(_rettype == _data.variable->type());
 
       if (_rettype == xpath_type_boolean)
-        return _data.variable->get_boolean();
+        return _data.variable->toBool();
 
       // variable needs to be converted to the correct type, this is handled by
       // the fallthrough block below
@@ -12585,7 +12585,7 @@ public:
       assert(_rettype == _data.variable->type());
 
       if (_rettype == xpath_type_number)
-        return _data.variable->get_number();
+        return _data.variable->toNumber();
 
       // variable needs to be converted to the correct type, this is handled by
       // the fallthrough block below
@@ -12902,7 +12902,7 @@ public:
       assert(_rettype == _data.variable->type());
 
       if (_rettype == xpath_type_string)
-        return xpath_string::from_const(_data.variable->get_string());
+        return xpath_string::from_const(_data.variable->toString());
 
       // variable needs to be converted to the correct type, this is handled by
       // the fallthrough block below
@@ -13074,7 +13074,7 @@ public:
 
       if (_rettype == xpath_type_node_set)
       {
-        const XPathNodeSet &s = _data.variable->get_node_set();
+        const XPathNodeSet &s = _data.variable->toNodeSet();
 
         xpath_node_set_raw ns;
 
@@ -14650,21 +14650,21 @@ XPathValueType XPathVariable::type() const
   return _type;
 }
 
-bool XPathVariable::get_boolean() const
+bool XPathVariable::toBool() const
 {
   return (_type == xpath_type_boolean)
              ? static_cast< const impl::xpath_variable_boolean * >(this)->value
              : false;
 }
 
-double XPathVariable::get_number() const
+double XPathVariable::toNumber() const
 {
   return (_type == xpath_type_number)
              ? static_cast< const impl::xpath_variable_number * >(this)->value
              : impl::gen_nan();
 }
 
-const char_t *XPathVariable::get_string() const
+const char_t *XPathVariable::toString() const
 {
   const char_t *value =
       (_type == xpath_type_string)
@@ -14673,7 +14673,7 @@ const char_t *XPathVariable::get_string() const
   return value ? value : ("");
 }
 
-const XPathNodeSet &XPathVariable::get_node_set() const
+const XPathNodeSet &XPathVariable::toNodeSet() const
 {
   if (_type == xpath_type_node_set)
     return static_cast< const impl::xpath_variable_node_set * >(this)->value;

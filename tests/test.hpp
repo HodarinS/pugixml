@@ -2,12 +2,10 @@
 #define HEADER_TEST_TEST_HPP
 
 import pugixml;
+import std;
+import std.compat;
 
 #include <setjmp.h>
-
-#ifndef PUGIXML_NO_EXCEPTIONS
-#include <new>
-#endif
 
 struct test_runner
 {
@@ -113,11 +111,11 @@ struct dummy_fixture
 #define TEST_XML_FLAGS(name, xml, flags)                                       \
   struct test_fixture_##name                                                   \
   {                                                                            \
-    pugi::XmlDocument doc;                                                    \
+    pugi::XmlDocument doc;                                                     \
                                                                                \
     test_fixture_##name()                                                      \
     {                                                                          \
-      CHECK(doc.loadString(xml, flags));                                      \
+      CHECK(doc.loadString(xml, flags));                                       \
     }                                                                          \
                                                                                \
   private:                                                                     \
@@ -133,7 +131,8 @@ struct dummy_fixture
 #define CHECK_JOIN2(text, file, line) CHECK_JOIN(text, file, line)
 #define CHECK_TEXT(condition, text)                                            \
   if (condition)                                                               \
-    ;                                                                          \
+  {                                                                            \
+  }                                                                            \
   else                                                                         \
     test_runner::_failure_message = CHECK_JOIN2(text, __FILE__, __LINE__),     \
     longjmp(test_runner::_failure_buffer, 1)
@@ -183,8 +182,8 @@ struct dummy_fixture
       test_xpath_number_nan(node, query, variables),                           \
       STRINGIZE(query) " does not evaluate to NaN in context " STRINGIZE(node))
 #define CHECK_XPATH_NODESET_VAR(node, query, variables)                        \
-  XPathNodeSet_tester(                                                       \
-      pugi::XPathQuery(query, variables).evaluate_node_set(node),             \
+  XPathNodeSet_tester(                                                         \
+      pugi::XPathQuery(query, variables).evaluate_node_set(node),              \
       CHECK_JOIN2(STRINGIZE(query) " does not evaluate to expected set in "    \
                                    "context " STRINGIZE(node), __FILE__,       \
                                                         __LINE__))

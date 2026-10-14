@@ -319,29 +319,36 @@ export(TARGETS ${install-targets}
 
 if (PUGIXML_BUILD_TESTS)
   include(CTest)
-  set(fuzz-pattern "tests/fuzz_*.cpp")
-  set(test-pattern "tests/*.cpp")
-  if (CMAKE_VERSION VERSION_GREATER 3.11)
-    list(INSERT fuzz-pattern 0 CONFIGURE_DEPENDS)
-    list(INSERT test-pattern 0 CONFIGURE_DEPENDS)
-  endif()
-  file(GLOB test-sources ${test-pattern})
-  file(GLOB fuzz-sources ${fuzz-pattern})
-  list(REMOVE_ITEM test-sources ${fuzz-sources})
 
-  add_custom_target(check
+  file(GLOB all-tests CONFIGURE_DEPENDS "tests/*.cpp")
+  set(test-sources      ${all-tests})
+  set(fuzz-sources      ${all-tests})
+  set(test-main-sources ${all-tests})
+  list(FILTER test-sources      INCLUDE REGEX "/test_[^/]*\\.cpp$")
+  list(FILTER fuzz-sources      INCLUDE REGEX "/fuzz_[^/]*\\.cpp$")
+  list(FILTER test-main-sources EXCLUDE REGEX "/test_[^/]*\\.cpp$")
+  list(FILTER test-main-sources EXCLUDE REGEX "/fuzz_[^/]*\\.cpp$")
+
+  add_custom_target(check 
     COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure)
 
-  add_executable(pugixml-check ${test-sources})
-  add_test(NAME pugixml::test
-    COMMAND pugixml-check
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
-  add_dependencies(check pugixml-check)
-  target_link_libraries(pugixml-check
-    PRIVATE
-      pugixml::pugixml)
-  target_compile_features(pugixml-check
+  foreach(test_it ${test-sources})
+    cmake_path(GET test_it  STEM test_name)
+    add_executable(pugixml-${test_name} ${test-main-sources} ${test_it})
+    add_test(NAME pugixml::test::${test_name}
+      COMMAND pugixml-${test_name}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    add_dependencies(check pugixml-${test_name})
+    
+    target_link_libraries(pugixml-${test_name}
+      PRIVATE
+        pugixml::pugixml)
+    target_compile_features(pugixml-${test_name}
       PRIVATE 
           cxx_std_23
     )
+  endforeach()
+  
+  
+
 endif()

@@ -3,24 +3,11 @@
 #define _SCL_SECURE_NO_DEPRECATE
 #define _CRT_NONSTDC_NO_DEPRECATE 0
 
-#include <string.h> // because Borland's STL is braindead, we have to include <string.h> _before_ <string> in order to get memcpy
-
 #include "test.hpp"
 
 #include "writer_string.hpp"
 
-#include <stdio.h>
-#include <stdlib.h>
 
-#include <fstream>
-#include <sstream>
-
-#include <string>
-#include <algorithm>
-
-#ifndef PUGIXML_NO_EXCEPTIONS
-#	include <stdexcept>
-#endif
 
 // for unlink
 #ifdef _WIN32
@@ -581,7 +568,6 @@ TEST(document_loadFile_wide_ascii)
 TEST(document_loadFile_wide_unicode)
 {
 	XmlDocument doc;
-
 	CHECK(doc.loadFile(L"tests/data/\x0442\x0435\x0441\x0442.xml"));
 	CHECK_NODE(doc, STR("<node/>"));
 }

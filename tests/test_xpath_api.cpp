@@ -1,13 +1,8 @@
 #ifndef PUGIXML_NO_XPATH
 
-#include <string.h> // because Borland's STL is braindead, we have to include <string.h> _before_ <string> in order to get memcmp
-
 #include "test.hpp"
 
 #include "helpers.hpp"
-
-#include <string>
-#include <vector>
 
 using namespace pugi;
 

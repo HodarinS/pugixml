@@ -2,8 +2,6 @@
 
 #include "test.hpp"
 
-#include <string>
-
 using namespace pugi;
 
 TEST_XML(xpath_number_number, "<node>123</node>")

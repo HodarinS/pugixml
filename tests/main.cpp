@@ -68,19 +68,14 @@ static void custom_deallocate(void *ptr)
 
 static void replace_memory_management()
 {
-  std::println("replace_memory_management");
   // create some document to touch original functions
   {
     pugi::XmlDocument doc;
-    std::println("replace_memory_management");
     auto node = doc.append_child();
     node.setName("node");
-    std::println("replace_memory_management");
   }
-  std::println("replace_memory_management");
   // replace functions
   pugi::set_memory_management_functions(custom_allocate, custom_deallocate);
-  std::println("replace_memory_management");
 }
 
 static bool run_test(test_runner *test, const char *test_name,
