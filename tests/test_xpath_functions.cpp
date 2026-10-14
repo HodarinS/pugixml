@@ -7,7 +7,7 @@ using namespace pugi;
 TEST_XML(xpath_number_number, "<node>123</node>")
 {
   XmlNode c;
-  XmlNode n = doc.child(STR("node")).first_child();
+  XmlNode n = doc.child(STR("node")).firstChild();
 
   // number with 0 arguments
   CHECK_XPATH_NUMBER_NAN(c, STR("number()"));
@@ -59,7 +59,7 @@ TEST_XML(xpath_number_sum, "<node>123<child>789</child></node><node/>")
       125490); // node + 123 + child + 789 = 123789 + 123 + 789 + 789 = 125490
   CHECK_XPATH_NUMBER(n, STR("sum(.//node())"),
                      1701); // 123 + child + 789 = 123 + 789 + 789
-  CHECK_XPATH_NUMBER_NAN(doc.last_child(), STR("sum(.)"));
+  CHECK_XPATH_NUMBER_NAN(doc.lastChild(), STR("sum(.)"));
 
   // sum with 2 arguments
   CHECK_XPATH_FAIL(STR("sum(1, 2)"));

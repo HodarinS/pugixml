@@ -132,7 +132,6 @@ typedef unsigned __int32 uint32_t;
 #include <stdint.h>
 #endif
 
-
 module pugixml;
 
 // Memory allocation
@@ -1159,10 +1158,10 @@ struct XmlNodeStruct
 
   impl::compact_pointer_parent< XmlNodeStruct, 6 > parent;
 
-  impl::compact_pointer< XmlNodeStruct, 8, 0 > first_child;
+  impl::compact_pointer< XmlNodeStruct, 8, 0 > firstChild;
 
   impl::compact_pointer< XmlNodeStruct, 9 > prev_sibling_c;
-  impl::compact_pointer< XmlNodeStruct, 10, 0 > next_sibling;
+  impl::compact_pointer< XmlNodeStruct, 10, 0 > nextSibling;
 
   impl::compact_pointer< XmlAttributeStruct, 11, 0 > first_attribute;
 };
@@ -1196,9 +1195,9 @@ struct XmlNodeStruct
       : name(NULL),
         value(NULL),
         parent(NULL),
-        first_child(NULL),
+        firstChild(NULL),
         prev_sibling_c(NULL),
-        next_sibling(NULL),
+        nextSibling(NULL),
         first_attribute(NULL)
   {
     header = PUGI_IMPL_GETHEADER_IMPL(this, page, type);
@@ -1211,10 +1210,10 @@ struct XmlNodeStruct
 
   XmlNodeStruct *parent;
 
-  XmlNodeStruct *first_child;
+  XmlNodeStruct *firstChild;
 
   XmlNodeStruct *prev_sibling_c;
-  XmlNodeStruct *next_sibling;
+  XmlNodeStruct *nextSibling;
 
   XmlAttributeStruct *first_attribute;
 };
@@ -1322,15 +1321,15 @@ inline void destroy_tree(XmlNodeStruct *n, xml_allocator &alloc)
 {
   XmlNodeStruct *cur = n;
 
-  while (cur->first_child)
-    cur = cur->first_child;
+  while (cur->firstChild)
+    cur = cur->firstChild;
 
   while (cur != n)
   {
     // loop invariant: cur is inside the subtree rooted at n, cur's subtree is
     // destroyed
     XmlNodeStruct *parent = cur->parent;
-    XmlNodeStruct *next = cur->next_sibling;
+    XmlNodeStruct *next = cur->nextSibling;
 
     destroy_node(cur, alloc);
 
@@ -1338,8 +1337,8 @@ inline void destroy_tree(XmlNodeStruct *n, xml_allocator &alloc)
     {
       cur = next;
 
-      while (cur->first_child)
-        cur = cur->first_child;
+      while (cur->firstChild)
+        cur = cur->firstChild;
     }
     else
       cur = parent;
@@ -1352,19 +1351,19 @@ inline void append_node(XmlNodeStruct *child, XmlNodeStruct *node)
 {
   child->parent = node;
 
-  XmlNodeStruct *head = node->first_child;
+  XmlNodeStruct *head = node->firstChild;
 
   if (head)
   {
     XmlNodeStruct *tail = head->prev_sibling_c;
 
-    tail->next_sibling = child;
+    tail->nextSibling = child;
     child->prev_sibling_c = tail;
     head->prev_sibling_c = child;
   }
   else
   {
-    node->first_child = child;
+    node->firstChild = child;
     child->prev_sibling_c = child;
   }
 }
@@ -1373,7 +1372,7 @@ inline void prepend_node(XmlNodeStruct *child, XmlNodeStruct *node)
 {
   child->parent = node;
 
-  XmlNodeStruct *head = node->first_child;
+  XmlNodeStruct *head = node->firstChild;
 
   if (head)
   {
@@ -1383,8 +1382,8 @@ inline void prepend_node(XmlNodeStruct *child, XmlNodeStruct *node)
   else
     child->prev_sibling_c = child;
 
-  child->next_sibling = head;
-  node->first_child = child;
+  child->nextSibling = head;
+  node->firstChild = child;
 }
 
 inline void insert_node_after(XmlNodeStruct *child, XmlNodeStruct *node)
@@ -1393,17 +1392,17 @@ inline void insert_node_after(XmlNodeStruct *child, XmlNodeStruct *node)
 
   child->parent = parent;
 
-  XmlNodeStruct *next = node->next_sibling;
+  XmlNodeStruct *next = node->nextSibling;
 
   if (next)
     next->prev_sibling_c = child;
   else
-    parent->first_child->prev_sibling_c = child;
+    parent->firstChild->prev_sibling_c = child;
 
-  child->next_sibling = next;
+  child->nextSibling = next;
   child->prev_sibling_c = node;
 
-  node->next_sibling = child;
+  node->nextSibling = child;
 }
 
 inline void insert_node_before(XmlNodeStruct *child, XmlNodeStruct *node)
@@ -1414,13 +1413,13 @@ inline void insert_node_before(XmlNodeStruct *child, XmlNodeStruct *node)
 
   XmlNodeStruct *prev = node->prev_sibling_c;
 
-  if (prev->next_sibling)
-    prev->next_sibling = child;
+  if (prev->nextSibling)
+    prev->nextSibling = child;
   else
-    parent->first_child = child;
+    parent->firstChild = child;
 
   child->prev_sibling_c = prev;
-  child->next_sibling = node;
+  child->nextSibling = node;
 
   node->prev_sibling_c = child;
 }
@@ -1429,25 +1428,25 @@ inline void remove_node(XmlNodeStruct *node)
 {
   XmlNodeStruct *parent = node->parent;
 
-  XmlNodeStruct *next = node->next_sibling;
+  XmlNodeStruct *next = node->nextSibling;
   XmlNodeStruct *prev = node->prev_sibling_c;
 
   if (next)
     next->prev_sibling_c = prev;
   else
-    parent->first_child->prev_sibling_c = prev;
+    parent->firstChild->prev_sibling_c = prev;
 
-  if (prev->next_sibling)
-    prev->next_sibling = next;
+  if (prev->nextSibling)
+    prev->nextSibling = next;
   else
-    parent->first_child = next;
+    parent->firstChild = next;
 
   node->parent = NULL;
   node->prev_sibling_c = NULL;
-  node->next_sibling = NULL;
+  node->nextSibling = NULL;
 }
 
-inline void append_attribute(XmlAttributeStruct *attr, XmlNodeStruct *node)
+inline void appendAttribute(XmlAttributeStruct *attr, XmlNodeStruct *node)
 {
   XmlAttributeStruct *head = node->first_attribute;
 
@@ -1466,7 +1465,7 @@ inline void append_attribute(XmlAttributeStruct *attr, XmlNodeStruct *node)
   }
 }
 
-inline void prepend_attribute(XmlAttributeStruct *attr, XmlNodeStruct *node)
+inline void prependAttribute(XmlAttributeStruct *attr, XmlNodeStruct *node)
 {
   XmlAttributeStruct *head = node->first_attribute;
 
@@ -1482,9 +1481,8 @@ inline void prepend_attribute(XmlAttributeStruct *attr, XmlNodeStruct *node)
   node->first_attribute = attr;
 }
 
-inline void insert_attribute_after(XmlAttributeStruct *attr,
-                                   XmlAttributeStruct *place,
-                                   XmlNodeStruct *node)
+inline void insertAttributeAfter(XmlAttributeStruct *attr,
+                                 XmlAttributeStruct *place, XmlNodeStruct *node)
 {
   XmlAttributeStruct *next = place->next_attribute;
 
@@ -1498,9 +1496,9 @@ inline void insert_attribute_after(XmlAttributeStruct *attr,
   place->next_attribute = attr;
 }
 
-inline void insert_attribute_before(XmlAttributeStruct *attr,
-                                    XmlAttributeStruct *place,
-                                    XmlNodeStruct *node)
+inline void insertAttributeBefore(XmlAttributeStruct *attr,
+                                  XmlAttributeStruct *place,
+                                  XmlNodeStruct *node)
 {
   XmlAttributeStruct *prev = place->prev_attribute_c;
 
@@ -1514,7 +1512,7 @@ inline void insert_attribute_before(XmlAttributeStruct *attr,
   place->prev_attribute_c = attr;
 }
 
-inline void remove_attribute(XmlAttributeStruct *attr, XmlNodeStruct *node)
+inline void removeAttribute(XmlAttributeStruct *attr, XmlNodeStruct *node)
 {
   XmlAttributeStruct *next = attr->next_attribute;
   XmlAttributeStruct *prev = attr->prev_attribute_c;
@@ -1558,7 +1556,7 @@ XmlAttributeStruct *append_new_attribute(XmlNodeStruct *node,
   if (!attr)
     return NULL;
 
-  append_attribute(attr, node);
+  appendAttribute(attr, node);
 
   return attr;
 }
@@ -3948,7 +3946,7 @@ struct xml_parser
           }
           else if (PUGI_IMPL_OPTSET(parse_ws_pcdata_single))
           {
-            if (s[0] != '<' || s[1] != '/' || cursor->first_child)
+            if (s[0] != '<' || s[1] != '/' || cursor->firstChild)
               continue;
           }
         }
@@ -3963,16 +3961,15 @@ struct xml_parser
           s = strconv_pcdata(s);
 
           if (PUGI_IMPL_OPTSET(parse_embed_pcdata) && cursor->parent &&
-              !cursor->first_child && !cursor->value)
+              !cursor->firstChild && !cursor->value)
           {
             cursor->value = parsed_pcdata; // Save the offset.
           }
-          else if (PUGI_IMPL_OPTSET(parse_merge_pcdata) &&
-                   cursor->first_child &&
-                   PUGI_IMPL_NODETYPE(cursor->first_child->prev_sibling_c) ==
+          else if (PUGI_IMPL_OPTSET(parse_merge_pcdata) && cursor->firstChild &&
+                   PUGI_IMPL_NODETYPE(cursor->firstChild->prev_sibling_c) ==
                        node_pcdata)
           {
-            assert(merged_pcdata >= cursor->first_child->prev_sibling_c->value);
+            assert(merged_pcdata >= cursor->firstChild->prev_sibling_c->value);
 
             // Catch up to the end of last parsed value; only needed for the
             // first fragment.
@@ -4041,7 +4038,7 @@ struct xml_parser
       if (PUGI_IMPL_NODETYPE(node) == node_element)
         return true;
 
-      node = node->next_sibling;
+      node = node->nextSibling;
     }
 
     return false;
@@ -4059,7 +4056,7 @@ struct xml_parser
 
     // get last child of the root before parsing
     XmlNodeStruct *last_root_child =
-        root->first_child ? root->first_child->prev_sibling_c + 0 : NULL;
+        root->firstChild ? root->firstChild->prev_sibling_c + 0 : NULL;
 
     // create parser on stack
     xml_parser parser(static_cast< xml_allocator * >(xmldoc));
@@ -4089,8 +4086,8 @@ struct xml_parser
 
       // check if there are any element nodes parsed
       XmlNodeStruct *first_root_child_parsed =
-          last_root_child ? last_root_child->next_sibling + 0
-                          : root->first_child + 0;
+          last_root_child ? last_root_child->nextSibling + 0
+                          : root->firstChild + 0;
 
       if (!PUGI_IMPL_OPTSET(parse_fragment) &&
           !has_element_node_siblings(first_root_child_parsed))
@@ -4725,10 +4722,10 @@ void node_output_attributes(xml_buffered_writer &writer, XmlNodeStruct *node,
 
 bool node_output_empty(XmlNodeStruct *node)
 {
-  XmlNodeStruct *child = node->first_child;
+  XmlNodeStruct *child = node->firstChild;
 
   return !child ||
-         (!child->next_sibling && PUGI_IMPL_NODETYPE(child) == node_pcdata &&
+         (!child->nextSibling && PUGI_IMPL_NODETYPE(child) == node_pcdata &&
           (!child->value || !child->value[0]));
 }
 
@@ -4748,7 +4745,7 @@ bool node_output_start(xml_buffered_writer &writer, XmlNodeStruct *node,
   // element nodes can have value if parse_embed_pcdata was used
   if (!node->value)
   {
-    if (!node->first_child || node_output_empty(node))
+    if (!node->firstChild || node_output_empty(node))
     {
       if (flags & format_no_empty_element_tags)
       {
@@ -4781,7 +4778,7 @@ bool node_output_start(xml_buffered_writer &writer, XmlNodeStruct *node,
 
     text_output(writer, node->value, ctx_special_pcdata, flags);
 
-    if (!node->first_child)
+    if (!node->firstChild)
     {
       writer.write('<', '/');
       writer.write_string(name);
@@ -4913,7 +4910,7 @@ void node_output(xml_buffered_writer &writer, XmlNodeStruct *root,
           if (node->value)
             indent_flags = 0;
 
-          node = node->first_child;
+          node = node->firstChild;
           depth++;
           continue;
         }
@@ -4922,9 +4919,9 @@ void node_output(xml_buffered_writer &writer, XmlNodeStruct *root,
       {
         indent_flags = indent_indent;
 
-        if (node->first_child)
+        if (node->firstChild)
         {
-          node = node->first_child;
+          node = node->firstChild;
           continue;
         }
       }
@@ -4939,9 +4936,9 @@ void node_output(xml_buffered_writer &writer, XmlNodeStruct *root,
     // continue to the next node
     while (node != root)
     {
-      if (node->next_sibling)
+      if (node->nextSibling)
       {
-        node = node->next_sibling;
+        node = node->nextSibling;
         break;
       }
 
@@ -4971,8 +4968,8 @@ void node_output(xml_buffered_writer &writer, XmlNodeStruct *root,
 
 bool has_declaration(XmlNodeStruct *node)
 {
-  for (XmlNodeStruct *child = node->first_child; child;
-       child = child->next_sibling)
+  for (XmlNodeStruct *child = node->firstChild; child;
+       child = child->nextSibling)
   {
     XmlNodeType type = PUGI_IMPL_NODETYPE(child);
 
@@ -5097,7 +5094,7 @@ void node_copy_tree(XmlNodeStruct *dn, XmlNodeStruct *sn)
   node_copy_contents(dn, sn, shared_alloc);
 
   XmlNodeStruct *dit = dn;
-  XmlNodeStruct *sit = sn->first_child;
+  XmlNodeStruct *sit = sn->firstChild;
 
   while (sit && sit != sn)
   {
@@ -5115,10 +5112,10 @@ void node_copy_tree(XmlNodeStruct *dn, XmlNodeStruct *sn)
       {
         node_copy_contents(copy, sit, shared_alloc);
 
-        if (sit->first_child)
+        if (sit->firstChild)
         {
           dit = copy;
-          sit = sit->first_child;
+          sit = sit->firstChild;
           continue;
         }
       }
@@ -5127,9 +5124,9 @@ void node_copy_tree(XmlNodeStruct *dn, XmlNodeStruct *sn)
     // continue to the next node
     do
     {
-      if (sit->next_sibling)
+      if (sit->nextSibling)
       {
-        sit = sit->next_sibling;
+        sit = sit->nextSibling;
         break;
       }
 
@@ -6043,7 +6040,7 @@ XmlAttribute XmlAttribute::previousAttribute() const
   return prev->next_attribute ? XmlAttribute(prev) : XmlAttribute();
 }
 
-int XmlAttribute::as_int(int def) const
+int XmlAttribute::toInt(int def) const
 {
   if (!_attr)
     return def;
@@ -6051,7 +6048,7 @@ int XmlAttribute::as_int(int def) const
   return value ? impl::get_value_int(value) : def;
 }
 
-unsigned int XmlAttribute::as_uint(unsigned int def) const
+unsigned int XmlAttribute::toUInt(unsigned int def) const
 {
   if (!_attr)
     return def;
@@ -6059,7 +6056,7 @@ unsigned int XmlAttribute::as_uint(unsigned int def) const
   return value ? impl::get_value_uint(value) : def;
 }
 
-double XmlAttribute::as_double(double def) const
+double XmlAttribute::toDouble(double def) const
 {
   if (!_attr)
     return def;
@@ -6067,7 +6064,7 @@ double XmlAttribute::as_double(double def) const
   return value ? impl::get_value_double(value) : def;
 }
 
-float XmlAttribute::as_float(float def) const
+float XmlAttribute::toFloat(float def) const
 {
   if (!_attr)
     return def;
@@ -6075,7 +6072,7 @@ float XmlAttribute::as_float(float def) const
   return value ? impl::get_value_float(value) : def;
 }
 
-bool XmlAttribute::as_bool(bool def) const
+bool XmlAttribute::toBool(bool def) const
 {
   if (!_attr)
     return def;
@@ -6083,7 +6080,7 @@ bool XmlAttribute::as_bool(bool def) const
   return value ? impl::get_value_bool(value) : def;
 }
 
-long long XmlAttribute::as_llong(long long def) const
+long long XmlAttribute::toLongLong(long long def) const
 {
   if (!_attr)
     return def;
@@ -6091,7 +6088,7 @@ long long XmlAttribute::as_llong(long long def) const
   return value ? impl::get_value_llong(value) : def;
 }
 
-unsigned long long XmlAttribute::as_ullong(unsigned long long def) const
+unsigned long long XmlAttribute::toULongLong(unsigned long long def) const
 {
   if (!_attr)
     return def;
@@ -6382,7 +6379,7 @@ XmlNode::operator bool() const
 
 XmlNode::iterator XmlNode::begin() const
 {
-  return iterator(_root ? _root->first_child + 0 : NULL, _root);
+  return iterator(_root ? _root->firstChild + 0 : NULL, _root);
 }
 
 XmlNode::iterator XmlNode::end() const
@@ -6480,7 +6477,7 @@ XmlNode XmlNode::child(const char_t *name_) const
   if (!_root)
     return XmlNode();
 
-  for (XmlNodeStruct *i = _root->first_child; i; i = i->next_sibling)
+  for (XmlNodeStruct *i = _root->firstChild; i; i = i->nextSibling)
   {
     const char_t *iname = i->name;
     if (iname && impl::strequal(name_, iname))
@@ -6505,12 +6502,12 @@ XmlAttribute XmlNode::attribute(const char_t *name_) const
   return XmlAttribute();
 }
 
-XmlNode XmlNode::next_sibling(const char_t *name_) const
+XmlNode XmlNode::nextSibling(const char_t *name_) const
 {
   if (!_root)
     return XmlNode();
 
-  for (XmlNodeStruct *i = _root->next_sibling; i; i = i->next_sibling)
+  for (XmlNodeStruct *i = _root->nextSibling; i; i = i->nextSibling)
   {
     const char_t *iname = i->name;
     if (iname && impl::strequal(name_, iname))
@@ -6520,17 +6517,17 @@ XmlNode XmlNode::next_sibling(const char_t *name_) const
   return XmlNode();
 }
 
-XmlNode XmlNode::next_sibling() const
+XmlNode XmlNode::nextSibling() const
 {
-  return _root ? XmlNode(_root->next_sibling) : XmlNode();
+  return _root ? XmlNode(_root->nextSibling) : XmlNode();
 }
 
-XmlNode XmlNode::previous_sibling(const char_t *name_) const
+XmlNode XmlNode::previousSibling(const char_t *name_) const
 {
   if (!_root)
     return XmlNode();
 
-  for (XmlNodeStruct *i = _root->prev_sibling_c; i->next_sibling;
+  for (XmlNodeStruct *i = _root->prev_sibling_c; i->nextSibling;
        i = i->prev_sibling_c)
   {
     const char_t *iname = i->name;
@@ -6546,7 +6543,7 @@ XmlNode XmlNode::child(string_view_t name_) const
   if (!_root)
     return XmlNode();
 
-  for (XmlNodeStruct *i = _root->first_child; i; i = i->next_sibling)
+  for (XmlNodeStruct *i = _root->firstChild; i; i = i->nextSibling)
   {
     const char_t *iname = i->name;
     if (iname && impl::stringview_equal(name_, iname))
@@ -6571,12 +6568,12 @@ XmlAttribute XmlNode::attribute(string_view_t name_) const
   return XmlAttribute();
 }
 
-XmlNode XmlNode::next_sibling(string_view_t name_) const
+XmlNode XmlNode::nextSibling(string_view_t name_) const
 {
   if (!_root)
     return XmlNode();
 
-  for (XmlNodeStruct *i = _root->next_sibling; i; i = i->next_sibling)
+  for (XmlNodeStruct *i = _root->nextSibling; i; i = i->nextSibling)
   {
     const char_t *iname = i->name;
     if (iname && impl::stringview_equal(name_, iname))
@@ -6586,12 +6583,12 @@ XmlNode XmlNode::next_sibling(string_view_t name_) const
   return XmlNode();
 }
 
-XmlNode XmlNode::previous_sibling(string_view_t name_) const
+XmlNode XmlNode::previousSibling(string_view_t name_) const
 {
   if (!_root)
     return XmlNode();
 
-  for (XmlNodeStruct *i = _root->prev_sibling_c; i->next_sibling;
+  for (XmlNodeStruct *i = _root->prev_sibling_c; i->nextSibling;
        i = i->prev_sibling_c)
   {
     const char_t *iname = i->name;
@@ -6690,12 +6687,12 @@ XmlAttribute XmlNode::attribute(string_view_t name_, XmlAttribute &hint_) const
   return XmlAttribute();
 }
 
-XmlNode XmlNode::previous_sibling() const
+XmlNode XmlNode::previousSibling() const
 {
   if (!_root)
     return XmlNode();
   XmlNodeStruct *prev = _root->prev_sibling_c;
-  return prev->next_sibling ? XmlNode(prev) : XmlNode();
+  return prev->nextSibling ? XmlNode(prev) : XmlNode();
 }
 
 XmlNode XmlNode::parent() const
@@ -6713,7 +6710,7 @@ XmlText XmlNode::text() const
   return XmlText(_root);
 }
 
-const char_t *XmlNode::child_value() const
+const char_t *XmlNode::childValue() const
 {
   if (!_root)
     return ("");
@@ -6722,7 +6719,7 @@ const char_t *XmlNode::child_value() const
   if (PUGI_IMPL_NODETYPE(_root) == node_element && _root->value)
     return _root->value;
 
-  for (XmlNodeStruct *i = _root->first_child; i; i = i->next_sibling)
+  for (XmlNodeStruct *i = _root->firstChild; i; i = i->nextSibling)
   {
     const char_t *ivalue = i->value;
     if (impl::is_text_node(i) && ivalue)
@@ -6732,9 +6729,9 @@ const char_t *XmlNode::child_value() const
   return ("");
 }
 
-const char_t *XmlNode::child_value(const char_t *name_) const
+const char_t *XmlNode::childValue(const char_t *name_) const
 {
-  return child(name_).child_value();
+  return child(name_).childValue();
 }
 
 XmlAttribute XmlNode::firstAttribute() const
@@ -6752,18 +6749,18 @@ XmlAttribute XmlNode::lastAttribute() const
   return first ? XmlAttribute(first->prev_attribute_c) : XmlAttribute();
 }
 
-XmlNode XmlNode::first_child() const
+XmlNode XmlNode::firstChild() const
 {
   if (!_root)
     return XmlNode();
-  return XmlNode(_root->first_child);
+  return XmlNode(_root->firstChild);
 }
 
-XmlNode XmlNode::last_child() const
+XmlNode XmlNode::lastChild() const
 {
   if (!_root)
     return XmlNode();
-  XmlNodeStruct *first = _root->first_child;
+  XmlNodeStruct *first = _root->firstChild;
   return first ? XmlNode(first->prev_sibling_c) : XmlNode();
 }
 
@@ -6842,7 +6839,7 @@ bool XmlNode::setValue(string_view_t rhs)
                              rhs.data(), rhs.size());
 }
 
-XmlAttribute XmlNode::append_attribute(const char_t *name_)
+XmlAttribute XmlNode::appendAttribute(const char_t *name_)
 {
   if (!impl::allow_insert_attribute(type()))
     return XmlAttribute();
@@ -6855,14 +6852,14 @@ XmlAttribute XmlNode::append_attribute(const char_t *name_)
   if (!a)
     return XmlAttribute();
 
-  impl::append_attribute(a._attr, _root);
+  impl::appendAttribute(a._attr, _root);
 
   a.setName(name_);
 
   return a;
 }
 
-XmlAttribute XmlNode::prepend_attribute(const char_t *name_)
+XmlAttribute XmlNode::prependAttribute(const char_t *name_)
 {
   if (!impl::allow_insert_attribute(type()))
     return XmlAttribute();
@@ -6875,38 +6872,15 @@ XmlAttribute XmlNode::prepend_attribute(const char_t *name_)
   if (!a)
     return XmlAttribute();
 
-  impl::prepend_attribute(a._attr, _root);
+  impl::prependAttribute(a._attr, _root);
 
   a.setName(name_);
 
   return a;
 }
 
-XmlAttribute XmlNode::insert_attribute_after(const char_t *name_,
-                                             const XmlAttribute &attr)
-{
-  if (!impl::allow_insert_attribute(type()))
-    return XmlAttribute();
-  if (!attr || !impl::is_attribute_of(attr._attr, _root))
-    return XmlAttribute();
-
-  impl::xml_allocator &alloc = impl::get_allocator(_root);
-  if (!alloc.reserve())
-    return XmlAttribute();
-
-  XmlAttribute a(impl::allocate_attribute(alloc));
-  if (!a)
-    return XmlAttribute();
-
-  impl::insert_attribute_after(a._attr, attr._attr, _root);
-
-  a.setName(name_);
-
-  return a;
-}
-
-XmlAttribute XmlNode::insert_attribute_before(const char_t *name_,
-                                              const XmlAttribute &attr)
+XmlAttribute XmlNode::insertAttributeAfter(const char_t *name_,
+                                           const XmlAttribute &attr)
 {
   if (!impl::allow_insert_attribute(type()))
     return XmlAttribute();
@@ -6921,55 +6895,15 @@ XmlAttribute XmlNode::insert_attribute_before(const char_t *name_,
   if (!a)
     return XmlAttribute();
 
-  impl::insert_attribute_before(a._attr, attr._attr, _root);
+  impl::insertAttributeAfter(a._attr, attr._attr, _root);
 
   a.setName(name_);
 
   return a;
 }
 
-XmlAttribute XmlNode::append_attribute(string_view_t name_)
-{
-  if (!impl::allow_insert_attribute(type()))
-    return XmlAttribute();
-
-  impl::xml_allocator &alloc = impl::get_allocator(_root);
-  if (!alloc.reserve())
-    return XmlAttribute();
-
-  XmlAttribute a(impl::allocate_attribute(alloc));
-  if (!a)
-    return XmlAttribute();
-
-  impl::append_attribute(a._attr, _root);
-
-  a.setName(name_);
-
-  return a;
-}
-
-XmlAttribute XmlNode::prepend_attribute(string_view_t name_)
-{
-  if (!impl::allow_insert_attribute(type()))
-    return XmlAttribute();
-
-  impl::xml_allocator &alloc = impl::get_allocator(_root);
-  if (!alloc.reserve())
-    return XmlAttribute();
-
-  XmlAttribute a(impl::allocate_attribute(alloc));
-  if (!a)
-    return XmlAttribute();
-
-  impl::prepend_attribute(a._attr, _root);
-
-  a.setName(name_);
-
-  return a;
-}
-
-XmlAttribute XmlNode::insert_attribute_after(string_view_t name_,
-                                             const XmlAttribute &attr)
+XmlAttribute XmlNode::insertAttributeBefore(const char_t *name_,
+                                            const XmlAttribute &attr)
 {
   if (!impl::allow_insert_attribute(type()))
     return XmlAttribute();
@@ -6984,15 +6918,55 @@ XmlAttribute XmlNode::insert_attribute_after(string_view_t name_,
   if (!a)
     return XmlAttribute();
 
-  impl::insert_attribute_after(a._attr, attr._attr, _root);
+  impl::insertAttributeBefore(a._attr, attr._attr, _root);
 
   a.setName(name_);
 
   return a;
 }
 
-XmlAttribute XmlNode::insert_attribute_before(string_view_t name_,
-                                              const XmlAttribute &attr)
+XmlAttribute XmlNode::appendAttribute(string_view_t name_)
+{
+  if (!impl::allow_insert_attribute(type()))
+    return XmlAttribute();
+
+  impl::xml_allocator &alloc = impl::get_allocator(_root);
+  if (!alloc.reserve())
+    return XmlAttribute();
+
+  XmlAttribute a(impl::allocate_attribute(alloc));
+  if (!a)
+    return XmlAttribute();
+
+  impl::appendAttribute(a._attr, _root);
+
+  a.setName(name_);
+
+  return a;
+}
+
+XmlAttribute XmlNode::prependAttribute(string_view_t name_)
+{
+  if (!impl::allow_insert_attribute(type()))
+    return XmlAttribute();
+
+  impl::xml_allocator &alloc = impl::get_allocator(_root);
+  if (!alloc.reserve())
+    return XmlAttribute();
+
+  XmlAttribute a(impl::allocate_attribute(alloc));
+  if (!a)
+    return XmlAttribute();
+
+  impl::prependAttribute(a._attr, _root);
+
+  a.setName(name_);
+
+  return a;
+}
+
+XmlAttribute XmlNode::insertAttributeAfter(string_view_t name_,
+                                           const XmlAttribute &attr)
 {
   if (!impl::allow_insert_attribute(type()))
     return XmlAttribute();
@@ -7007,28 +6981,51 @@ XmlAttribute XmlNode::insert_attribute_before(string_view_t name_,
   if (!a)
     return XmlAttribute();
 
-  impl::insert_attribute_before(a._attr, attr._attr, _root);
+  impl::insertAttributeAfter(a._attr, attr._attr, _root);
 
   a.setName(name_);
 
   return a;
 }
 
-XmlAttribute XmlNode::ensure_attribute(const char_t *name_)
+XmlAttribute XmlNode::insertAttributeBefore(string_view_t name_,
+                                            const XmlAttribute &attr)
+{
+  if (!impl::allow_insert_attribute(type()))
+    return XmlAttribute();
+  if (!attr || !impl::is_attribute_of(attr._attr, _root))
+    return XmlAttribute();
+
+  impl::xml_allocator &alloc = impl::get_allocator(_root);
+  if (!alloc.reserve())
+    return XmlAttribute();
+
+  XmlAttribute a(impl::allocate_attribute(alloc));
+  if (!a)
+    return XmlAttribute();
+
+  impl::insertAttributeBefore(a._attr, attr._attr, _root);
+
+  a.setName(name_);
+
+  return a;
+}
+
+XmlAttribute XmlNode::ensureAttribute(const char_t *name_)
 {
   XmlAttribute result = attribute(name_);
 
-  return result ? result : append_attribute(name_);
+  return result ? result : appendAttribute(name_);
 }
 
-XmlAttribute XmlNode::ensure_attribute(string_view_t name_)
+XmlAttribute XmlNode::ensureAttribute(string_view_t name_)
 {
   XmlAttribute result = attribute(name_);
 
-  return result ? result : append_attribute(name_);
+  return result ? result : appendAttribute(name_);
 }
 
-XmlAttribute XmlNode::append_copy(const XmlAttribute &proto)
+XmlAttribute XmlNode::appendCopy(const XmlAttribute &proto)
 {
   if (!proto)
     return XmlAttribute();
@@ -7043,13 +7040,13 @@ XmlAttribute XmlNode::append_copy(const XmlAttribute &proto)
   if (!a)
     return XmlAttribute();
 
-  impl::append_attribute(a._attr, _root);
+  impl::appendAttribute(a._attr, _root);
   impl::node_copy_attribute(a._attr, proto._attr);
 
   return a;
 }
 
-XmlAttribute XmlNode::prepend_copy(const XmlAttribute &proto)
+XmlAttribute XmlNode::prependCopy(const XmlAttribute &proto)
 {
   if (!proto)
     return XmlAttribute();
@@ -7064,14 +7061,14 @@ XmlAttribute XmlNode::prepend_copy(const XmlAttribute &proto)
   if (!a)
     return XmlAttribute();
 
-  impl::prepend_attribute(a._attr, _root);
+  impl::prependAttribute(a._attr, _root);
   impl::node_copy_attribute(a._attr, proto._attr);
 
   return a;
 }
 
-XmlAttribute XmlNode::insert_copy_after(const XmlAttribute &proto,
-                                        const XmlAttribute &attr)
+XmlAttribute XmlNode::insertCopyAfter(const XmlAttribute &proto,
+                                      const XmlAttribute &attr)
 {
   if (!proto)
     return XmlAttribute();
@@ -7088,14 +7085,14 @@ XmlAttribute XmlNode::insert_copy_after(const XmlAttribute &proto,
   if (!a)
     return XmlAttribute();
 
-  impl::insert_attribute_after(a._attr, attr._attr, _root);
+  impl::insertAttributeAfter(a._attr, attr._attr, _root);
   impl::node_copy_attribute(a._attr, proto._attr);
 
   return a;
 }
 
-XmlAttribute XmlNode::insert_copy_before(const XmlAttribute &proto,
-                                         const XmlAttribute &attr)
+XmlAttribute XmlNode::insertCopyBefore(const XmlAttribute &proto,
+                                       const XmlAttribute &attr)
 {
   if (!proto)
     return XmlAttribute();
@@ -7112,7 +7109,7 @@ XmlAttribute XmlNode::insert_copy_before(const XmlAttribute &proto,
   if (!a)
     return XmlAttribute();
 
-  impl::insert_attribute_before(a._attr, attr._attr, _root);
+  impl::insertAttributeBefore(a._attr, attr._attr, _root);
   impl::node_copy_attribute(a._attr, proto._attr);
 
   return a;
@@ -7292,7 +7289,7 @@ XmlNode XmlNode::ensure_child(string_view_t name_)
   return result ? result : append_child(name_);
 }
 
-XmlNode XmlNode::append_copy(const XmlNode &proto)
+XmlNode XmlNode::appendCopy(const XmlNode &proto)
 {
   XmlNodeType type_ = proto.type();
   if (!impl::allow_insert_child(type(), type_))
@@ -7312,7 +7309,7 @@ XmlNode XmlNode::append_copy(const XmlNode &proto)
   return n;
 }
 
-XmlNode XmlNode::prepend_copy(const XmlNode &proto)
+XmlNode XmlNode::prependCopy(const XmlNode &proto)
 {
   XmlNodeType type_ = proto.type();
   if (!impl::allow_insert_child(type(), type_))
@@ -7332,7 +7329,7 @@ XmlNode XmlNode::prepend_copy(const XmlNode &proto)
   return n;
 }
 
-XmlNode XmlNode::insert_copy_after(const XmlNode &proto, const XmlNode &node)
+XmlNode XmlNode::insertCopyAfter(const XmlNode &proto, const XmlNode &node)
 {
   XmlNodeType type_ = proto.type();
   if (!impl::allow_insert_child(type(), type_))
@@ -7354,7 +7351,7 @@ XmlNode XmlNode::insert_copy_after(const XmlNode &proto, const XmlNode &node)
   return n;
 }
 
-XmlNode XmlNode::insert_copy_before(const XmlNode &proto, const XmlNode &node)
+XmlNode XmlNode::insertCopyBefore(const XmlNode &proto, const XmlNode &node)
 {
   XmlNodeType type_ = proto.type();
   if (!impl::allow_insert_child(type(), type_))
@@ -7376,7 +7373,7 @@ XmlNode XmlNode::insert_copy_before(const XmlNode &proto, const XmlNode &node)
   return n;
 }
 
-XmlNode XmlNode::append_move(const XmlNode &moved)
+XmlNode XmlNode::appendMove(const XmlNode &moved)
 {
   if (!impl::allow_move(*this, moved))
     return XmlNode();
@@ -7396,7 +7393,7 @@ XmlNode XmlNode::append_move(const XmlNode &moved)
   return moved;
 }
 
-XmlNode XmlNode::prepend_move(const XmlNode &moved)
+XmlNode XmlNode::prependMove(const XmlNode &moved)
 {
   if (!impl::allow_move(*this, moved))
     return XmlNode();
@@ -7416,7 +7413,7 @@ XmlNode XmlNode::prepend_move(const XmlNode &moved)
   return moved;
 }
 
-XmlNode XmlNode::insert_move_after(const XmlNode &moved, const XmlNode &node)
+XmlNode XmlNode::insertMoveAfter(const XmlNode &moved, const XmlNode &node)
 {
   if (!impl::allow_move(*this, moved))
     return XmlNode();
@@ -7440,7 +7437,7 @@ XmlNode XmlNode::insert_move_after(const XmlNode &moved, const XmlNode &node)
   return moved;
 }
 
-XmlNode XmlNode::insert_move_before(const XmlNode &moved, const XmlNode &node)
+XmlNode XmlNode::insertMoveBefore(const XmlNode &moved, const XmlNode &node)
 {
   if (!impl::allow_move(*this, moved))
     return XmlNode();
@@ -7464,17 +7461,17 @@ XmlNode XmlNode::insert_move_before(const XmlNode &moved, const XmlNode &node)
   return moved;
 }
 
-bool XmlNode::remove_attribute(const char_t *name_)
+bool XmlNode::removeAttribute(const char_t *name_)
 {
-  return remove_attribute(attribute(name_));
+  return removeAttribute(attribute(name_));
 }
 
-bool XmlNode::remove_attribute(string_view_t name_)
+bool XmlNode::removeAttribute(string_view_t name_)
 {
-  return remove_attribute(attribute(name_));
+  return removeAttribute(attribute(name_));
 }
 
-bool XmlNode::remove_attribute(const XmlAttribute &a)
+bool XmlNode::removeAttribute(const XmlAttribute &a)
 {
   if (!_root || !a._attr)
     return false;
@@ -7485,13 +7482,13 @@ bool XmlNode::remove_attribute(const XmlAttribute &a)
   if (!alloc.reserve())
     return false;
 
-  impl::remove_attribute(a._attr, _root);
+  impl::removeAttribute(a._attr, _root);
   impl::destroy_attribute(a._attr, alloc);
 
   return true;
 }
 
-bool XmlNode::remove_attributes()
+bool XmlNode::removeAttributes()
 {
   if (!_root)
     return false;
@@ -7514,17 +7511,17 @@ bool XmlNode::remove_attributes()
   return true;
 }
 
-bool XmlNode::remove_child(const char_t *name_)
+bool XmlNode::removeChild(const char_t *name_)
 {
-  return remove_child(child(name_));
+  return removeChild(child(name_));
 }
 
-bool XmlNode::remove_child(string_view_t name_)
+bool XmlNode::removeChild(string_view_t name_)
 {
-  return remove_child(child(name_));
+  return removeChild(child(name_));
 }
 
-bool XmlNode::remove_child(const XmlNode &n)
+bool XmlNode::removeChild(const XmlNode &n)
 {
   if (!_root || !n._root || n._root->parent != _root)
     return false;
@@ -7539,7 +7536,7 @@ bool XmlNode::remove_child(const XmlNode &n)
   return true;
 }
 
-bool XmlNode::remove_children()
+bool XmlNode::removeChildren()
 {
   if (!_root)
     return false;
@@ -7548,30 +7545,29 @@ bool XmlNode::remove_children()
   if (!alloc.reserve())
     return false;
 
-  for (XmlNodeStruct *cur = _root->first_child; cur;)
+  for (XmlNodeStruct *cur = _root->firstChild; cur;)
   {
-    XmlNodeStruct *next = cur->next_sibling;
+    XmlNodeStruct *next = cur->nextSibling;
 
     impl::destroy_tree(cur, alloc);
 
     cur = next;
   }
 
-  _root->first_child = NULL;
+  _root->firstChild = NULL;
 
   return true;
 }
 
-XmlParseResult XmlNode::append_buffer(const void *contents, size_t size,
-                                      unsigned int options,
-                                      XmlEncoding encoding)
+XmlParseResult XmlNode::appendBuffer(const void *contents, size_t size,
+                                     unsigned int options, XmlEncoding encoding)
 {
-  // append_buffer is only valid for elements/documents
+  // appendBuffer is only valid for elements/documents
   if (!impl::allow_insert_child(type(), node_element))
     return impl::make_parse_result(status_append_invalid_root);
 
   // append buffer can not merge PCDATA into existing PCDATA nodes
-  if ((options & parse_merge_pcdata) != 0 && last_child().type() == node_pcdata)
+  if ((options & parse_merge_pcdata) != 0 && lastChild().type() == node_pcdata)
     return impl::make_parse_result(status_append_invalid_root);
 
   // get document node
@@ -7616,14 +7612,14 @@ XmlParseResult XmlNode::append_buffer(const void *contents, size_t size,
                                 &extra->buffer);
 }
 
-XmlNode XmlNode::find_child_by_attribute(const char_t *name_,
-                                         const char_t *attr_name,
-                                         const char_t *attr_value) const
+XmlNode XmlNode::findChildByAttribute(const char_t *name_,
+                                      const char_t *attr_name,
+                                      const char_t *attr_value) const
 {
   if (!_root)
     return XmlNode();
 
-  for (XmlNodeStruct *i = _root->first_child; i; i = i->next_sibling)
+  for (XmlNodeStruct *i = _root->firstChild; i; i = i->nextSibling)
   {
     const char_t *iname = i->name;
     if (iname && impl::strequal(name_, iname))
@@ -7644,13 +7640,13 @@ XmlNode XmlNode::find_child_by_attribute(const char_t *name_,
   return XmlNode();
 }
 
-XmlNode XmlNode::find_child_by_attribute(const char_t *attr_name,
-                                         const char_t *attr_value) const
+XmlNode XmlNode::findChildByAttribute(const char_t *attr_name,
+                                      const char_t *attr_value) const
 {
   if (!_root)
     return XmlNode();
 
-  for (XmlNodeStruct *i = _root->first_child; i; i = i->next_sibling)
+  for (XmlNodeStruct *i = _root->firstChild; i; i = i->nextSibling)
     for (XmlAttributeStruct *a = i->first_attribute; a; a = a->next_attribute)
     {
       const char_t *aname = a->name;
@@ -7704,8 +7700,7 @@ string_t XmlNode::path(char_t delimiter) const
 }
 #endif
 
-XmlNode XmlNode::first_element_by_path(const char_t *path_,
-                                       char_t delimiter) const
+XmlNode XmlNode::firstElementByPath(const char_t *path_, char_t delimiter) const
 {
   assert(delimiter != 0);
 
@@ -7733,13 +7728,13 @@ XmlNode XmlNode::first_element_by_path(const char_t *path_,
     ++next_segment;
 
   if (*path_segment == '.' && path_segment + 1 == path_segment_end)
-    return context.first_element_by_path(next_segment, delimiter);
+    return context.firstElementByPath(next_segment, delimiter);
   else if (*path_segment == '.' && *(path_segment + 1) == '.' &&
            path_segment + 2 == path_segment_end)
-    return context.parent().first_element_by_path(next_segment, delimiter);
+    return context.parent().firstElementByPath(next_segment, delimiter);
   else
   {
-    for (XmlNodeStruct *j = context._root->first_child; j; j = j->next_sibling)
+    for (XmlNodeStruct *j = context._root->firstChild; j; j = j->nextSibling)
     {
       const char_t *jname = j->name;
       if (jname && impl::strequalrange(
@@ -7747,7 +7742,7 @@ XmlNode XmlNode::first_element_by_path(const char_t *path_,
                        static_cast< size_t >(path_segment_end - path_segment)))
       {
         XmlNode subsearch =
-            XmlNode(j).first_element_by_path(next_segment, delimiter);
+            XmlNode(j).firstElementByPath(next_segment, delimiter);
 
         if (subsearch)
           return subsearch;
@@ -7766,7 +7761,7 @@ bool XmlNode::traverse(XmlTreeWalker &walker)
   if (!walker.begin(arg_begin))
     return false;
 
-  XmlNodeStruct *cur = _root ? _root->first_child + 0 : NULL;
+  XmlNodeStruct *cur = _root ? _root->firstChild + 0 : NULL;
 
   if (cur)
   {
@@ -7778,23 +7773,23 @@ bool XmlNode::traverse(XmlTreeWalker &walker)
       if (!walker.for_each(arg_for_each))
         return false;
 
-      if (cur->first_child)
+      if (cur->firstChild)
       {
         ++walker._depth;
-        cur = cur->first_child;
+        cur = cur->firstChild;
       }
-      else if (cur->next_sibling)
-        cur = cur->next_sibling;
+      else if (cur->nextSibling)
+        cur = cur->nextSibling;
       else
       {
-        while (!cur->next_sibling && cur != _root && cur->parent)
+        while (!cur->nextSibling && cur != _root && cur->parent)
         {
           --walker._depth;
           cur = cur->parent;
         }
 
         if (cur != _root)
-          cur = cur->next_sibling;
+          cur = cur->nextSibling;
       }
     } while (cur && cur != _root);
   }
@@ -7903,8 +7898,7 @@ XmlNodeStruct *XmlText::_data() const
   if (PUGI_IMPL_NODETYPE(_root) == node_element && _root->value)
     return _root;
 
-  for (XmlNodeStruct *node = _root->first_child; node;
-       node = node->next_sibling)
+  for (XmlNodeStruct *node = _root->firstChild; node; node = node->nextSibling)
     if (impl::is_text_node(node))
       return node;
 
@@ -7944,7 +7938,7 @@ const char_t *XmlText::value(const char_t *def) const
   return value ? value : def;
 }
 
-int XmlText::as_int(int def) const
+int XmlText::toInt(int def) const
 {
   XmlNodeStruct *d = _data();
   if (!d)
@@ -7953,7 +7947,7 @@ int XmlText::as_int(int def) const
   return value ? impl::get_value_int(value) : def;
 }
 
-unsigned int XmlText::as_uint(unsigned int def) const
+unsigned int XmlText::toUInt(unsigned int def) const
 {
   XmlNodeStruct *d = _data();
   if (!d)
@@ -7962,7 +7956,7 @@ unsigned int XmlText::as_uint(unsigned int def) const
   return value ? impl::get_value_uint(value) : def;
 }
 
-double XmlText::as_double(double def) const
+double XmlText::toDouble(double def) const
 {
   XmlNodeStruct *d = _data();
   if (!d)
@@ -7971,7 +7965,7 @@ double XmlText::as_double(double def) const
   return value ? impl::get_value_double(value) : def;
 }
 
-float XmlText::as_float(float def) const
+float XmlText::toFloat(float def) const
 {
   XmlNodeStruct *d = _data();
   if (!d)
@@ -7980,7 +7974,7 @@ float XmlText::as_float(float def) const
   return value ? impl::get_value_float(value) : def;
 }
 
-bool XmlText::as_bool(bool def) const
+bool XmlText::toBool(bool def) const
 {
   XmlNodeStruct *d = _data();
   if (!d)
@@ -7989,7 +7983,7 @@ bool XmlText::as_bool(bool def) const
   return value ? impl::get_value_bool(value) : def;
 }
 
-long long XmlText::as_llong(long long def) const
+long long XmlText::toLongLong(long long def) const
 {
   XmlNodeStruct *d = _data();
   if (!d)
@@ -7998,7 +7992,7 @@ long long XmlText::as_llong(long long def) const
   return value ? impl::get_value_llong(value) : def;
 }
 
-unsigned long long XmlText::as_ullong(unsigned long long def) const
+unsigned long long XmlText::toULongLong(unsigned long long def) const
 {
   XmlNodeStruct *d = _data();
   if (!d)
@@ -8263,7 +8257,7 @@ XmlNode *XmlNodeIterator::operator->() const
 XmlNodeIterator &XmlNodeIterator::operator++()
 {
   assert(_wrap._root);
-  _wrap._root = _wrap._root->next_sibling;
+  _wrap._root = _wrap._root->nextSibling;
   return *this;
 }
 
@@ -8276,7 +8270,7 @@ XmlNodeIterator XmlNodeIterator::operator++(int)
 
 XmlNodeIterator &XmlNodeIterator::operator--()
 {
-  _wrap = _wrap._root ? _wrap.previous_sibling() : _parent.last_child();
+  _wrap = _wrap._root ? _wrap.previousSibling() : _parent.lastChild();
   return *this;
 }
 
@@ -8409,7 +8403,7 @@ XmlNode *XmlNamedNodeIterator::operator->() const
 XmlNamedNodeIterator &XmlNamedNodeIterator::operator++()
 {
   assert(_wrap._root);
-  _wrap = _wrap.next_sibling(_name);
+  _wrap = _wrap.nextSibling(_name);
   return *this;
 }
 
@@ -8423,13 +8417,13 @@ XmlNamedNodeIterator XmlNamedNodeIterator::operator++(int)
 XmlNamedNodeIterator &XmlNamedNodeIterator::operator--()
 {
   if (_wrap._root)
-    _wrap = _wrap.previous_sibling(_name);
+    _wrap = _wrap.previousSibling(_name);
   else
   {
-    _wrap = _parent.last_child();
+    _wrap = _parent.lastChild();
 
     if (!impl::strequal(_wrap.name(), _name))
-      _wrap = _wrap.previous_sibling(_name);
+      _wrap = _wrap.previousSibling(_name);
   }
 
   return *this;
@@ -8652,20 +8646,19 @@ void XmlDocument::_move(XmlDocument &rhs) noexcept
       static_cast< impl::xml_document_struct * >(rhs._root);
 
   // save first child pointer for later; this needs hash access
-  XmlNodeStruct *other_first_child = other->first_child;
+  XmlNodeStruct *other_firstChild = other->firstChild;
 
 #ifdef PUGIXML_COMPACT
   // reserve space for the hash table up front; this is the only operation that
   // can fail if it does, we have no choice but to throw (if we have exceptions)
-  if (other_first_child)
+  if (other_firstChild)
   {
     size_t other_children = 0;
-    for (XmlNodeStruct *node = other_first_child; node;
-         node = node->next_sibling)
+    for (XmlNodeStruct *node = other_firstChild; node; node = node->nextSibling)
       other_children++;
 
     // in compact mode, each pointer assignment could result in a hash table
-    // request during move, we have to relocate document first_child and parents
+    // request during move, we have to relocate document firstChild and parents
     // of all children normally there's just one child and its parent has a
     // pointerless encoding but we assume the worst here
     if (!other->_hash->reserve(other_children + 1))
@@ -8691,7 +8684,7 @@ void XmlDocument::_move(XmlDocument &rhs) noexcept
 
 #ifdef PUGIXML_COMPACT
   // move compact hash; note that the hash table can have pointers to other but
-  // they will be "inactive", similarly to nodes removed with remove_child
+  // they will be "inactive", similarly to nodes removed with removeChild
   doc->hash = other->hash;
   doc->_hash = &doc->hash;
 
@@ -8734,11 +8727,11 @@ void XmlDocument::_move(XmlDocument &rhs) noexcept
   }
 
   // move tree structure
-  assert(!doc->first_child);
+  assert(!doc->firstChild);
 
-  doc->first_child = other_first_child;
+  doc->firstChild = other_firstChild;
 
-  for (XmlNodeStruct *node = other_first_child; node; node = node->next_sibling)
+  for (XmlNodeStruct *node = other_firstChild; node; node = node->nextSibling)
   {
 #ifdef PUGIXML_COMPACT
     // most children will have migrated when we reassigned compact_shared_parent
@@ -8931,7 +8924,7 @@ XmlNode XmlDocument::documentElement() const
 {
   assert(_root);
 
-  for (XmlNodeStruct *i = _root->first_child; i; i = i->next_sibling)
+  for (XmlNodeStruct *i = _root->firstChild; i; i = i->nextSibling)
     if (PUGI_IMPL_NODETYPE(i) == node_element)
       return XmlNode(i);
 
@@ -9672,7 +9665,7 @@ xpath_string string_value_element(XmlNodeStruct *n, xpath_allocator *alloc)
   if (n->value)
     result.append(xpath_string::from_const(n->value), alloc);
 
-  XmlNodeStruct *cur = n->first_child;
+  XmlNodeStruct *cur = n->firstChild;
 
   while (cur && cur != n)
   {
@@ -9681,17 +9674,17 @@ xpath_string string_value_element(XmlNodeStruct *n, xpath_allocator *alloc)
     if ((type == node_pcdata || type == node_cdata) && cur->value)
       result.append(xpath_string::from_const(cur->value), alloc);
 
-    if (cur->first_child)
-      cur = cur->first_child;
-    else if (cur->next_sibling)
-      cur = cur->next_sibling;
+    if (cur->firstChild)
+      cur = cur->firstChild;
+    else if (cur->nextSibling)
+      cur = cur->nextSibling;
     else
     {
-      while (!cur->next_sibling && cur != n)
+      while (!cur->nextSibling && cur != n)
         cur = cur->parent;
 
       if (cur != n)
-        cur = cur->next_sibling;
+        cur = cur->nextSibling;
     }
   }
 
@@ -9744,8 +9737,8 @@ bool node_is_before_sibling(XmlNodeStruct *ln, XmlNodeStruct *rn)
     if (rs == ln)
       return false;
 
-    ls = ls->next_sibling;
-    rs = rs->next_sibling;
+    ls = ls->nextSibling;
+    rs = rs->nextSibling;
   }
 
   // if rn sibling chain ended ln must be before rn
@@ -10270,7 +10263,7 @@ const char_t *namespace_uri(XmlNode node)
 
   while (p)
   {
-    XmlAttribute a = p.find_attribute(pred);
+    XmlAttribute a = p.findAttribute(pred);
 
     if (a)
       return a.value();
@@ -10293,7 +10286,7 @@ const char_t *namespace_uri(XmlAttribute attr, XmlNode parent)
 
   while (p)
   {
-    XmlAttribute a = p.find_attribute(pred);
+    XmlAttribute a = p.findAttribute(pred);
 
     if (a)
       return a.value();
@@ -11870,7 +11863,7 @@ private:
     {
       if (_test == nodetest_name)
       {
-        for (XmlNodeStruct *c = n->first_child; c; c = c->next_sibling)
+        for (XmlNodeStruct *c = n->firstChild; c; c = c->nextSibling)
           if (c->name && strequal(c->name, _data.nodetest) &&
               PUGI_IMPL_NODETYPE(c) == node_element)
           {
@@ -11881,7 +11874,7 @@ private:
       }
       else
       {
-        for (XmlNodeStruct *c = n->first_child; c; c = c->next_sibling)
+        for (XmlNodeStruct *c = n->firstChild; c; c = c->nextSibling)
           if (step_push(ns, c, alloc) & once)
             return;
       }
@@ -11896,18 +11889,18 @@ private:
         if (step_push(ns, n, alloc) & once)
           return;
 
-      XmlNodeStruct *cur = n->first_child;
+      XmlNodeStruct *cur = n->firstChild;
 
       while (cur)
       {
         if (step_push(ns, cur, alloc) & once)
           return;
 
-        if (cur->first_child)
-          cur = cur->first_child;
+        if (cur->firstChild)
+          cur = cur->firstChild;
         else
         {
-          while (!cur->next_sibling)
+          while (!cur->nextSibling)
           {
             cur = cur->parent;
 
@@ -11915,7 +11908,7 @@ private:
               return;
           }
 
-          cur = cur->next_sibling;
+          cur = cur->nextSibling;
         }
       }
 
@@ -11924,7 +11917,7 @@ private:
 
     case axis_following_sibling:
     {
-      for (XmlNodeStruct *c = n->next_sibling; c; c = c->next_sibling)
+      for (XmlNodeStruct *c = n->nextSibling; c; c = c->nextSibling)
         if (step_push(ns, c, alloc) & once)
           return;
 
@@ -11933,7 +11926,7 @@ private:
 
     case axis_preceding_sibling:
     {
-      for (XmlNodeStruct *c = n->prev_sibling_c; c->next_sibling;
+      for (XmlNodeStruct *c = n->prev_sibling_c; c->nextSibling;
            c = c->prev_sibling_c)
         if (step_push(ns, c, alloc) & once)
           return;
@@ -11946,7 +11939,7 @@ private:
       XmlNodeStruct *cur = n;
 
       // exit from this node so that we don't include descendants
-      while (!cur->next_sibling)
+      while (!cur->nextSibling)
       {
         cur = cur->parent;
 
@@ -11954,18 +11947,18 @@ private:
           return;
       }
 
-      cur = cur->next_sibling;
+      cur = cur->nextSibling;
 
       while (cur)
       {
         if (step_push(ns, cur, alloc) & once)
           return;
 
-        if (cur->first_child)
-          cur = cur->first_child;
+        if (cur->firstChild)
+          cur = cur->firstChild;
         else
         {
-          while (!cur->next_sibling)
+          while (!cur->nextSibling)
           {
             cur = cur->parent;
 
@@ -11973,7 +11966,7 @@ private:
               return;
           }
 
-          cur = cur->next_sibling;
+          cur = cur->nextSibling;
         }
       }
 
@@ -11985,7 +11978,7 @@ private:
       XmlNodeStruct *cur = n;
 
       // exit from this node so that we don't include descendants
-      while (!cur->prev_sibling_c->next_sibling)
+      while (!cur->prev_sibling_c->nextSibling)
       {
         cur = cur->parent;
 
@@ -11997,15 +11990,15 @@ private:
 
       while (cur)
       {
-        if (cur->first_child)
-          cur = cur->first_child->prev_sibling_c;
+        if (cur->firstChild)
+          cur = cur->firstChild->prev_sibling_c;
         else
         {
           // leaf node, can't be ancestor
           if (step_push(ns, cur, alloc) & once)
             return;
 
-          while (!cur->prev_sibling_c->next_sibling)
+          while (!cur->prev_sibling_c->nextSibling)
           {
             cur = cur->parent;
 
@@ -12110,11 +12103,11 @@ private:
 
       while (cur)
       {
-        if (cur->first_child)
-          cur = cur->first_child;
+        if (cur->firstChild)
+          cur = cur->firstChild;
         else
         {
-          while (!cur->next_sibling)
+          while (!cur->nextSibling)
           {
             cur = cur->parent;
 
@@ -12122,7 +12115,7 @@ private:
               return;
           }
 
-          cur = cur->next_sibling;
+          cur = cur->nextSibling;
         }
 
         if (step_push(ns, cur, alloc) & once)
@@ -14368,7 +14361,6 @@ PUGI_IMPL_NS_END
 namespace pugi
 {
 
-
 XPathNode::XPathNode()
 {
 }
@@ -15115,26 +15107,26 @@ XPathQuery::operator bool() const
   return _impl ? true : false;
 }
 
-XPathNode XmlNode::select_node(const char_t *query,
+XPathNode XmlNode::selectNode(const char_t *query,
                                XPathVariableSet *variables) const
 {
   XPathQuery q(query, variables);
   return q.evaluate_node(*this);
 }
 
-XPathNode XmlNode::select_node(const XPathQuery &query) const
+XPathNode XmlNode::selectNode(const XPathQuery &query) const
 {
   return query.evaluate_node(*this);
 }
 
-XPathNodeSet XmlNode::select_nodes(const char_t *query,
+XPathNodeSet XmlNode::selectNodes(const char_t *query,
                                    XPathVariableSet *variables) const
 {
   XPathQuery q(query, variables);
   return q.evaluate_node_set(*this);
 }
 
-XPathNodeSet XmlNode::select_nodes(const XPathQuery &query) const
+XPathNodeSet XmlNode::selectNodes(const XPathQuery &query) const
 {
   return query.evaluate_node_set(*this);
 }

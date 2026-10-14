@@ -193,7 +193,7 @@ TEST_XML(xpath_paths_w3c_20, "<node><para/><para/><para/><para/></node>")
 TEST_XML(xpath_paths_w3c_21, "<node><chapter/><chapter/><chapter/><chapter/><chapter/></node>")
 {
 	XmlNode c;
-	XmlNode n = doc.child(STR("node")).child(STR("chapter")).next_sibling().next_sibling();
+	XmlNode n = doc.child(STR("node")).child(STR("chapter")).nextSibling().nextSibling();
 
 	CHECK_XPATH_NODESET(c, STR("following-sibling::chapter[position()=1]"));
 	CHECK_XPATH_NODESET(n, STR("following-sibling::chapter[position()=1]")) % 6;
@@ -202,7 +202,7 @@ TEST_XML(xpath_paths_w3c_21, "<node><chapter/><chapter/><chapter/><chapter/><cha
 TEST_XML(xpath_paths_w3c_22, "<node><chapter/><chapter/><chapter/><chapter/><chapter/></node>")
 {
 	XmlNode c;
-	XmlNode n = doc.child(STR("node")).child(STR("chapter")).next_sibling().next_sibling();
+	XmlNode n = doc.child(STR("node")).child(STR("chapter")).nextSibling().nextSibling();
 
 	CHECK_XPATH_NODESET(c, STR("preceding-sibling::chapter[position()=1]"));
 	CHECK_XPATH_NODESET(n, STR("preceding-sibling::chapter[position()=1]")) % 4;

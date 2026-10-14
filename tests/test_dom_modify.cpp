@@ -13,28 +13,28 @@ TEST_XML(dom_attr_assign, "<node/>")
 {
   XmlNode node = doc.child(STR("node"));
 
-  node.append_attribute(STR("attr1")) = STR("v1");
+  node.appendAttribute(STR("attr1")) = STR("v1");
   XmlAttribute() = STR("v1");
 
-  node.append_attribute(STR("attr2")) = -2147483647;
-  node.append_attribute(STR("attr3")) = -2147483647 - 1;
+  node.appendAttribute(STR("attr2")) = -2147483647;
+  node.appendAttribute(STR("attr3")) = -2147483647 - 1;
   XmlAttribute() = -2147483647 - 1;
 
-  node.append_attribute(STR("attr4")) = 4294967295u;
-  node.append_attribute(STR("attr5")) = 4294967294u;
+  node.appendAttribute(STR("attr4")) = 4294967295u;
+  node.appendAttribute(STR("attr5")) = 4294967294u;
   XmlAttribute() = 4294967295u;
 
-  node.append_attribute(STR("attr6")) = 0.5;
+  node.appendAttribute(STR("attr6")) = 0.5;
   XmlAttribute() = 0.5;
 
-  node.append_attribute(STR("attr7")) = 0.25f;
+  node.appendAttribute(STR("attr7")) = 0.25f;
   XmlAttribute() = 0.25f;
 
-  node.append_attribute(STR("attr8")) = true;
+  node.appendAttribute(STR("attr8")) = true;
   XmlAttribute() = true;
 
 
-  node.append_attribute(string_view_t(STR("attr9"))) = string_view_t(STR("v2"));
+  node.appendAttribute(string_view_t(STR("attr9"))) = string_view_t(STR("v2"));
 
   CHECK_NODE(
       node,
@@ -83,34 +83,34 @@ TEST_XML(dom_attr_set_value, "<node/>")
 {
   XmlNode node = doc.child(STR("node"));
 
-  CHECK(node.append_attribute(STR("attr1")).setValue(STR("v1")));
+  CHECK(node.appendAttribute(STR("attr1")).setValue(STR("v1")));
   CHECK(!XmlAttribute().setValue(STR("v1")));
 
-  CHECK(node.append_attribute(STR("attr2")).setValue(-2147483647));
-  CHECK(node.append_attribute(STR("attr3")).setValue(-2147483647 - 1));
+  CHECK(node.appendAttribute(STR("attr2")).setValue(-2147483647));
+  CHECK(node.appendAttribute(STR("attr3")).setValue(-2147483647 - 1));
   CHECK(!XmlAttribute().setValue(-2147483647));
 
-  CHECK(node.append_attribute(STR("attr4")).setValue(4294967295u));
-  CHECK(node.append_attribute(STR("attr5")).setValue(4294967294u));
+  CHECK(node.appendAttribute(STR("attr4")).setValue(4294967295u));
+  CHECK(node.appendAttribute(STR("attr5")).setValue(4294967294u));
   CHECK(!XmlAttribute().setValue(4294967295u));
 
-  CHECK(node.append_attribute(STR("attr6")).setValue(0.5));
+  CHECK(node.appendAttribute(STR("attr6")).setValue(0.5));
   CHECK(!XmlAttribute().setValue(0.5));
 
-  CHECK(node.append_attribute(STR("attr7")).setValue(0.25f));
+  CHECK(node.appendAttribute(STR("attr7")).setValue(0.25f));
   CHECK(!XmlAttribute().setValue(0.25f));
 
-  CHECK(node.append_attribute(STR("attr8")).setValue(true));
+  CHECK(node.appendAttribute(STR("attr8")).setValue(true));
   CHECK(!XmlAttribute().setValue(true));
 
-  CHECK(node.append_attribute(STR("attr9")).setValue(STR("v2"), 2));
+  CHECK(node.appendAttribute(STR("attr9")).setValue(STR("v2"), 2));
   CHECK(!XmlAttribute().setValue(STR("v2")));
 
-  CHECK(node.append_attribute(STR("attr10")).setValue(STR("v3foobar"), 2));
+  CHECK(node.appendAttribute(STR("attr10")).setValue(STR("v3foobar"), 2));
   CHECK(!XmlAttribute().setValue(STR("v3")));
 
 
-  CHECK(node.append_attribute(string_view_t(STR("attr11")))
+  CHECK(node.appendAttribute(string_view_t(STR("attr11")))
             .setValue(string_view_t(STR("v4"))));
   CHECK(!XmlAttribute().setValue(string_view_t(STR("v4"))));
 
@@ -126,12 +126,12 @@ TEST_XML(dom_attr_assign_long, "<node/>")
 {
   XmlNode node = doc.child(STR("node"));
 
-  node.append_attribute(STR("attr1")) = -9223372036854775807l;
-  node.append_attribute(STR("attr2")) = -9223372036854775807l - 1;
+  node.appendAttribute(STR("attr1")) = -9223372036854775807l;
+  node.appendAttribute(STR("attr2")) = -9223372036854775807l - 1;
   XmlAttribute() = -9223372036854775807l - 1;
 
-  node.append_attribute(STR("attr3")) = 18446744073709551615ul;
-  node.append_attribute(STR("attr4")) = 18446744073709551614ul;
+  node.appendAttribute(STR("attr3")) = 18446744073709551615ul;
+  node.appendAttribute(STR("attr4")) = 18446744073709551614ul;
   XmlAttribute() = 18446744073709551615ul;
 
   CHECK_NODE(
@@ -144,13 +144,13 @@ TEST_XML(dom_attr_set_value_long, "<node/>")
 {
   XmlNode node = doc.child(STR("node"));
 
-  CHECK(node.append_attribute(STR("attr1")).setValue(-9223372036854775807l));
+  CHECK(node.appendAttribute(STR("attr1")).setValue(-9223372036854775807l));
   CHECK(
-      node.append_attribute(STR("attr2")).setValue(-9223372036854775807l - 1));
+      node.appendAttribute(STR("attr2")).setValue(-9223372036854775807l - 1));
   CHECK(!XmlAttribute().setValue(-9223372036854775807l - 1));
 
-  CHECK(node.append_attribute(STR("attr3")).setValue(18446744073709551615ul));
-  CHECK(node.append_attribute(STR("attr4")).setValue(18446744073709551614ul));
+  CHECK(node.appendAttribute(STR("attr3")).setValue(18446744073709551615ul));
+  CHECK(node.appendAttribute(STR("attr4")).setValue(18446744073709551614ul));
   CHECK(!XmlAttribute().setValue(18446744073709551615ul));
 
   CHECK_NODE(
@@ -163,12 +163,12 @@ TEST_XML(dom_attr_assign_long, "<node/>")
 {
   XmlNode node = doc.child(STR("node"));
 
-  node.append_attribute(STR("attr1")) = -2147483647l;
-  node.append_attribute(STR("attr2")) = -2147483647l - 1;
+  node.appendAttribute(STR("attr1")) = -2147483647l;
+  node.appendAttribute(STR("attr2")) = -2147483647l - 1;
   XmlAttribute() = -2147483647l - 1;
 
-  node.append_attribute(STR("attr3")) = 4294967295ul;
-  node.append_attribute(STR("attr4")) = 4294967294ul;
+  node.appendAttribute(STR("attr3")) = 4294967295ul;
+  node.appendAttribute(STR("attr4")) = 4294967294ul;
   XmlAttribute() = 4294967295ul;
 
   CHECK_NODE(node, STR("<node attr1=\"-2147483647\" attr2=\"-2147483648\" "
@@ -179,12 +179,12 @@ TEST_XML(dom_attr_set_value_long, "<node/>")
 {
   XmlNode node = doc.child(STR("node"));
 
-  CHECK(node.append_attribute(STR("attr1")).setValue(-2147483647l));
-  CHECK(node.append_attribute(STR("attr2")).setValue(-2147483647l - 1));
+  CHECK(node.appendAttribute(STR("attr1")).setValue(-2147483647l));
+  CHECK(node.appendAttribute(STR("attr2")).setValue(-2147483647l - 1));
   CHECK(!XmlAttribute().setValue(-2147483647l - 1));
 
-  CHECK(node.append_attribute(STR("attr3")).setValue(4294967295ul));
-  CHECK(node.append_attribute(STR("attr4")).setValue(4294967294ul));
+  CHECK(node.appendAttribute(STR("attr3")).setValue(4294967295ul));
+  CHECK(node.appendAttribute(STR("attr4")).setValue(4294967294ul));
   CHECK(!XmlAttribute().setValue(4294967295ul));
 
   CHECK_NODE(node, STR("<node attr1=\"-2147483647\" attr2=\"-2147483648\" "
@@ -197,12 +197,12 @@ TEST_XML(dom_attr_assign_llong, "<node/>")
 {
   XmlNode node = doc.child(STR("node"));
 
-  node.append_attribute(STR("attr1")) = -9223372036854775807ll;
-  node.append_attribute(STR("attr2")) = -9223372036854775807ll - 1;
+  node.appendAttribute(STR("attr1")) = -9223372036854775807ll;
+  node.appendAttribute(STR("attr2")) = -9223372036854775807ll - 1;
   XmlAttribute() = -9223372036854775807ll - 1;
 
-  node.append_attribute(STR("attr3")) = 18446744073709551615ull;
-  node.append_attribute(STR("attr4")) = 18446744073709551614ull;
+  node.appendAttribute(STR("attr3")) = 18446744073709551615ull;
+  node.appendAttribute(STR("attr4")) = 18446744073709551614ull;
   XmlAttribute() = 18446744073709551615ull;
 
   CHECK_NODE(
@@ -215,13 +215,13 @@ TEST_XML(dom_attr_set_value_llong, "<node/>")
 {
   XmlNode node = doc.child(STR("node"));
 
-  CHECK(node.append_attribute(STR("attr1")).setValue(-9223372036854775807ll));
+  CHECK(node.appendAttribute(STR("attr1")).setValue(-9223372036854775807ll));
   CHECK(
-      node.append_attribute(STR("attr2")).setValue(-9223372036854775807ll - 1));
+      node.appendAttribute(STR("attr2")).setValue(-9223372036854775807ll - 1));
   CHECK(!XmlAttribute().setValue(-9223372036854775807ll - 1));
 
-  CHECK(node.append_attribute(STR("attr3")).setValue(18446744073709551615ull));
-  CHECK(node.append_attribute(STR("attr4")).setValue(18446744073709551614ull));
+  CHECK(node.appendAttribute(STR("attr3")).setValue(18446744073709551615ull));
+  CHECK(node.appendAttribute(STR("attr4")).setValue(18446744073709551614ull));
   CHECK(!XmlAttribute().setValue(18446744073709551615ull));
 
   CHECK_NODE(
@@ -259,7 +259,7 @@ TEST_XML(dom_attr_assign_large_number_double, "<node attr='' />")
 TEST_XML(dom_node_set_name, "<node>text</node>")
 {
   CHECK(doc.child(STR("node")).setName(STR("n")));
-  CHECK(!doc.child(STR("node")).first_child().setName(STR("n")));
+  CHECK(!doc.child(STR("node")).firstChild().setName(STR("n")));
   CHECK(!XmlNode().setName(STR("n")));
 
   CHECK_NODE(doc, STR("<n>text</n>"));
@@ -268,7 +268,7 @@ TEST_XML(dom_node_set_name, "<node>text</node>")
 TEST_XML(dom_node_set_name_with_size, "<node>text</node>")
 {
   CHECK(doc.child(STR("node")).setName(STR("nlongname"), 1));
-  CHECK(!doc.child(STR("node")).first_child().setName(STR("n42"), 1));
+  CHECK(!doc.child(STR("node")).firstChild().setName(STR("n42"), 1));
   CHECK(!XmlNode().setName(STR("nanothername"), 1));
 
   CHECK_NODE(doc, STR("<n>text</n>"));
@@ -280,14 +280,14 @@ TEST_XML(dom_node_set_name_with_string_view, "<node>text</node>")
   XmlNode node = doc.child(STR("node"));
 
   CHECK(node.setName(string_view_t()));
-  CHECK(!node.first_child().setName(string_view_t(STR("n42"), 1)));
+  CHECK(!node.firstChild().setName(string_view_t(STR("n42"), 1)));
   CHECK(!XmlNode().setName(string_view_t(STR("nanothername"), 1)));
 
   CHECK_NODE(doc, STR("<:anonymous>text</:anonymous>"));
 
   CHECK(node.setName(string_view_t(STR("nlongname"), 1)));
   CHECK(!doc.child(STR("node"))
-             .first_child()
+             .firstChild()
              .setName(string_view_t(STR("n42"), 1)));
   CHECK(!XmlNode().setName(string_view_t(STR("nanothername"), 1)));
 
@@ -296,7 +296,7 @@ TEST_XML(dom_node_set_name_with_string_view, "<node>text</node>")
 
 TEST_XML(dom_node_set_value, "<node>text</node>")
 {
-  CHECK(doc.child(STR("node")).first_child().setValue(STR("no text")));
+  CHECK(doc.child(STR("node")).firstChild().setValue(STR("no text")));
   CHECK(!doc.child(STR("node")).setValue(STR("no text")));
   CHECK(!XmlNode().setValue(STR("no text")));
 
@@ -305,7 +305,7 @@ TEST_XML(dom_node_set_value, "<node>text</node>")
 
 TEST_XML(dom_node_set_value_partially_with_size, "<node>text</node>")
 {
-  CHECK(doc.child(STR("node")).first_child().setValue(STR("no text"), 2));
+  CHECK(doc.child(STR("node")).firstChild().setValue(STR("no text"), 2));
   CHECK(!doc.child(STR("node")).setValue(STR("no text"), 2));
   CHECK(!XmlNode().setValue(STR("no text"), 2));
 
@@ -314,7 +314,7 @@ TEST_XML(dom_node_set_value_partially_with_size, "<node>text</node>")
 
 TEST_XML(dom_node_set_value_with_size, "<node>text</node>")
 {
-  CHECK(doc.child(STR("node")).first_child().setValue(STR("no text"), 7));
+  CHECK(doc.child(STR("node")).firstChild().setValue(STR("no text"), 7));
   CHECK(!doc.child(STR("node")).setValue(STR("no text"), 7));
   CHECK(!XmlNode().setValue(STR("no text"), 7));
 
@@ -325,7 +325,7 @@ TEST_XML(dom_node_set_value_with_size, "<node>text</node>")
 TEST_XML(dom_node_set_value_partially_with_string_view, "<node>text</node>")
 {
   CHECK(doc.child(STR("node"))
-            .first_child()
+            .firstChild()
             .setValue(string_view_t(STR("no text"), 2)));
   CHECK(!doc.child(STR("node")).setValue(string_view_t(STR("no text"), 2)));
   CHECK(!XmlNode().setValue(string_view_t(STR("no text"), 2)));
@@ -336,7 +336,7 @@ TEST_XML(dom_node_set_value_partially_with_string_view, "<node>text</node>")
 TEST_XML(dom_node_set_value_with_string_view, "<node>text</node>")
 {
   CHECK(doc.child(STR("node"))
-            .first_child()
+            .firstChild()
             .setValue(string_view_t(STR("no text"), 7)));
   CHECK(!doc.child(STR("node")).setValue(string_view_t(STR("no text"), 7)));
   CHECK(!XmlNode().setValue(string_view_t(STR("no text"), 7)));
@@ -346,36 +346,36 @@ TEST_XML(dom_node_set_value_with_string_view, "<node>text</node>")
 
 TEST_XML(dom_node_set_value_allocated, "<node>text</node>")
 {
-  CHECK(doc.child(STR("node")).first_child().setValue(STR("no text")));
+  CHECK(doc.child(STR("node")).firstChild().setValue(STR("no text")));
   CHECK(!doc.child(STR("node")).setValue(STR("no text")));
   CHECK(!XmlNode().setValue(STR("no text")));
-  CHECK(doc.child(STR("node")).first_child().setValue(STR("no text at all")));
+  CHECK(doc.child(STR("node")).firstChild().setValue(STR("no text at all")));
 
   CHECK_NODE(doc, STR("<node>no text at all</node>"));
 }
 
-TEST_XML(dom_node_prepend_attribute, "<node><child/></node>")
+TEST_XML(dom_node_prependAttribute, "<node><child/></node>")
 {
-  CHECK(XmlNode().prepend_attribute(STR("a")) == XmlAttribute());
-  CHECK(doc.prepend_attribute(STR("a")) == XmlAttribute());
+  CHECK(XmlNode().prependAttribute(STR("a")) == XmlAttribute());
+  CHECK(doc.prependAttribute(STR("a")) == XmlAttribute());
 
-  XmlAttribute a1 = doc.child(STR("node")).prepend_attribute(STR("a1"));
+  XmlAttribute a1 = doc.child(STR("node")).prependAttribute(STR("a1"));
   CHECK(a1);
   a1 = STR("v1");
 
-  XmlAttribute a2 = doc.child(STR("node")).prepend_attribute(STR("a2"));
+  XmlAttribute a2 = doc.child(STR("node")).prependAttribute(STR("a2"));
   CHECK(a2 && a1 != a2);
   a2 = STR("v2");
 
   XmlAttribute a3 =
-      doc.child(STR("node")).child(STR("child")).prepend_attribute(STR("a3"));
+      doc.child(STR("node")).child(STR("child")).prependAttribute(STR("a3"));
   CHECK(a3 && a1 != a3 && a2 != a3);
   a3 = STR("v3");
 
 
   XmlAttribute a4 = doc.child(STR("node"))
                         .child(STR("child"))
-                        .prepend_attribute(string_view_t(STR("a4")));
+                        .prependAttribute(string_view_t(STR("a4")));
   CHECK(a4 && a1 != a4 && a2 != a4 && a3 != a4);
   a4 = STR("v4");
 
@@ -384,60 +384,60 @@ TEST_XML(dom_node_prepend_attribute, "<node><child/></node>")
       STR("<node a2=\"v2\" a1=\"v1\"><child a4=\"v4\" a3=\"v3\"/></node>"));
 }
 
-TEST_XML(dom_node_append_attribute, "<node><child/></node>")
+TEST_XML(dom_node_appendAttribute, "<node><child/></node>")
 {
-  CHECK(XmlNode().append_attribute(STR("a")) == XmlAttribute());
-  CHECK(doc.append_attribute(STR("a")) == XmlAttribute());
+  CHECK(XmlNode().appendAttribute(STR("a")) == XmlAttribute());
+  CHECK(doc.appendAttribute(STR("a")) == XmlAttribute());
 
-  XmlAttribute a1 = doc.child(STR("node")).append_attribute(STR("a1"));
+  XmlAttribute a1 = doc.child(STR("node")).appendAttribute(STR("a1"));
   CHECK(a1);
   a1 = STR("v1");
 
-  XmlAttribute a2 = doc.child(STR("node")).append_attribute(STR("a2"));
+  XmlAttribute a2 = doc.child(STR("node")).appendAttribute(STR("a2"));
   CHECK(a2 && a1 != a2);
   a2 = STR("v2");
 
   XmlAttribute a3 =
-      doc.child(STR("node")).child(STR("child")).append_attribute(STR("a3"));
+      doc.child(STR("node")).child(STR("child")).appendAttribute(STR("a3"));
   CHECK(a3 && a1 != a3 && a2 != a3);
   a3 = STR("v3");
 
   CHECK_NODE(doc, STR("<node a1=\"v1\" a2=\"v2\"><child a3=\"v3\"/></node>"));
 }
 
-TEST_XML(dom_node_ensure_attribute, "<node a1='v1'><child/></node>")
+TEST_XML(dom_node_ensureAttribute, "<node a1='v1'><child/></node>")
 {
-  CHECK(XmlNode().ensure_attribute(STR("a")) == XmlAttribute());
-  CHECK(doc.ensure_attribute(STR("a")) == XmlAttribute());
+  CHECK(XmlNode().ensureAttribute(STR("a")) == XmlAttribute());
+  CHECK(doc.ensureAttribute(STR("a")) == XmlAttribute());
 
   XmlNode node = doc.child(STR("node"));
 
   // existing attribute is returned as is
-  XmlAttribute a1 = node.ensure_attribute(STR("a1"));
+  XmlAttribute a1 = node.ensureAttribute(STR("a1"));
   CHECK(a1 && a1 == node.attribute(STR("a1")));
   CHECK_STRING(a1.value(), STR("v1"));
 
   // missing attribute is appended
-  XmlAttribute a2 = node.ensure_attribute(STR("a2"));
+  XmlAttribute a2 = node.ensureAttribute(STR("a2"));
   CHECK(a2 && a2 != a1);
   a2 = STR("v2");
 
   // ensuring an existing attribute does not add a duplicate
-  CHECK(node.ensure_attribute(STR("a2")) == a2);
+  CHECK(node.ensureAttribute(STR("a2")) == a2);
 
 
   XmlAttribute a3 =
-      node.child(STR("child")).ensure_attribute(string_view_t(STR("a3")));
+      node.child(STR("child")).ensureAttribute(string_view_t(STR("a3")));
   CHECK(a3 && a3 != a1 && a3 != a2);
   a3 = STR("v3");
 
   CHECK_NODE(doc, STR("<node a1=\"v1\" a2=\"v2\"><child a3=\"v3\"/></node>"));
 }
 
-TEST_XML(dom_node_insert_attribute_after,
+TEST_XML(dom_node_insertAttributeAfter,
          "<node a1='v1'><child a2='v2'/></node>")
 {
-  CHECK(XmlNode().insert_attribute_after(STR("a"), XmlAttribute()) ==
+  CHECK(XmlNode().insertAttributeAfter(STR("a"), XmlAttribute()) ==
         XmlAttribute());
 
   XmlNode node = doc.child(STR("node"));
@@ -446,27 +446,27 @@ TEST_XML(dom_node_insert_attribute_after,
   XmlAttribute a1 = node.attribute(STR("a1"));
   XmlAttribute a2 = child.attribute(STR("a2"));
 
-  CHECK(node.insert_attribute_after(STR("a"), XmlAttribute()) ==
+  CHECK(node.insertAttributeAfter(STR("a"), XmlAttribute()) ==
         XmlAttribute());
-  CHECK(node.insert_attribute_after(STR("a"), a2) == XmlAttribute());
+  CHECK(node.insertAttributeAfter(STR("a"), a2) == XmlAttribute());
 
-  XmlAttribute a3 = node.insert_attribute_after(STR("a3"), a1);
+  XmlAttribute a3 = node.insertAttributeAfter(STR("a3"), a1);
   CHECK(a3 && a3 != a2 && a3 != a1);
   a3 = STR("v3");
 
-  XmlAttribute a4 = node.insert_attribute_after(STR("a4"), a1);
+  XmlAttribute a4 = node.insertAttributeAfter(STR("a4"), a1);
   CHECK(a4 && a4 != a3 && a4 != a2 && a4 != a1);
   a4 = STR("v4");
 
-  XmlAttribute a5 = node.insert_attribute_after(STR("a5"), a3);
+  XmlAttribute a5 = node.insertAttributeAfter(STR("a5"), a3);
   CHECK(a5 && a5 != a4 && a5 != a3 && a5 != a2 && a5 != a1);
   a5 = STR("v5");
 
-  CHECK(child.insert_attribute_after(STR("a"), a4) == XmlAttribute());
+  CHECK(child.insertAttributeAfter(STR("a"), a4) == XmlAttribute());
 
 
-  XmlAttribute a6 = node.insert_attribute_after(string_view_t(STR("a6")), a5);
-  CHECK(child.insert_attribute_after(string_view_t(STR("a")), a5) ==
+  XmlAttribute a6 = node.insertAttributeAfter(string_view_t(STR("a6")), a5);
+  CHECK(child.insertAttributeAfter(string_view_t(STR("a")), a5) ==
         XmlAttribute());
 
   CHECK(a6 && a6 != a5 && a6 != a4 && a6 != a3 && a6 != a2 && a6 != a1);
@@ -476,10 +476,10 @@ TEST_XML(dom_node_insert_attribute_after,
                       "a6=\"v6\"><child a2=\"v2\"/></node>"));
 }
 
-TEST_XML(dom_node_insert_attribute_before,
+TEST_XML(dom_node_insertAttributeBefore,
          "<node a1='v1'><child a2='v2'/></node>")
 {
-  CHECK(XmlNode().insert_attribute_before(STR("a"), XmlAttribute()) ==
+  CHECK(XmlNode().insertAttributeBefore(STR("a"), XmlAttribute()) ==
         XmlAttribute());
 
   XmlNode node = doc.child(STR("node"));
@@ -488,27 +488,27 @@ TEST_XML(dom_node_insert_attribute_before,
   XmlAttribute a1 = node.attribute(STR("a1"));
   XmlAttribute a2 = child.attribute(STR("a2"));
 
-  CHECK(node.insert_attribute_before(STR("a"), XmlAttribute()) ==
+  CHECK(node.insertAttributeBefore(STR("a"), XmlAttribute()) ==
         XmlAttribute());
-  CHECK(node.insert_attribute_before(STR("a"), a2) == XmlAttribute());
+  CHECK(node.insertAttributeBefore(STR("a"), a2) == XmlAttribute());
 
-  XmlAttribute a3 = node.insert_attribute_before(STR("a3"), a1);
+  XmlAttribute a3 = node.insertAttributeBefore(STR("a3"), a1);
   CHECK(a3 && a3 != a2 && a3 != a1);
   a3 = STR("v3");
 
-  XmlAttribute a4 = node.insert_attribute_before(STR("a4"), a1);
+  XmlAttribute a4 = node.insertAttributeBefore(STR("a4"), a1);
   CHECK(a4 && a4 != a3 && a4 != a2 && a4 != a1);
   a4 = STR("v4");
 
-  XmlAttribute a5 = node.insert_attribute_before(STR("a5"), a3);
+  XmlAttribute a5 = node.insertAttributeBefore(STR("a5"), a3);
   CHECK(a5 && a5 != a4 && a5 != a3 && a5 != a2 && a5 != a1);
   a5 = STR("v5");
 
-  CHECK(child.insert_attribute_before(STR("a"), a4) == XmlAttribute());
+  CHECK(child.insertAttributeBefore(STR("a"), a4) == XmlAttribute());
 
 
-  XmlAttribute a6 = node.insert_attribute_before(string_view_t(STR("a6")), a1);
-  CHECK(child.insert_attribute_before(string_view_t(STR("a")), a4) ==
+  XmlAttribute a6 = node.insertAttributeBefore(string_view_t(STR("a6")), a1);
+  CHECK(child.insertAttributeBefore(string_view_t(STR("a")), a4) ==
         XmlAttribute());
 
   CHECK(a6 && a6 != a5 && a6 != a4 && a6 != a3 && a6 != a2 && a6 != a1);
@@ -518,15 +518,15 @@ TEST_XML(dom_node_insert_attribute_before,
                       "a1=\"v1\"><child a2=\"v2\"/></node>"));
 }
 
-TEST_XML(dom_node_prepend_copy_attribute,
+TEST_XML(dom_node_prependCopy_attribute,
          "<node a1='v1'><child a2='v2'/><child/></node>")
 {
-  CHECK(XmlNode().prepend_copy(XmlAttribute()) == XmlAttribute());
-  CHECK(XmlNode().prepend_copy(doc.child(STR("node")).attribute(STR("a1"))) ==
+  CHECK(XmlNode().prependCopy(XmlAttribute()) == XmlAttribute());
+  CHECK(XmlNode().prependCopy(doc.child(STR("node")).attribute(STR("a1"))) ==
         XmlAttribute());
-  CHECK(doc.prepend_copy(doc.child(STR("node")).attribute(STR("a1"))) ==
+  CHECK(doc.prependCopy(doc.child(STR("node")).attribute(STR("a1"))) ==
         XmlAttribute());
-  CHECK(doc.child(STR("node")).prepend_copy(XmlAttribute()) == XmlAttribute());
+  CHECK(doc.child(STR("node")).prependCopy(XmlAttribute()) == XmlAttribute());
 
   XmlNode node = doc.child(STR("node"));
   XmlNode child = node.child(STR("child"));
@@ -534,13 +534,13 @@ TEST_XML(dom_node_prepend_copy_attribute,
   XmlAttribute a1 = node.attribute(STR("a1"));
   XmlAttribute a2 = child.attribute(STR("a2"));
 
-  XmlAttribute a3 = node.prepend_copy(a1);
+  XmlAttribute a3 = node.prependCopy(a1);
   CHECK(a3 && a3 != a2 && a3 != a1);
 
-  XmlAttribute a4 = node.prepend_copy(a2);
+  XmlAttribute a4 = node.prependCopy(a2);
   CHECK(a4 && a4 != a3 && a4 != a2 && a4 != a1);
 
-  XmlAttribute a5 = node.last_child().prepend_copy(a1);
+  XmlAttribute a5 = node.lastChild().prependCopy(a1);
   CHECK(a5 && a5 != a4 && a5 != a3 && a5 != a2 && a5 != a1);
 
   CHECK_NODE(doc, STR("<node a2=\"v2\" a1=\"v1\" a1=\"v1\"><child "
@@ -559,15 +559,15 @@ TEST_XML(dom_node_prepend_copy_attribute,
                       "a2=\"v2\"/><child a5=\"v5\"/></node>"));
 }
 
-TEST_XML(dom_node_append_copy_attribute,
+TEST_XML(dom_node_appendCopy_attribute,
          "<node a1='v1'><child a2='v2'/><child/></node>")
 {
-  CHECK(XmlNode().append_copy(XmlAttribute()) == XmlAttribute());
-  CHECK(XmlNode().append_copy(doc.child(STR("node")).attribute(STR("a1"))) ==
+  CHECK(XmlNode().appendCopy(XmlAttribute()) == XmlAttribute());
+  CHECK(XmlNode().appendCopy(doc.child(STR("node")).attribute(STR("a1"))) ==
         XmlAttribute());
-  CHECK(doc.append_copy(doc.child(STR("node")).attribute(STR("a1"))) ==
+  CHECK(doc.appendCopy(doc.child(STR("node")).attribute(STR("a1"))) ==
         XmlAttribute());
-  CHECK(doc.child(STR("node")).append_copy(XmlAttribute()) == XmlAttribute());
+  CHECK(doc.child(STR("node")).appendCopy(XmlAttribute()) == XmlAttribute());
 
   XmlNode node = doc.child(STR("node"));
   XmlNode child = node.child(STR("child"));
@@ -575,13 +575,13 @@ TEST_XML(dom_node_append_copy_attribute,
   XmlAttribute a1 = node.attribute(STR("a1"));
   XmlAttribute a2 = child.attribute(STR("a2"));
 
-  XmlAttribute a3 = node.append_copy(a1);
+  XmlAttribute a3 = node.appendCopy(a1);
   CHECK(a3 && a3 != a2 && a3 != a1);
 
-  XmlAttribute a4 = node.append_copy(a2);
+  XmlAttribute a4 = node.appendCopy(a2);
   CHECK(a4 && a4 != a3 && a4 != a2 && a4 != a1);
 
-  XmlAttribute a5 = node.last_child().append_copy(a1);
+  XmlAttribute a5 = node.lastChild().appendCopy(a1);
   CHECK(a5 && a5 != a4 && a5 != a3 && a5 != a2 && a5 != a1);
 
   CHECK_NODE(doc, STR("<node a1=\"v1\" a1=\"v1\" a2=\"v2\"><child "
@@ -600,10 +600,10 @@ TEST_XML(dom_node_append_copy_attribute,
                       "a2=\"v2\"/><child a5=\"v5\"/></node>"));
 }
 
-TEST_XML(dom_node_insert_copy_after_attribute,
+TEST_XML(dom_node_insertCopyAfter_attribute,
          "<node a1='v1'><child a2='v2'/>text</node>")
 {
-  CHECK(XmlNode().insert_copy_after(XmlAttribute(), XmlAttribute()) ==
+  CHECK(XmlNode().insertCopyAfter(XmlAttribute(), XmlAttribute()) ==
         XmlAttribute());
 
   XmlNode node = doc.child(STR("node"));
@@ -612,21 +612,21 @@ TEST_XML(dom_node_insert_copy_after_attribute,
   XmlAttribute a1 = node.attribute(STR("a1"));
   XmlAttribute a2 = child.attribute(STR("a2"));
 
-  CHECK(node.insert_copy_after(a1, XmlAttribute()) == XmlAttribute());
-  CHECK(node.insert_copy_after(XmlAttribute(), a1) == XmlAttribute());
-  CHECK(node.insert_copy_after(a2, a2) == XmlAttribute());
-  CHECK(node.last_child().insert_copy_after(a2, a2) == XmlAttribute());
+  CHECK(node.insertCopyAfter(a1, XmlAttribute()) == XmlAttribute());
+  CHECK(node.insertCopyAfter(XmlAttribute(), a1) == XmlAttribute());
+  CHECK(node.insertCopyAfter(a2, a2) == XmlAttribute());
+  CHECK(node.lastChild().insertCopyAfter(a2, a2) == XmlAttribute());
 
-  XmlAttribute a3 = node.insert_copy_after(a1, a1);
+  XmlAttribute a3 = node.insertCopyAfter(a1, a1);
   CHECK(a3 && a3 != a2 && a3 != a1);
 
-  XmlAttribute a4 = node.insert_copy_after(a2, a1);
+  XmlAttribute a4 = node.insertCopyAfter(a2, a1);
   CHECK(a4 && a4 != a3 && a4 != a2 && a4 != a1);
 
-  XmlAttribute a5 = node.insert_copy_after(a4, a1);
+  XmlAttribute a5 = node.insertCopyAfter(a4, a1);
   CHECK(a5 && a5 != a4 && a5 != a3 && a5 != a2 && a5 != a1);
 
-  CHECK(child.insert_copy_after(a4, a4) == XmlAttribute());
+  CHECK(child.insertCopyAfter(a4, a4) == XmlAttribute());
 
   CHECK_NODE(doc, STR("<node a1=\"v1\" a2=\"v2\" a2=\"v2\" a1=\"v1\"><child "
                       "a2=\"v2\"/>text</node>"));
@@ -644,10 +644,10 @@ TEST_XML(dom_node_insert_copy_after_attribute,
                       "a2=\"v2\"/>text</node>"));
 }
 
-TEST_XML(dom_node_insert_copy_before_attribute,
+TEST_XML(dom_node_insertCopyBefore_attribute,
          "<node a1='v1'><child a2='v2'/>text</node>")
 {
-  CHECK(XmlNode().insert_copy_before(XmlAttribute(), XmlAttribute()) ==
+  CHECK(XmlNode().insertCopyBefore(XmlAttribute(), XmlAttribute()) ==
         XmlAttribute());
 
   XmlNode node = doc.child(STR("node"));
@@ -656,21 +656,21 @@ TEST_XML(dom_node_insert_copy_before_attribute,
   XmlAttribute a1 = node.attribute(STR("a1"));
   XmlAttribute a2 = child.attribute(STR("a2"));
 
-  CHECK(node.insert_copy_before(a1, XmlAttribute()) == XmlAttribute());
-  CHECK(node.insert_copy_before(XmlAttribute(), a1) == XmlAttribute());
-  CHECK(node.insert_copy_before(a2, a2) == XmlAttribute());
-  CHECK(node.last_child().insert_copy_before(a2, a2) == XmlAttribute());
+  CHECK(node.insertCopyBefore(a1, XmlAttribute()) == XmlAttribute());
+  CHECK(node.insertCopyBefore(XmlAttribute(), a1) == XmlAttribute());
+  CHECK(node.insertCopyBefore(a2, a2) == XmlAttribute());
+  CHECK(node.lastChild().insertCopyBefore(a2, a2) == XmlAttribute());
 
-  XmlAttribute a3 = node.insert_copy_before(a1, a1);
+  XmlAttribute a3 = node.insertCopyBefore(a1, a1);
   CHECK(a3 && a3 != a2 && a3 != a1);
 
-  XmlAttribute a4 = node.insert_copy_before(a2, a1);
+  XmlAttribute a4 = node.insertCopyBefore(a2, a1);
   CHECK(a4 && a4 != a3 && a4 != a2 && a4 != a1);
 
-  XmlAttribute a5 = node.insert_copy_before(a4, a1);
+  XmlAttribute a5 = node.insertCopyBefore(a4, a1);
   CHECK(a5 && a5 != a4 && a5 != a3 && a5 != a2 && a5 != a1);
 
-  CHECK(child.insert_copy_before(a4, a4) == XmlAttribute());
+  CHECK(child.insertCopyBefore(a4, a4) == XmlAttribute());
 
   CHECK_NODE(doc, STR("<node a1=\"v1\" a2=\"v2\" a2=\"v2\" a1=\"v1\"><child "
                       "a2=\"v2\"/>text</node>"));
@@ -688,52 +688,52 @@ TEST_XML(dom_node_insert_copy_before_attribute,
                       "a2=\"v2\"/>text</node>"));
 }
 
-TEST_XML(dom_node_remove_attribute,
+TEST_XML(dom_node_removeAttribute,
          "<node a1='v1' a2='v2' a3='v3'><child a4='v4'/></node>")
 {
-  CHECK(!XmlNode().remove_attribute(STR("a")));
-  CHECK(!XmlNode().remove_attribute(XmlAttribute()));
+  CHECK(!XmlNode().removeAttribute(STR("a")));
+  CHECK(!XmlNode().removeAttribute(XmlAttribute()));
 
   XmlNode node = doc.child(STR("node"));
   XmlNode child = node.child(STR("child"));
 
-  CHECK(!node.remove_attribute(STR("a")));
-  CHECK(!node.remove_attribute(XmlAttribute()));
-  CHECK(!node.remove_attribute(child.attribute(STR("a4"))));
+  CHECK(!node.removeAttribute(STR("a")));
+  CHECK(!node.removeAttribute(XmlAttribute()));
+  CHECK(!node.removeAttribute(child.attribute(STR("a4"))));
 
   CHECK_NODE(
       doc,
       STR("<node a1=\"v1\" a2=\"v2\" a3=\"v3\"><child a4=\"v4\"/></node>"));
 
-  CHECK(node.remove_attribute(STR("a1")));
-  CHECK(node.remove_attribute(node.attribute(STR("a3"))));
-  CHECK(child.remove_attribute(STR("a4")));
+  CHECK(node.removeAttribute(STR("a1")));
+  CHECK(node.removeAttribute(node.attribute(STR("a3"))));
+  CHECK(child.removeAttribute(STR("a4")));
 
   CHECK_NODE(doc, STR("<node a2=\"v2\"><child/></node>"));
 
 
-  CHECK(!node.remove_attribute(string_view_t()));
-  CHECK(!node.remove_attribute(string_view_t(STR("a2"), 1)));
-  CHECK(node.remove_attribute(string_view_t(STR("a2extra"), 2)));
+  CHECK(!node.removeAttribute(string_view_t()));
+  CHECK(!node.removeAttribute(string_view_t(STR("a2"), 1)));
+  CHECK(node.removeAttribute(string_view_t(STR("a2extra"), 2)));
 
   CHECK_NODE(doc, STR("<node><child/></node>"));
 }
 
-TEST_XML(dom_node_remove_attributes,
+TEST_XML(dom_node_removeAttributes,
          "<node a1='v1' a2='v2' a3='v3'><child a4='v4'/></node>")
 {
-  CHECK(!XmlNode().remove_attributes());
+  CHECK(!XmlNode().removeAttributes());
   XmlNode node = doc.child(STR("node"));
   XmlNode child = node.child(STR("child"));
 
-  CHECK(child.remove_attributes());
+  CHECK(child.removeAttributes());
   CHECK_NODE(child, STR("<child/>"));
 
-  CHECK(node.remove_attributes());
+  CHECK(node.removeAttributes());
   CHECK_NODE(node, STR("<node><child/></node>"));
 }
 
-TEST_XML(dom_node_remove_attributes_lots, "<node/>")
+TEST_XML(dom_node_removeAttributes_lots, "<node/>")
 {
   XmlNode node = doc.child(STR("node"));
 
@@ -741,11 +741,11 @@ TEST_XML(dom_node_remove_attributes_lots, "<node/>")
   // data so that we can trigger page deallocation to make sure code is memory
   // safe
   for (size_t i = 0; i < 10000; ++i)
-    node.append_attribute(STR("a")) = STR("v");
+    node.appendAttribute(STR("a")) = STR("v");
 
   CHECK_STRING(node.attribute(STR("a")).value(), STR("v"));
 
-  CHECK(node.remove_attributes());
+  CHECK(node.removeAttributes());
 
   CHECK_STRING(node.attribute(STR("a")).value(), STR(""));
   CHECK_NODE(node, STR("<node/>"));
@@ -754,7 +754,7 @@ TEST_XML(dom_node_remove_attributes_lots, "<node/>")
 TEST_XML(dom_node_prepend_child, "<node>foo<child/></node>")
 {
   CHECK(XmlNode().prepend_child() == XmlNode());
-  CHECK(doc.child(STR("node")).first_child().prepend_child() == XmlNode());
+  CHECK(doc.child(STR("node")).firstChild().prepend_child() == XmlNode());
   CHECK(doc.prepend_child(node_document) == XmlNode());
   CHECK(doc.prepend_child(node_null) == XmlNode());
 
@@ -781,7 +781,7 @@ TEST_XML(dom_node_prepend_child, "<node>foo<child/></node>")
 TEST_XML(dom_node_append_child, "<node>foo<child/></node>")
 {
   CHECK(XmlNode().append_child() == XmlNode());
-  CHECK(doc.child(STR("node")).first_child().append_child() == XmlNode());
+  CHECK(doc.child(STR("node")).firstChild().append_child() == XmlNode());
   CHECK(doc.append_child(node_document) == XmlNode());
   CHECK(doc.append_child(node_null) == XmlNode());
 
@@ -809,7 +809,7 @@ TEST_XML(dom_node_insert_child_after, "<node>foo<child/></node>")
 {
   CHECK(XmlNode().insert_child_after(node_element, XmlNode()) == XmlNode());
   CHECK(doc.child(STR("node"))
-            .first_child()
+            .firstChild()
             .insert_child_after(node_element, XmlNode()) == XmlNode());
   CHECK(doc.insert_child_after(node_document, XmlNode()) == XmlNode());
   CHECK(doc.insert_child_after(node_null, XmlNode()) == XmlNode());
@@ -833,7 +833,7 @@ TEST_XML(dom_node_insert_child_after, "<node>foo<child/></node>")
   CHECK(n3 && n3 != node && n3 != child && n3 != n1 && n3 != n2);
   CHECK(n3.setValue(STR("n3")));
 
-  XmlNode n4 = node.insert_child_after(node_pi, node.first_child());
+  XmlNode n4 = node.insert_child_after(node_pi, node.firstChild());
   CHECK(n4 && n4 != node && n4 != child && n4 != n1 && n4 != n2 && n4 != n3);
   CHECK(n4.setName(STR("n4")));
 
@@ -846,7 +846,7 @@ TEST_XML(dom_node_insert_child_before, "<node>foo<child/></node>")
 {
   CHECK(XmlNode().insert_child_before(node_element, XmlNode()) == XmlNode());
   CHECK(doc.child(STR("node"))
-            .first_child()
+            .firstChild()
             .insert_child_before(node_element, XmlNode()) == XmlNode());
   CHECK(doc.insert_child_before(node_document, XmlNode()) == XmlNode());
   CHECK(doc.insert_child_before(node_null, XmlNode()) == XmlNode());
@@ -870,7 +870,7 @@ TEST_XML(dom_node_insert_child_before, "<node>foo<child/></node>")
   CHECK(n3 && n3 != node && n3 != child && n3 != n1 && n3 != n2);
   CHECK(n3.setValue(STR("n3")));
 
-  XmlNode n4 = node.insert_child_before(node_pi, node.first_child());
+  XmlNode n4 = node.insert_child_before(node_pi, node.firstChild());
   CHECK(n4 && n4 != node && n4 != child && n4 != n1 && n4 != n2 && n4 != n3);
   CHECK(n4.setName(STR("n4")));
 
@@ -882,11 +882,11 @@ TEST_XML(dom_node_insert_child_before, "<node>foo<child/></node>")
 TEST_XML(dom_node_prepend_child_name, "<node>foo<child/></node>")
 {
   CHECK(XmlNode().prepend_child(STR("")) == XmlNode());
-  CHECK(doc.child(STR("node")).first_child().prepend_child(STR("")) ==
+  CHECK(doc.child(STR("node")).firstChild().prepend_child(STR("")) ==
         XmlNode());
 
   CHECK(XmlNode().prepend_child(string_view_t()) == XmlNode());
-  CHECK(doc.child(STR("node")).first_child().prepend_child(string_view_t()) ==
+  CHECK(doc.child(STR("node")).firstChild().prepend_child(string_view_t()) ==
         XmlNode());
 
   XmlNode n1 = doc.child(STR("node")).prepend_child(STR("n1"));
@@ -905,7 +905,7 @@ TEST_XML(dom_node_prepend_child_name, "<node>foo<child/></node>")
 TEST_XML(dom_node_append_child_name, "<node>foo<child/></node>")
 {
   CHECK(XmlNode().append_child(STR("")) == XmlNode());
-  CHECK(doc.child(STR("node")).first_child().append_child(STR("")) ==
+  CHECK(doc.child(STR("node")).firstChild().append_child(STR("")) ==
         XmlNode());
 
   XmlNode n1 = doc.child(STR("node")).append_child(STR("n1"));
@@ -925,7 +925,7 @@ TEST_XML(dom_node_append_child_name, "<node>foo<child/></node>")
 TEST_XML(dom_node_ensure_child, "<node>foo<child/></node>")
 {
   CHECK(XmlNode().ensure_child(STR("")) == XmlNode());
-  CHECK(doc.child(STR("node")).first_child().ensure_child(STR("n")) ==
+  CHECK(doc.child(STR("node")).firstChild().ensure_child(STR("n")) ==
         XmlNode());
 
   XmlNode node = doc.child(STR("node"));
@@ -953,7 +953,7 @@ TEST_XML(dom_node_insert_child_after_name, "<node>foo<child/></node>")
 {
   CHECK(XmlNode().insert_child_after(STR(""), XmlNode()) == XmlNode());
   CHECK(doc.child(STR("node"))
-            .first_child()
+            .firstChild()
             .insert_child_after(STR(""), XmlNode()) == XmlNode());
 
   XmlNode node = doc.child(STR("node"));
@@ -981,7 +981,7 @@ TEST_XML(dom_node_insert_child_before_name, "<node>foo<child/></node>")
 {
   CHECK(XmlNode().insert_child_before(STR(""), XmlNode()) == XmlNode());
   CHECK(doc.child(STR("node"))
-            .first_child()
+            .firstChild()
             .insert_child_before(STR(""), XmlNode()) == XmlNode());
 
   XmlNode node = doc.child(STR("node"));
@@ -1005,56 +1005,56 @@ TEST_XML(dom_node_insert_child_before_name, "<node>foo<child/></node>")
   CHECK_NODE(doc, STR("<node>foo<n1/><n2/><n3/><child/></node>"));
 }
 
-TEST_XML(dom_node_remove_child,
+TEST_XML(dom_node_removeChild,
          "<node><n1/><n2/><n3/><child><n4/></child></node>")
 {
-  CHECK(!XmlNode().remove_child(STR("a")));
-  CHECK(!XmlNode().remove_child(XmlNode()));
+  CHECK(!XmlNode().removeChild(STR("a")));
+  CHECK(!XmlNode().removeChild(XmlNode()));
 
   XmlNode node = doc.child(STR("node"));
   XmlNode child = node.child(STR("child"));
 
-  CHECK(!node.remove_child(STR("a")));
-  CHECK(!node.remove_child(XmlNode()));
-  CHECK(!node.remove_child(child.child(STR("n4"))));
+  CHECK(!node.removeChild(STR("a")));
+  CHECK(!node.removeChild(XmlNode()));
+  CHECK(!node.removeChild(child.child(STR("n4"))));
 
   CHECK_NODE(doc, STR("<node><n1/><n2/><n3/><child><n4/></child></node>"));
 
-  CHECK(node.remove_child(STR("n1")));
-  CHECK(node.remove_child(node.child(STR("n3"))));
-  CHECK(child.remove_child(STR("n4")));
+  CHECK(node.removeChild(STR("n1")));
+  CHECK(node.removeChild(node.child(STR("n3"))));
+  CHECK(child.removeChild(STR("n4")));
 
   CHECK_NODE(doc, STR("<node><n2/><child/></node>"));
 
 
-  CHECK(!node.remove_child(string_view_t()));
-  CHECK(!node.remove_child(string_view_t(STR("child"), 3)));
-  CHECK(!node.remove_child(string_view_t(STR("n2"), 1)));
+  CHECK(!node.removeChild(string_view_t()));
+  CHECK(!node.removeChild(string_view_t(STR("child"), 3)));
+  CHECK(!node.removeChild(string_view_t(STR("n2"), 1)));
 
   CHECK_NODE(doc, STR("<node><n2/><child/></node>"));
 
-  CHECK(node.remove_child(string_view_t(STR("child"))));
+  CHECK(node.removeChild(string_view_t(STR("child"))));
   CHECK_NODE(doc, STR("<node><n2/></node>"));
 
-  CHECK(node.remove_child(string_view_t(STR("n2_notinview"), 2)));
+  CHECK(node.removeChild(string_view_t(STR("n2_notinview"), 2)));
   CHECK_NODE(doc, STR("<node/>"));
 }
 
-TEST_XML(dom_node_remove_children,
+TEST_XML(dom_node_removeChildren,
          "<node><n1/><n2/><n3/><child><n4/></child></node>")
 {
-  CHECK(!XmlNode().remove_children());
+  CHECK(!XmlNode().removeChildren());
   XmlNode node = doc.child(STR("node"));
   XmlNode child = node.child(STR("child"));
 
-  CHECK(child.remove_children());
+  CHECK(child.removeChildren());
   CHECK_NODE(child, STR("<child/>"));
 
-  CHECK(node.remove_children());
+  CHECK(node.removeChildren());
   CHECK_NODE(node, STR("<node/>"));
 }
 
-TEST_XML(dom_node_remove_children_lots, "<node/>")
+TEST_XML(dom_node_removeChildren_lots, "<node/>")
 {
   XmlNode node = doc.child(STR("node"));
 
@@ -1065,54 +1065,54 @@ TEST_XML(dom_node_remove_children_lots, "<node/>")
 
   CHECK(node.child(STR("n")));
 
-  CHECK(node.remove_children());
+  CHECK(node.removeChildren());
 
   CHECK(!node.child(STR("n")));
   CHECK_NODE(node, STR("<node/>"));
 }
 
 TEST_XML(
-    dom_node_remove_child_complex,
+    dom_node_removeChild_complex,
     "<node id='1'><n1 id1='1' id2='2'/><n2/><n3/><child><n4/></child></node>")
 {
-  CHECK(doc.child(STR("node")).remove_child(STR("n1")));
+  CHECK(doc.child(STR("node")).removeChild(STR("n1")));
 
   CHECK_NODE(doc, STR("<node id=\"1\"><n2/><n3/><child><n4/></child></node>"));
 
-  CHECK(doc.remove_child(STR("node")));
+  CHECK(doc.removeChild(STR("node")));
 
   CHECK_NODE(doc, STR(""));
 }
 
 TEST_XML(
-    dom_node_remove_child_complex_allocated,
+    dom_node_removeChild_complex_allocated,
     "<node id='1'><n1 id1='1' id2='2'/><n2/><n3/><child><n4/></child></node>")
 {
-  doc.append_copy(doc.child(STR("node")));
+  doc.appendCopy(doc.child(STR("node")));
 
-  CHECK(doc.remove_child(STR("node")));
-  CHECK(doc.remove_child(STR("node")));
+  CHECK(doc.removeChild(STR("node")));
+  CHECK(doc.removeChild(STR("node")));
 
   CHECK_NODE(doc, STR(""));
 }
 
-TEST_XML(dom_node_prepend_copy, "<node>foo<child/></node>")
+TEST_XML(dom_node_prependCopy, "<node>foo<child/></node>")
 {
-  CHECK(XmlNode().prepend_copy(XmlNode()) == XmlNode());
+  CHECK(XmlNode().prependCopy(XmlNode()) == XmlNode());
   CHECK(doc.child(STR("node"))
-            .first_child()
-            .prepend_copy(doc.child(STR("node"))) == XmlNode());
-  CHECK(doc.prepend_copy(doc) == XmlNode());
-  CHECK(doc.prepend_copy(XmlNode()) == XmlNode());
+            .firstChild()
+            .prependCopy(doc.child(STR("node"))) == XmlNode());
+  CHECK(doc.prependCopy(doc) == XmlNode());
+  CHECK(doc.prependCopy(XmlNode()) == XmlNode());
 
   XmlNode n1 =
-      doc.child(STR("node")).prepend_copy(doc.child(STR("node")).first_child());
+      doc.child(STR("node")).prependCopy(doc.child(STR("node")).firstChild());
   CHECK(n1);
   CHECK_STRING(n1.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node>foofoo<child/></node>"));
 
   XmlNode n2 = doc.child(STR("node"))
-                   .prepend_copy(doc.child(STR("node")).child(STR("child")));
+                   .prependCopy(doc.child(STR("node")).child(STR("child")));
   CHECK(n2 && n2 != n1);
   CHECK_STRING(n2.name(), STR("child"));
   CHECK_NODE(doc, STR("<node><child/>foofoo<child/></node>"));
@@ -1120,109 +1120,109 @@ TEST_XML(dom_node_prepend_copy, "<node>foo<child/></node>")
   XmlNode n3 =
       doc.child(STR("node"))
           .child(STR("child"))
-          .prepend_copy(doc.child(STR("node")).first_child().next_sibling());
+          .prependCopy(doc.child(STR("node")).firstChild().nextSibling());
   CHECK(n3 && n3 != n1 && n3 != n2);
   CHECK_STRING(n3.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node><child>foo</child>foofoo<child/></node>"));
 }
 
-TEST_XML(dom_node_append_copy, "<node>foo<child/></node>")
+TEST_XML(dom_node_appendCopy, "<node>foo<child/></node>")
 {
-  CHECK(XmlNode().append_copy(XmlNode()) == XmlNode());
+  CHECK(XmlNode().appendCopy(XmlNode()) == XmlNode());
   CHECK(doc.child(STR("node"))
-            .first_child()
-            .append_copy(doc.child(STR("node"))) == XmlNode());
-  CHECK(doc.append_copy(doc) == XmlNode());
-  CHECK(doc.append_copy(XmlNode()) == XmlNode());
+            .firstChild()
+            .appendCopy(doc.child(STR("node"))) == XmlNode());
+  CHECK(doc.appendCopy(doc) == XmlNode());
+  CHECK(doc.appendCopy(XmlNode()) == XmlNode());
 
   XmlNode n1 =
-      doc.child(STR("node")).append_copy(doc.child(STR("node")).first_child());
+      doc.child(STR("node")).appendCopy(doc.child(STR("node")).firstChild());
   CHECK(n1);
   CHECK_STRING(n1.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node>foo<child/>foo</node>"));
 
   XmlNode n2 = doc.child(STR("node"))
-                   .append_copy(doc.child(STR("node")).child(STR("child")));
+                   .appendCopy(doc.child(STR("node")).child(STR("child")));
   CHECK(n2 && n2 != n1);
   CHECK_STRING(n2.name(), STR("child"));
   CHECK_NODE(doc, STR("<node>foo<child/>foo<child/></node>"));
 
   XmlNode n3 = doc.child(STR("node"))
                    .child(STR("child"))
-                   .append_copy(doc.child(STR("node")).first_child());
+                   .appendCopy(doc.child(STR("node")).firstChild());
   CHECK(n3 && n3 != n1 && n3 != n2);
   CHECK_STRING(n3.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node>foo<child>foo</child>foo<child/></node>"));
 }
 
-TEST_XML(dom_node_insert_copy_after, "<node>foo<child/></node>")
+TEST_XML(dom_node_insertCopyAfter, "<node>foo<child/></node>")
 {
   XmlNode child = doc.child(STR("node")).child(STR("child"));
 
-  CHECK(XmlNode().insert_copy_after(XmlNode(), XmlNode()) == XmlNode());
+  CHECK(XmlNode().insertCopyAfter(XmlNode(), XmlNode()) == XmlNode());
   CHECK(doc.child(STR("node"))
-            .first_child()
-            .insert_copy_after(doc.child(STR("node")),
+            .firstChild()
+            .insertCopyAfter(doc.child(STR("node")),
                                doc.child(STR("node"))) == XmlNode());
-  CHECK(doc.insert_copy_after(doc, doc) == XmlNode());
-  CHECK(doc.insert_copy_after(XmlNode(), doc.child(STR("node"))) == XmlNode());
-  CHECK(doc.insert_copy_after(doc.child(STR("node")), XmlNode()) == XmlNode());
-  CHECK(doc.insert_copy_after(doc.child(STR("node")), child) == XmlNode());
+  CHECK(doc.insertCopyAfter(doc, doc) == XmlNode());
+  CHECK(doc.insertCopyAfter(XmlNode(), doc.child(STR("node"))) == XmlNode());
+  CHECK(doc.insertCopyAfter(doc.child(STR("node")), XmlNode()) == XmlNode());
+  CHECK(doc.insertCopyAfter(doc.child(STR("node")), child) == XmlNode());
 
   XmlNode n1 =
       doc.child(STR("node"))
-          .insert_copy_after(child, doc.child(STR("node")).first_child());
+          .insertCopyAfter(child, doc.child(STR("node")).firstChild());
   CHECK(n1);
   CHECK_STRING(n1.name(), STR("child"));
   CHECK_NODE(doc, STR("<node>foo<child/><child/></node>"));
 
   XmlNode n2 = doc.child(STR("node"))
-                   .insert_copy_after(doc.child(STR("node")).first_child(),
-                                      doc.child(STR("node")).last_child());
+                   .insertCopyAfter(doc.child(STR("node")).firstChild(),
+                                      doc.child(STR("node")).lastChild());
   CHECK(n2 && n2 != n1);
   CHECK_STRING(n2.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node>foo<child/><child/>foo</node>"));
 
   XmlNode n3 = doc.child(STR("node"))
-                   .insert_copy_after(doc.child(STR("node")).first_child(),
-                                      doc.child(STR("node")).first_child());
+                   .insertCopyAfter(doc.child(STR("node")).firstChild(),
+                                      doc.child(STR("node")).firstChild());
   CHECK(n3 && n3 != n1 && n3 != n2);
   CHECK_STRING(n3.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node>foofoo<child/><child/>foo</node>"));
 }
 
-TEST_XML(dom_node_insert_copy_before, "<node>foo<child/></node>")
+TEST_XML(dom_node_insertCopyBefore, "<node>foo<child/></node>")
 {
   XmlNode child = doc.child(STR("node")).child(STR("child"));
 
-  CHECK(XmlNode().insert_copy_before(XmlNode(), XmlNode()) == XmlNode());
+  CHECK(XmlNode().insertCopyBefore(XmlNode(), XmlNode()) == XmlNode());
   CHECK(doc.child(STR("node"))
-            .first_child()
-            .insert_copy_before(doc.child(STR("node")),
+            .firstChild()
+            .insertCopyBefore(doc.child(STR("node")),
                                 doc.child(STR("node"))) == XmlNode());
-  CHECK(doc.insert_copy_before(doc, doc) == XmlNode());
-  CHECK(doc.insert_copy_before(XmlNode(), doc.child(STR("node"))) == XmlNode());
-  CHECK(doc.insert_copy_before(doc.child(STR("node")), XmlNode()) == XmlNode());
-  CHECK(doc.insert_copy_before(doc.child(STR("node")), child) == XmlNode());
+  CHECK(doc.insertCopyBefore(doc, doc) == XmlNode());
+  CHECK(doc.insertCopyBefore(XmlNode(), doc.child(STR("node"))) == XmlNode());
+  CHECK(doc.insertCopyBefore(doc.child(STR("node")), XmlNode()) == XmlNode());
+  CHECK(doc.insertCopyBefore(doc.child(STR("node")), child) == XmlNode());
 
   XmlNode n1 =
       doc.child(STR("node"))
-          .insert_copy_before(child, doc.child(STR("node")).first_child());
+          .insertCopyBefore(child, doc.child(STR("node")).firstChild());
   CHECK(n1);
   CHECK_STRING(n1.name(), STR("child"));
   CHECK_NODE(doc, STR("<node><child/>foo<child/></node>"));
 
   XmlNode n2 = doc.child(STR("node"))
-                   .insert_copy_before(doc.child(STR("node")).first_child(),
-                                       doc.child(STR("node")).last_child());
+                   .insertCopyBefore(doc.child(STR("node")).firstChild(),
+                                       doc.child(STR("node")).lastChild());
   CHECK(n2 && n2 != n1);
   CHECK_STRING(n2.name(), STR("child"));
   CHECK_NODE(doc, STR("<node><child/>foo<child/><child/></node>"));
 
   XmlNode n3 = doc.child(STR("node"))
-                   .insert_copy_before(
-                       doc.child(STR("node")).first_child().next_sibling(),
-                       doc.child(STR("node")).first_child());
+                   .insertCopyBefore(
+                       doc.child(STR("node")).firstChild().nextSibling(),
+                       doc.child(STR("node")).firstChild());
   CHECK(n3 && n3 != n1 && n3 != n2);
   CHECK_STRING(n3.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node>foo<child/>foo<child/><child/></node>"));
@@ -1230,14 +1230,14 @@ TEST_XML(dom_node_insert_copy_before, "<node>foo<child/></node>")
 
 TEST_XML(dom_node_copy_recursive, "<node>foo<child/></node>")
 {
-  doc.child(STR("node")).append_copy(doc.child(STR("node")));
+  doc.child(STR("node")).appendCopy(doc.child(STR("node")));
   CHECK_NODE(doc, STR("<node>foo<child/><node>foo<child/></node></node>"));
 }
 
 TEST_XML(dom_node_copy_crossdoc, "<node/>")
 {
   XmlDocument newdoc;
-  newdoc.append_copy(doc.child(STR("node")));
+  newdoc.appendCopy(doc.child(STR("node")));
   CHECK_NODE(doc, STR("<node/>"));
   CHECK_NODE(newdoc, STR("<node/>"));
 }
@@ -1246,7 +1246,7 @@ TEST_XML(dom_node_copy_crossdoc_attribute, "<node attr='value'/>")
 {
   XmlDocument newdoc;
   newdoc.append_child(STR("copy"))
-      .append_copy(doc.child(STR("node")).attribute(STR("attr")));
+      .appendCopy(doc.child(STR("node")).attribute(STR("attr")));
   CHECK_NODE(doc, STR("<node attr=\"value\"/>"));
   CHECK_NODE(newdoc, STR("<copy attr=\"value\"/>"));
 }
@@ -1257,22 +1257,22 @@ TEST_XML_FLAGS(
     "id='1'>pcdata<![CDATA[cdata]]></node></root>",
     parse_full)
 {
-  doc.append_copy(doc.child(STR("root")));
+  doc.appendCopy(doc.child(STR("root")));
   CHECK_NODE(doc, STR("<?xml version=\"1.0\"?><!DOCTYPE id><root><?pi "
                       "value?><!--comment--><node "
                       "id=\"1\">pcdata<![CDATA[cdata]]></node></"
                       "root><root><?pi value?><!--comment--><node "
                       "id=\"1\">pcdata<![CDATA[cdata]]></node></root>"));
 
-  doc.insert_copy_before(doc.first_child(), doc.first_child());
+  doc.insertCopyBefore(doc.firstChild(), doc.firstChild());
   CHECK_NODE(doc, STR("<?xml version=\"1.0\"?><?xml version=\"1.0\"?><!DOCTYPE "
                       "id><root><?pi value?><!--comment--><node "
                       "id=\"1\">pcdata<![CDATA[cdata]]></node></"
                       "root><root><?pi value?><!--comment--><node "
                       "id=\"1\">pcdata<![CDATA[cdata]]></node></root>"));
 
-  doc.insert_copy_after(doc.first_child().next_sibling().next_sibling(),
-                        doc.first_child());
+  doc.insertCopyAfter(doc.firstChild().nextSibling().nextSibling(),
+                        doc.firstChild());
   CHECK_NODE(
       doc,
       STR("<?xml version=\"1.0\"?><!DOCTYPE id><?xml "
@@ -1288,11 +1288,11 @@ TEST(dom_node_declaration_name)
   doc.append_child(node_declaration);
 
   // name 'xml' is auto-assigned
-  CHECK(doc.first_child().type() == node_declaration);
-  CHECK_STRING(doc.first_child().name(), STR("xml"));
+  CHECK(doc.firstChild().type() == node_declaration);
+  CHECK_STRING(doc.firstChild().name(), STR("xml"));
 
-  doc.insert_child_after(node_declaration, doc.first_child());
-  doc.insert_child_before(node_declaration, doc.first_child());
+  doc.insert_child_after(node_declaration, doc.firstChild());
+  doc.insert_child_before(node_declaration, doc.firstChild());
   doc.prepend_child(node_declaration);
 
   CHECK_NODE(doc, STR("<?xml?><?xml?><?xml?><?xml?>"));
@@ -1302,8 +1302,8 @@ TEST(dom_node_declaration_attributes)
 {
   XmlDocument doc;
   XmlNode node = doc.append_child(node_declaration);
-  node.append_attribute(STR("version")) = STR("1.0");
-  node.append_attribute(STR("encoding")) = STR("utf-8");
+  node.appendAttribute(STR("version")) = STR("1.0");
+  node.appendAttribute(STR("encoding")) = STR("utf-8");
 
   CHECK_NODE(doc, STR("<?xml version=\"1.0\" encoding=\"utf-8\"?>"));
 }
@@ -1313,12 +1313,12 @@ TEST(dom_node_declaration_top_level)
   XmlDocument doc;
   doc.append_child().setName(STR("node"));
 
-  XmlNode node = doc.first_child();
+  XmlNode node = doc.firstChild();
   node.append_child(node_pcdata).setValue(STR("text"));
 
-  CHECK(node.insert_child_before(node_declaration, node.first_child()) ==
+  CHECK(node.insert_child_before(node_declaration, node.firstChild()) ==
         XmlNode());
-  CHECK(node.insert_child_after(node_declaration, node.first_child()) ==
+  CHECK(node.insert_child_after(node_declaration, node.firstChild()) ==
         XmlNode());
   CHECK(node.append_child(node_declaration) == XmlNode());
 
@@ -1338,7 +1338,7 @@ TEST(dom_node_declaration_copy)
 
   doc.append_child().setName(STR("node"));
 
-  doc.last_child().append_copy(doc.first_child());
+  doc.lastChild().appendCopy(doc.firstChild());
 
   CHECK_NODE(doc, STR("<?xml?><node/>"));
 }
@@ -1354,7 +1354,7 @@ TEST(dom_string_out_of_memory)
 
   XmlDocument doc;
   XmlNode node = doc.append_child();
-  XmlAttribute attr = node.append_attribute(STR("a"));
+  XmlAttribute attr = node.appendAttribute(STR("a"));
   XmlNode text = node.append_child(node_pcdata);
 
   // no value => long value
@@ -1396,34 +1396,34 @@ TEST(dom_node_out_of_memory)
   XmlNode n = doc.append_child();
   CHECK(n.setName(STR("n")));
 
-  XmlAttribute a = n.append_attribute(STR("a"));
+  XmlAttribute a = n.appendAttribute(STR("a"));
   CHECK(a);
 
   CHECK_ALLOC_FAIL(while (n.append_child(node_comment)){/* nop */});
-  CHECK_ALLOC_FAIL(while (n.append_attribute(STR("b"))){/* nop */});
+  CHECK_ALLOC_FAIL(while (n.appendAttribute(STR("b"))){/* nop */});
 
   // verify all node modification operations
   CHECK_ALLOC_FAIL(CHECK(!n.append_child()));
   CHECK_ALLOC_FAIL(CHECK(!n.prepend_child()));
-  CHECK_ALLOC_FAIL(CHECK(!n.insert_child_after(node_element, n.first_child())));
+  CHECK_ALLOC_FAIL(CHECK(!n.insert_child_after(node_element, n.firstChild())));
   CHECK_ALLOC_FAIL(
-      CHECK(!n.insert_child_before(node_element, n.first_child())));
-  CHECK_ALLOC_FAIL(CHECK(!n.append_attribute(STR(""))));
-  CHECK_ALLOC_FAIL(CHECK(!n.prepend_attribute(STR(""))));
-  CHECK_ALLOC_FAIL(CHECK(!n.insert_attribute_after(STR(""), a)));
-  CHECK_ALLOC_FAIL(CHECK(!n.insert_attribute_before(STR(""), a)));
+      CHECK(!n.insert_child_before(node_element, n.firstChild())));
+  CHECK_ALLOC_FAIL(CHECK(!n.appendAttribute(STR(""))));
+  CHECK_ALLOC_FAIL(CHECK(!n.prependAttribute(STR(""))));
+  CHECK_ALLOC_FAIL(CHECK(!n.insertAttributeAfter(STR(""), a)));
+  CHECK_ALLOC_FAIL(CHECK(!n.insertAttributeBefore(STR(""), a)));
 
   // verify node copy operations
-  CHECK_ALLOC_FAIL(CHECK(!n.append_copy(n.first_child())));
-  CHECK_ALLOC_FAIL(CHECK(!n.prepend_copy(n.first_child())));
+  CHECK_ALLOC_FAIL(CHECK(!n.appendCopy(n.firstChild())));
+  CHECK_ALLOC_FAIL(CHECK(!n.prependCopy(n.firstChild())));
   CHECK_ALLOC_FAIL(
-      CHECK(!n.insert_copy_after(n.first_child(), n.first_child())));
+      CHECK(!n.insertCopyAfter(n.firstChild(), n.firstChild())));
   CHECK_ALLOC_FAIL(
-      CHECK(!n.insert_copy_before(n.first_child(), n.first_child())));
-  CHECK_ALLOC_FAIL(CHECK(!n.append_copy(a)));
-  CHECK_ALLOC_FAIL(CHECK(!n.prepend_copy(a)));
-  CHECK_ALLOC_FAIL(CHECK(!n.insert_copy_after(a, a)));
-  CHECK_ALLOC_FAIL(CHECK(!n.insert_copy_before(a, a)));
+      CHECK(!n.insertCopyBefore(n.firstChild(), n.firstChild())));
+  CHECK_ALLOC_FAIL(CHECK(!n.appendCopy(a)));
+  CHECK_ALLOC_FAIL(CHECK(!n.prependCopy(a)));
+  CHECK_ALLOC_FAIL(CHECK(!n.insertCopyAfter(a, a)));
+  CHECK_ALLOC_FAIL(CHECK(!n.insertCopyBefore(a, a)));
 }
 
 TEST(dom_node_memory_limit)
@@ -1442,7 +1442,7 @@ TEST(dom_node_memory_limit)
   for (int j = 0; j < 32; ++j)
   {
     CHECK(doc.append_child().setName(string));
-    CHECK(doc.remove_child(doc.first_child()));
+    CHECK(doc.removeChild(doc.firstChild()));
   }
 }
 
@@ -1462,7 +1462,7 @@ TEST(dom_node_memory_limit_pi)
   for (int j = 0; j < 32; ++j)
   {
     CHECK(doc.append_child(node_pi).setValue(string));
-    CHECK(doc.remove_child(doc.first_child()));
+    CHECK(doc.removeChild(doc.firstChild()));
   }
 }
 
@@ -1471,12 +1471,12 @@ TEST(dom_node_doctype_top_level)
   XmlDocument doc;
   doc.append_child().setName(STR("node"));
 
-  XmlNode node = doc.first_child();
+  XmlNode node = doc.firstChild();
   node.append_child(node_pcdata).setValue(STR("text"));
 
-  CHECK(node.insert_child_before(node_doctype, node.first_child()) ==
+  CHECK(node.insert_child_before(node_doctype, node.firstChild()) ==
         XmlNode());
-  CHECK(node.insert_child_after(node_doctype, node.first_child()) == XmlNode());
+  CHECK(node.insert_child_after(node_doctype, node.firstChild()) == XmlNode());
   CHECK(node.append_child(node_doctype) == XmlNode());
 
   CHECK_NODE(doc, STR("<node>text</node>"));
@@ -1495,7 +1495,7 @@ TEST(dom_node_doctype_copy)
 
   doc.append_child().setName(STR("node"));
 
-  doc.last_child().append_copy(doc.first_child());
+  doc.lastChild().appendCopy(doc.firstChild());
 
   CHECK_NODE(doc, STR("<!DOCTYPE><node/>"));
 }
@@ -1513,18 +1513,18 @@ TEST(dom_node_doctype_value)
   CHECK_NODE(node, STR("<!DOCTYPE id [ foo ]>"));
 }
 
-TEST_XML(dom_node_append_buffer_native, "<node>test</node>")
+TEST_XML(dom_node_appendBuffer_native, "<node>test</node>")
 {
   XmlNode node = doc.child(STR("node"));
 
   const char_t data1[] = STR("<child1 id='1' /><child2>text</child2>");
   const char_t data2[] = STR("<child3 />");
 
-  CHECK(node.append_buffer(data1, sizeof(data1)));
-  CHECK(node.append_buffer(data2, sizeof(data2)));
-  CHECK(node.append_buffer(data1, sizeof(data1)));
-  CHECK(node.append_buffer(data2, sizeof(data2)));
-  CHECK(node.append_buffer(data2, sizeof(data2)));
+  CHECK(node.appendBuffer(data1, sizeof(data1)));
+  CHECK(node.appendBuffer(data2, sizeof(data2)));
+  CHECK(node.appendBuffer(data1, sizeof(data1)));
+  CHECK(node.appendBuffer(data2, sizeof(data2)));
+  CHECK(node.appendBuffer(data2, sizeof(data2)));
 
   CHECK_NODE(
       doc,
@@ -1532,121 +1532,121 @@ TEST_XML(dom_node_append_buffer_native, "<node>test</node>")
           "id=\"1\"/><child2>text</child2><child3/><child3/></node>"));
 }
 
-TEST_XML(dom_node_append_buffer_convert, "<node>test</node>")
+TEST_XML(dom_node_appendBuffer_convert, "<node>test</node>")
 {
   XmlNode node = doc.child(STR("node"));
 
   const char data[] = {0, 0, 0, '<', 0, 0, 0, 'n', 0, 0, 0, '/', 0, 0, 0, '>'};
 
-  CHECK(node.append_buffer(data, sizeof(data)));
+  CHECK(node.appendBuffer(data, sizeof(data)));
   CHECK(
-      node.append_buffer(data, sizeof(data), parse_default, encoding_utf32_be));
+      node.appendBuffer(data, sizeof(data), parse_default, encoding_utf32_be));
 
   CHECK_NODE(doc, STR("<node>test<n/><n/></node>"));
 }
 
-TEST_XML(dom_node_append_buffer_remove, "<node>test</node>")
+TEST_XML(dom_node_appendBuffer_remove, "<node>test</node>")
 {
   XmlNode node = doc.child(STR("node"));
 
   const char data1[] = "<child1 id='1' /><child2>text</child2>";
   const char data2[] = "<child3 />";
 
-  CHECK(node.append_buffer(data1, sizeof(data1)));
-  CHECK(node.append_buffer(data2, sizeof(data2)));
-  CHECK(node.append_buffer(data1, sizeof(data1)));
-  CHECK(node.append_buffer(data2, sizeof(data2)));
+  CHECK(node.appendBuffer(data1, sizeof(data1)));
+  CHECK(node.appendBuffer(data2, sizeof(data2)));
+  CHECK(node.appendBuffer(data1, sizeof(data1)));
+  CHECK(node.appendBuffer(data2, sizeof(data2)));
 
   CHECK_NODE(
       doc,
       STR("<node>test<child1 id=\"1\"/><child2>text</child2><child3/><child1 "
           "id=\"1\"/><child2>text</child2><child3/></node>"));
 
-  while (node.remove_child(STR("child2")))
+  while (node.removeChild(STR("child2")))
   {
   }
 
   CHECK_NODE(doc, STR("<node>test<child1 id=\"1\"/><child3/><child1 "
                       "id=\"1\"/><child3/></node>"));
 
-  while (node.remove_child(STR("child1")))
+  while (node.removeChild(STR("child1")))
   {
   }
 
   CHECK_NODE(doc, STR("<node>test<child3/><child3/></node>"));
 
-  while (node.remove_child(STR("child3")))
+  while (node.removeChild(STR("child3")))
   {
   }
 
   CHECK_NODE(doc, STR("<node>test</node>"));
 
-  CHECK(doc.remove_child(STR("node")));
+  CHECK(doc.removeChild(STR("node")));
 
-  CHECK(!doc.first_child());
+  CHECK(!doc.firstChild());
 }
 
-TEST(dom_node_append_buffer_empty_document)
+TEST(dom_node_appendBuffer_empty_document)
 {
   XmlDocument doc;
 
   const char data[] = "<child1 id='1' /><child2>text</child2>";
 
-  doc.append_buffer(data, sizeof(data));
+  doc.appendBuffer(data, sizeof(data));
 
   CHECK_NODE(doc, STR("<child1 id=\"1\"/><child2>text</child2>"));
 }
 
-TEST_XML(dom_node_append_buffer_invalid_type, "<node>test</node>")
+TEST_XML(dom_node_appendBuffer_invalid_type, "<node>test</node>")
 {
   const char data[] = "<child1 id='1' /><child2>text</child2>";
 
-  CHECK(XmlNode().append_buffer(data, sizeof(data)).status ==
+  CHECK(XmlNode().appendBuffer(data, sizeof(data)).status ==
         status_append_invalid_root);
-  CHECK(doc.first_child()
-            .first_child()
-            .append_buffer(data, sizeof(data))
+  CHECK(doc.firstChild()
+            .firstChild()
+            .appendBuffer(data, sizeof(data))
             .status == status_append_invalid_root);
 }
 
-TEST_XML(dom_node_append_buffer_close_external, "<node />")
+TEST_XML(dom_node_appendBuffer_close_external, "<node />")
 {
   XmlNode node = doc.child(STR("node"));
 
   const char data[] = "<child1 /></node><child2 />";
 
-  CHECK(node.append_buffer(data, sizeof(data)).status ==
+  CHECK(node.appendBuffer(data, sizeof(data)).status ==
         status_end_element_mismatch);
   CHECK_NODE(doc, STR("<node><child1/></node>"));
 
-  CHECK(node.append_buffer(data, sizeof(data)).status ==
+  CHECK(node.appendBuffer(data, sizeof(data)).status ==
         status_end_element_mismatch);
   CHECK_NODE(doc, STR("<node><child1/><child1/></node>"));
 }
 
-TEST(dom_node_append_buffer_out_of_memory_extra)
+TEST(dom_node_appendBuffer_out_of_memory_extra)
 {
   test_runner::_memory_fail_threshold = 1;
 
   XmlDocument doc;
   CHECK_ALLOC_FAIL(
-      CHECK(doc.append_buffer("<n/>", 4).status == status_out_of_memory));
-  CHECK(!doc.first_child());
+      CHECK(doc.appendBuffer("<n/>", 4).status == status_out_of_memory));
+  CHECK(!doc.firstChild());
 }
 
-TEST(dom_node_append_buffer_out_of_memory_buffer)
+TEST(dom_node_appendBuffer_out_of_memory_buffer)
 {
   test_runner::_memory_fail_threshold = 32768 + 128;
 
   char data[128] = {0};
 
   XmlDocument doc;
-  CHECK_ALLOC_FAIL(CHECK(doc.append_buffer(data, sizeof(data)).status ==
+  CHECK_ALLOC_FAIL(CHECK(doc.appendBuffer(data, sizeof(data)).status ==
                          status_out_of_memory));
-  CHECK(!doc.first_child());
+  CHECK(!doc.firstChild());
 }
 
-TEST(dom_node_append_buffer_out_of_memory_nodes)
+TEST(dom_node_appendBuffer_out_of_memory_nodes)
 {
   unsigned int count = 4000;
   std::basic_string< char_t > data;
@@ -1664,13 +1664,13 @@ TEST(dom_node_append_buffer_out_of_memory_nodes)
 
   XmlDocument doc;
   CHECK_ALLOC_FAIL(
-      CHECK(doc.append_buffer(data.c_str(), data.length() * sizeof(char_t),
+      CHECK(doc.appendBuffer(data.c_str(), data.length() * sizeof(char_t),
                               parse_fragment)
                 .status == status_out_of_memory));
 
   unsigned int valid = 0;
 
-  for (XmlNode n = doc.first_child(); n; n = n.next_sibling())
+  for (XmlNode n = doc.firstChild(); n; n = n.nextSibling())
   {
     CHECK_STRING(n.name(), STR("a"));
     valid++;
@@ -1679,7 +1679,7 @@ TEST(dom_node_append_buffer_out_of_memory_nodes)
   CHECK(valid > 0 && valid < count);
 }
 
-TEST(dom_node_append_buffer_out_of_memory_name)
+TEST(dom_node_appendBuffer_out_of_memory_name)
 {
   test_runner::_memory_fail_threshold = 32768 + 4096;
 
@@ -1688,58 +1688,58 @@ TEST(dom_node_append_buffer_out_of_memory_name)
   XmlDocument doc;
   CHECK(doc.append_child(STR("root")));
   CHECK_ALLOC_FAIL(
-      CHECK(doc.first_child().append_buffer(data, sizeof(data)).status ==
+      CHECK(doc.firstChild().appendBuffer(data, sizeof(data)).status ==
             status_out_of_memory));
-  CHECK_STRING(doc.first_child().name(), STR("root"));
+  CHECK_STRING(doc.firstChild().name(), STR("root"));
 }
 
-TEST_XML(dom_node_append_buffer_fragment, "<node />")
+TEST_XML(dom_node_appendBuffer_fragment, "<node />")
 {
   XmlNode node = doc.child(STR("node"));
 
-  CHECK(node.append_buffer("1", 1).status == status_no_document_element);
+  CHECK(node.appendBuffer("1", 1).status == status_no_document_element);
   CHECK_NODE(doc, STR("<node>1</node>"));
 
-  CHECK(node.append_buffer("2", 1, parse_fragment));
+  CHECK(node.appendBuffer("2", 1, parse_fragment));
   CHECK_NODE(doc, STR("<node>12</node>"));
 
-  CHECK(node.append_buffer("3", 1).status == status_no_document_element);
+  CHECK(node.appendBuffer("3", 1).status == status_no_document_element);
   CHECK_NODE(doc, STR("<node>123</node>"));
 
-  CHECK(node.append_buffer("4", 1, parse_fragment));
+  CHECK(node.appendBuffer("4", 1, parse_fragment));
   CHECK_NODE(doc, STR("<node>1234</node>"));
 }
 
-TEST_XML(dom_node_append_buffer_empty, "<node />")
+TEST_XML(dom_node_appendBuffer_empty, "<node />")
 {
   XmlNode node = doc.child(STR("node"));
 
-  CHECK(node.append_buffer("", 0).status == status_no_document_element);
-  CHECK(node.append_buffer("", 0, parse_fragment).status == status_ok);
+  CHECK(node.appendBuffer("", 0).status == status_no_document_element);
+  CHECK(node.appendBuffer("", 0, parse_fragment).status == status_ok);
 
-  CHECK(node.append_buffer(0, 0).status == status_no_document_element);
-  CHECK(node.append_buffer(0, 0, parse_fragment).status == status_ok);
+  CHECK(node.appendBuffer(0, 0).status == status_no_document_element);
+  CHECK(node.appendBuffer(0, 0, parse_fragment).status == status_ok);
 
   CHECK_NODE(doc, STR("<node/>"));
 }
 
-TEST_XML(dom_node_prepend_move, "<node>foo<child/></node>")
+TEST_XML(dom_node_prependMove, "<node>foo<child/></node>")
 {
   XmlNode child = doc.child(STR("node")).child(STR("child"));
 
-  CHECK(XmlNode().prepend_move(XmlNode()) == XmlNode());
-  CHECK(doc.child(STR("node")).first_child().prepend_move(child) == XmlNode());
-  CHECK(doc.prepend_move(doc) == XmlNode());
-  CHECK(doc.prepend_move(XmlNode()) == XmlNode());
+  CHECK(XmlNode().prependMove(XmlNode()) == XmlNode());
+  CHECK(doc.child(STR("node")).firstChild().prependMove(child) == XmlNode());
+  CHECK(doc.prependMove(doc) == XmlNode());
+  CHECK(doc.prependMove(XmlNode()) == XmlNode());
 
   XmlNode n1 =
-      doc.child(STR("node")).prepend_move(doc.child(STR("node")).first_child());
-  CHECK(n1 && n1 == doc.child(STR("node")).first_child());
+      doc.child(STR("node")).prependMove(doc.child(STR("node")).firstChild());
+  CHECK(n1 && n1 == doc.child(STR("node")).firstChild());
   CHECK_STRING(n1.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node>foo<child/></node>"));
 
   XmlNode n2 = doc.child(STR("node"))
-                   .prepend_move(doc.child(STR("node")).child(STR("child")));
+                   .prependMove(doc.child(STR("node")).child(STR("child")));
   CHECK(n2 && n2 != n1 && n2 == child);
   CHECK_STRING(n2.name(), STR("child"));
   CHECK_NODE(doc, STR("<node><child/>foo</node>"));
@@ -1747,106 +1747,106 @@ TEST_XML(dom_node_prepend_move, "<node>foo<child/></node>")
   XmlNode n3 =
       doc.child(STR("node"))
           .child(STR("child"))
-          .prepend_move(doc.child(STR("node")).first_child().next_sibling());
+          .prependMove(doc.child(STR("node")).firstChild().nextSibling());
   CHECK(n3 && n3 == n1 && n3 != n2);
   CHECK_STRING(n3.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node><child>foo</child></node>"));
 }
 
-TEST_XML(dom_node_append_move, "<node>foo<child/></node>")
+TEST_XML(dom_node_appendMove, "<node>foo<child/></node>")
 {
   XmlNode child = doc.child(STR("node")).child(STR("child"));
 
-  CHECK(XmlNode().append_move(XmlNode()) == XmlNode());
-  CHECK(doc.child(STR("node")).first_child().append_move(child) == XmlNode());
-  CHECK(doc.append_move(doc) == XmlNode());
-  CHECK(doc.append_move(XmlNode()) == XmlNode());
+  CHECK(XmlNode().appendMove(XmlNode()) == XmlNode());
+  CHECK(doc.child(STR("node")).firstChild().appendMove(child) == XmlNode());
+  CHECK(doc.appendMove(doc) == XmlNode());
+  CHECK(doc.appendMove(XmlNode()) == XmlNode());
 
   XmlNode n1 =
-      doc.child(STR("node")).append_move(doc.child(STR("node")).first_child());
-  CHECK(n1 && n1 == doc.child(STR("node")).last_child());
+      doc.child(STR("node")).appendMove(doc.child(STR("node")).firstChild());
+  CHECK(n1 && n1 == doc.child(STR("node")).lastChild());
   CHECK_STRING(n1.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node><child/>foo</node>"));
 
   XmlNode n2 =
-      doc.child(STR("node")).append_move(doc.child(STR("node")).last_child());
+      doc.child(STR("node")).appendMove(doc.child(STR("node")).lastChild());
   CHECK(n2 && n2 == n1);
   CHECK_STRING(n2.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node><child/>foo</node>"));
 
   XmlNode n3 = doc.child(STR("node"))
                    .child(STR("child"))
-                   .append_move(doc.child(STR("node")).last_child());
+                   .appendMove(doc.child(STR("node")).lastChild());
   CHECK(n3 && n3 == n1 && n3 == n2);
   CHECK_STRING(n3.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node><child>foo</child></node>"));
 }
 
-TEST_XML(dom_node_insert_move_after, "<node>foo<child>bar</child></node>")
+TEST_XML(dom_node_insertMoveAfter, "<node>foo<child>bar</child></node>")
 {
   XmlNode child = doc.child(STR("node")).child(STR("child"));
 
-  CHECK(XmlNode().insert_move_after(XmlNode(), XmlNode()) == XmlNode());
+  CHECK(XmlNode().insertMoveAfter(XmlNode(), XmlNode()) == XmlNode());
   CHECK(doc.child(STR("node"))
-            .first_child()
-            .insert_move_after(doc.child(STR("node")),
+            .firstChild()
+            .insertMoveAfter(doc.child(STR("node")),
                                doc.child(STR("node"))) == XmlNode());
-  CHECK(doc.insert_move_after(doc, doc) == XmlNode());
-  CHECK(doc.insert_move_after(XmlNode(), doc.child(STR("node"))) == XmlNode());
-  CHECK(doc.insert_move_after(doc.child(STR("node")), XmlNode()) == XmlNode());
-  CHECK(doc.insert_move_after(doc.child(STR("node")), child) == XmlNode());
+  CHECK(doc.insertMoveAfter(doc, doc) == XmlNode());
+  CHECK(doc.insertMoveAfter(XmlNode(), doc.child(STR("node"))) == XmlNode());
+  CHECK(doc.insertMoveAfter(doc.child(STR("node")), XmlNode()) == XmlNode());
+  CHECK(doc.insertMoveAfter(doc.child(STR("node")), child) == XmlNode());
 
   XmlNode n1 =
       doc.child(STR("node"))
-          .insert_move_after(child, doc.child(STR("node")).first_child());
+          .insertMoveAfter(child, doc.child(STR("node")).firstChild());
   CHECK(n1 && n1 == child);
   CHECK_STRING(n1.name(), STR("child"));
   CHECK_NODE(doc, STR("<node>foo<child>bar</child></node>"));
 
   XmlNode n2 =
       doc.child(STR("node"))
-          .insert_move_after(doc.child(STR("node")).first_child(), child);
+          .insertMoveAfter(doc.child(STR("node")).firstChild(), child);
   CHECK(n2 && n2 != n1);
   CHECK_STRING(n2.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node><child>bar</child>foo</node>"));
 
-  XmlNode n3 = child.insert_move_after(doc.child(STR("node")).last_child(),
-                                       child.first_child());
+  XmlNode n3 = child.insertMoveAfter(doc.child(STR("node")).lastChild(),
+                                       child.firstChild());
   CHECK(n3 && n3 != n1 && n3 == n2);
   CHECK_STRING(n3.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node><child>barfoo</child></node>"));
 }
 
-TEST_XML(dom_node_insert_move_before, "<node>foo<child>bar</child></node>")
+TEST_XML(dom_node_insertMoveBefore, "<node>foo<child>bar</child></node>")
 {
   XmlNode child = doc.child(STR("node")).child(STR("child"));
 
-  CHECK(XmlNode().insert_move_before(XmlNode(), XmlNode()) == XmlNode());
+  CHECK(XmlNode().insertMoveBefore(XmlNode(), XmlNode()) == XmlNode());
   CHECK(doc.child(STR("node"))
-            .first_child()
-            .insert_move_before(doc.child(STR("node")),
+            .firstChild()
+            .insertMoveBefore(doc.child(STR("node")),
                                 doc.child(STR("node"))) == XmlNode());
-  CHECK(doc.insert_move_before(doc, doc) == XmlNode());
-  CHECK(doc.insert_move_before(XmlNode(), doc.child(STR("node"))) == XmlNode());
-  CHECK(doc.insert_move_before(doc.child(STR("node")), XmlNode()) == XmlNode());
-  CHECK(doc.insert_move_before(doc.child(STR("node")), child) == XmlNode());
+  CHECK(doc.insertMoveBefore(doc, doc) == XmlNode());
+  CHECK(doc.insertMoveBefore(XmlNode(), doc.child(STR("node"))) == XmlNode());
+  CHECK(doc.insertMoveBefore(doc.child(STR("node")), XmlNode()) == XmlNode());
+  CHECK(doc.insertMoveBefore(doc.child(STR("node")), child) == XmlNode());
 
   XmlNode n1 =
       doc.child(STR("node"))
-          .insert_move_before(child, doc.child(STR("node")).first_child());
+          .insertMoveBefore(child, doc.child(STR("node")).firstChild());
   CHECK(n1 && n1 == child);
   CHECK_STRING(n1.name(), STR("child"));
   CHECK_NODE(doc, STR("<node><child>bar</child>foo</node>"));
 
   XmlNode n2 =
       doc.child(STR("node"))
-          .insert_move_before(doc.child(STR("node")).last_child(), child);
+          .insertMoveBefore(doc.child(STR("node")).lastChild(), child);
   CHECK(n2 && n2 != n1);
   CHECK_STRING(n2.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node>foo<child>bar</child></node>"));
 
-  XmlNode n3 = child.insert_move_before(doc.child(STR("node")).first_child(),
-                                        child.first_child());
+  XmlNode n3 = child.insertMoveBefore(doc.child(STR("node")).firstChild(),
+                                        child.firstChild());
   CHECK(n3 && n3 != n1 && n3 == n2);
   CHECK_STRING(n3.value(), STR("foo"));
   CHECK_NODE(doc, STR("<node><child>foobar</child></node>"));
@@ -1856,22 +1856,22 @@ TEST_XML(dom_node_move_recursive, "<root><node>foo<child/></node></root>")
 {
   XmlNode root = doc.child(STR("root"));
   XmlNode node = root.child(STR("node"));
-  XmlNode foo = node.first_child();
-  XmlNode child = node.last_child();
+  XmlNode foo = node.firstChild();
+  XmlNode child = node.lastChild();
 
-  CHECK(node.prepend_move(node) == XmlNode());
-  CHECK(node.prepend_move(root) == XmlNode());
+  CHECK(node.prependMove(node) == XmlNode());
+  CHECK(node.prependMove(root) == XmlNode());
 
-  CHECK(node.append_move(node) == XmlNode());
-  CHECK(node.append_move(root) == XmlNode());
+  CHECK(node.appendMove(node) == XmlNode());
+  CHECK(node.appendMove(root) == XmlNode());
 
-  CHECK(node.insert_move_before(node, foo) == XmlNode());
-  CHECK(node.insert_move_before(root, foo) == XmlNode());
+  CHECK(node.insertMoveBefore(node, foo) == XmlNode());
+  CHECK(node.insertMoveBefore(root, foo) == XmlNode());
 
-  CHECK(node.insert_move_after(node, foo) == XmlNode());
-  CHECK(node.insert_move_after(root, foo) == XmlNode());
+  CHECK(node.insertMoveAfter(node, foo) == XmlNode());
+  CHECK(node.insertMoveAfter(root, foo) == XmlNode());
 
-  CHECK(child.append_move(node) == XmlNode());
+  CHECK(child.appendMove(node) == XmlNode());
 
   CHECK_NODE(doc, STR("<root><node>foo<child/></node></root>"));
 }
@@ -1880,8 +1880,8 @@ TEST_XML(dom_node_move_marker, "<node />")
 {
   XmlNode node = doc.child(STR("node"));
 
-  CHECK(doc.insert_move_before(node, node) == XmlNode());
-  CHECK(doc.insert_move_after(node, node) == XmlNode());
+  CHECK(doc.insertMoveBefore(node, node) == XmlNode());
+  CHECK(doc.insertMoveAfter(node, node) == XmlNode());
 
   CHECK_NODE(doc, STR("<node/>"));
 }
@@ -1889,7 +1889,7 @@ TEST_XML(dom_node_move_marker, "<node />")
 TEST_XML(dom_node_move_crossdoc, "<node/>")
 {
   XmlDocument newdoc;
-  CHECK(newdoc.append_move(doc.child(STR("node"))) == XmlNode());
+  CHECK(newdoc.appendMove(doc.child(STR("node"))) == XmlNode());
   CHECK_NODE(newdoc, STR(""));
 }
 
@@ -1904,16 +1904,16 @@ TEST_XML(dom_node_move_tree,
   XmlNode n4 = root.child(STR("n4"));
 
   // n2 n1 n3 n4
-  CHECK(n2 == root.prepend_move(n2));
+  CHECK(n2 == root.prependMove(n2));
 
   // n2 n3 n4 n1
-  CHECK(n1 == root.append_move(n1));
+  CHECK(n1 == root.appendMove(n1));
 
   // n2 n4 n3 n1
-  CHECK(n4 == root.insert_move_before(n4, n3));
+  CHECK(n4 == root.insertMoveBefore(n4, n3));
 
   // n2 n4 n1 + n3
-  CHECK(n3 == doc.insert_move_after(n3, root));
+  CHECK(n3 == doc.insertMoveAfter(n3, root));
 
   CHECK_NODE(
       doc, STR("<root><n2 a2=\"v2\"><c2/>t2</n2><n4 a4=\"v4\"><c4/>t4</n4><n1 "
@@ -1942,12 +1942,12 @@ TEST(dom_node_copy_stackless)
   CHECK(doc.loadString(data.c_str()));
 
   XmlDocument copy;
-  CHECK(copy.append_copy(doc.first_child()));
+  CHECK(copy.appendCopy(doc.firstChild()));
 
   CHECK_NODE(doc, data.c_str());
 }
 
-TEST(dom_node_remove_child_stackless)
+TEST(dom_node_removeChild_stackless)
 {
   unsigned int count = 20000;
   std::basic_string< char_t > data = STR("<root>");
@@ -1966,7 +1966,7 @@ TEST(dom_node_remove_child_stackless)
   CHECK(doc.loadString(data.c_str()));
 
   XmlNode root = doc.child(STR("root"));
-  CHECK(root.remove_child(root.child(STR("a"))));
+  CHECK(root.removeChild(root.child(STR("a"))));
 
   CHECK_NODE(doc, STR("<root><tail/></root>"));
 }
@@ -1997,8 +1997,8 @@ TEST(dom_node_copy_copyless)
   // this copy should share all string storage; since there are not a lot of
   // nodes we should not have *any* allocations here (everything will fit in the
   // same page in the document)
-  XmlNode copy = doc.append_copy(doc.child(STR("node")));
-  XmlNode copy2 = doc.append_copy(copy);
+  XmlNode copy = doc.appendCopy(doc.child(STR("node")));
+  XmlNode copy2 = doc.appendCopy(copy);
 
   CHECK_NODE(copy, data.c_str());
   CHECK_NODE(copy2, data.c_str());
@@ -2023,8 +2023,8 @@ TEST(dom_node_copy_copyless_mix)
 
   doc.child(STR("node")).text().set(data.c_str());
 
-  XmlNode copy = doc.append_copy(doc.child(STR("node")));
-  XmlNode copy2 = doc.append_copy(copy);
+  XmlNode copy = doc.appendCopy(doc.child(STR("node")));
+  XmlNode copy2 = doc.appendCopy(copy);
 
   std::basic_string< char_t > dataxml;
   dataxml += STR("<node>");
@@ -2039,7 +2039,7 @@ TEST(dom_node_copy_copyless_mix)
 TEST_XML(dom_node_copy_copyless_taint, "<node attr=\"value\" />")
 {
   XmlNode node = doc.child(STR("node"));
-  XmlNode copy = doc.append_copy(node);
+  XmlNode copy = doc.appendCopy(node);
 
   CHECK_NODE(doc, STR("<node attr=\"value\"/><node attr=\"value\"/>"));
 
@@ -2047,7 +2047,7 @@ TEST_XML(dom_node_copy_copyless_taint, "<node attr=\"value\" />")
 
   CHECK_NODE(doc, STR("<nod1 attr=\"value\"/><node attr=\"value\"/>"));
 
-  XmlNode copy2 = doc.append_copy(copy);
+  XmlNode copy2 = doc.appendCopy(copy);
 
   CHECK_NODE(doc, STR("<nod1 attr=\"value\"/><node attr=\"value\"/><node "
                       "attr=\"value\"/>"));
@@ -2090,10 +2090,10 @@ TEST(dom_node_copy_attribute_copyless)
   // nodes we should not have *any* allocations here (everything will fit in the
   // same page in the document)
   XmlNode copy1 = doc.append_child(STR("node"));
-  copy1.append_copy(doc.first_child().firstAttribute());
+  copy1.appendCopy(doc.firstChild().firstAttribute());
 
   XmlNode copy2 = doc.append_child(STR("node"));
-  copy2.append_copy(copy1.lastAttribute());
+  copy2.appendCopy(copy1.lastAttribute());
 
   CHECK_NODE(copy1, data.c_str());
   CHECK_NODE(copy2, data.c_str());
@@ -2110,20 +2110,20 @@ TEST_XML(dom_node_copy_attribute_copyless_taint, "<node attr=\"value\" />")
 
   CHECK_NODE(doc, STR("<node attr=\"value\"/><copy1/><copy2/><copy3/>"));
 
-  copy1.append_copy(attr);
+  copy1.appendCopy(attr);
 
   CHECK_NODE(
       doc,
       STR("<node attr=\"value\"/><copy1 attr=\"value\"/><copy2/><copy3/>"));
 
   attr.setName(STR("att1"));
-  copy2.append_copy(attr);
+  copy2.appendCopy(attr);
 
   CHECK_NODE(doc, STR("<node att1=\"value\"/><copy1 attr=\"value\"/><copy2 "
                       "att1=\"value\"/><copy3/>"));
 
   copy1.firstAttribute().setValue(STR("valu2"));
-  copy3.append_copy(copy1.firstAttribute());
+  copy3.appendCopy(copy1.firstAttribute());
 
   CHECK_NODE(doc, STR("<node att1=\"value\"/><copy1 attr=\"valu2\"/><copy2 "
                       "att1=\"value\"/><copy3 attr=\"valu2\"/>"));
@@ -2137,7 +2137,7 @@ TEST_XML(
 
   XmlDocument copy;
   CHECK_ALLOC_FAIL(for (int i = 0; i < 1000; ++i)
-                       copy.append_copy(doc.first_child()));
+                       copy.appendCopy(doc.firstChild()));
 }
 
 TEST_XML(dom_node_copy_out_of_memory_attr,
@@ -2149,7 +2149,7 @@ TEST_XML(dom_node_copy_out_of_memory_attr,
 
   XmlDocument copy;
   CHECK_ALLOC_FAIL(for (int i = 0; i < 1000; ++i)
-                       copy.append_copy(doc.first_child()));
+                       copy.appendCopy(doc.firstChild()));
 }
 
 TEST_XML(dom_node_remove_deallocate, "<node attr='value'>text</node>")
@@ -2163,8 +2163,8 @@ TEST_XML(dom_node_remove_deallocate, "<node attr='value'>text</node>")
   node.setName(STR("longnode"));
   node.text().set(STR("longtext"));
 
-  node.remove_attribute(attr);
-  doc.remove_child(node);
+  node.removeAttribute(attr);
+  doc.removeChild(node);
 
   CHECK_NODE(doc, STR(""));
 }
@@ -2194,7 +2194,7 @@ TEST(dom_node_copy_declaration_empty_name)
   decl1.setName(STR(""));
 
   XmlDocument doc2;
-  XmlNode decl2 = doc2.append_copy(decl1);
+  XmlNode decl2 = doc2.appendCopy(decl1);
 
   CHECK_STRING(decl2.name(), STR(""));
 }
@@ -2215,53 +2215,53 @@ TEST(dom_fp_roundtrip_min_max_float)
 {
   XmlDocument doc;
   XmlNode node = doc.append_child(STR("node"));
-  XmlAttribute attr = node.append_attribute(STR("attr"));
+  XmlAttribute attr = node.appendAttribute(STR("attr"));
 
   node.text().set(std::numeric_limits< float >::min());
-  CHECK(fp_equal(node.text().as_float(), std::numeric_limits< float >::min()));
+  CHECK(fp_equal(node.text().toFloat(), std::numeric_limits< float >::min()));
 
   attr.setValue(std::numeric_limits< float >::max());
-  CHECK(fp_equal(attr.as_float(), std::numeric_limits< float >::max()));
+  CHECK(fp_equal(attr.toFloat(), std::numeric_limits< float >::max()));
 }
 
 TEST(dom_fp_roundtrip_min_max_double)
 {
   XmlDocument doc;
   XmlNode node = doc.append_child(STR("node"));
-  XmlAttribute attr = node.append_attribute(STR("attr"));
+  XmlAttribute attr = node.appendAttribute(STR("attr"));
 
   attr.setValue(std::numeric_limits< double >::min());
-  CHECK(fp_equal(attr.as_double(), std::numeric_limits< double >::min()));
+  CHECK(fp_equal(attr.toDouble(), std::numeric_limits< double >::min()));
 
   node.text().set(std::numeric_limits< double >::max());
   CHECK(
-      fp_equal(node.text().as_double(), std::numeric_limits< double >::max()));
+      fp_equal(node.text().toDouble(), std::numeric_limits< double >::max()));
 }
 
 TEST(dom_fp_double_custom_precision)
 {
   XmlDocument doc;
   XmlNode node = doc.append_child(STR("node"));
-  XmlAttribute attr = node.append_attribute(STR("attr"));
+  XmlAttribute attr = node.appendAttribute(STR("attr"));
 
   attr.setValue(std::numeric_limits< double >::min(), 20);
-  CHECK(fp_equal(attr.as_double(), std::numeric_limits< double >::min()));
+  CHECK(fp_equal(attr.toDouble(), std::numeric_limits< double >::min()));
 
   attr.setValue(1.0f, 5);
-  CHECK(fp_equal(attr.as_double(), static_cast< double >(1.0f)));
+  CHECK(fp_equal(attr.toDouble(), static_cast< double >(1.0f)));
 
   attr.setValue(3.1415926f, 3);
-  CHECK(!fp_equal(attr.as_double(), static_cast< double >(3.1415926f)));
+  CHECK(!fp_equal(attr.toDouble(), static_cast< double >(3.1415926f)));
 
   node.text().set(1.0f, 5);
-  CHECK(fp_equal(node.text().as_double(), static_cast< double >(1.0f)));
+  CHECK(fp_equal(node.text().toDouble(), static_cast< double >(1.0f)));
 
   node.text().set(3.1415926f, 3);
-  CHECK(!fp_equal(node.text().as_double(), static_cast< double >(3.1415926f)));
+  CHECK(!fp_equal(node.text().toDouble(), static_cast< double >(3.1415926f)));
 
   node.text().set(std::numeric_limits< double >::max(), 20);
   CHECK(
-      fp_equal(node.text().as_double(), std::numeric_limits< double >::max()));
+      fp_equal(node.text().toDouble(), std::numeric_limits< double >::max()));
 }
 
 const double fp_roundtrip_base[] = {
@@ -2281,7 +2281,7 @@ TEST(dom_fp_roundtrip_float)
       float value = static_cast< float >(ldexp(fp_roundtrip_base[i], e));
 
       doc.text().set(value);
-      CHECK(fp_equal(doc.text().as_float(), value));
+      CHECK(fp_equal(doc.text().toFloat(), value));
     }
   }
 }
@@ -2312,7 +2312,7 @@ TEST(dom_fp_roundtrip_double)
       double value = ldexp(fp_roundtrip_base[i], e);
 
       doc.text().set(value);
-      CHECK(fp_equal(doc.text().as_double(), value));
+      CHECK(fp_equal(doc.text().toDouble(), value));
     }
   }
 }

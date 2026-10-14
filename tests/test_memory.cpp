@@ -54,19 +54,19 @@ TEST(memory_custom_memory_management)
 		CHECK(page_allocs == 1 && page_deallocs == 0);
 
 		// modify document (no new page)
-		CHECK(doc.first_child().setName(STR("foobars")));
+		CHECK(doc.firstChild().setName(STR("foobars")));
 		CHECK(page_allocs == 1 && page_deallocs == 0);
 
 		// modify document (new page)
 		std::basic_string<char_t> s(65536, 'x');
 
-		CHECK(doc.first_child().setName(s.c_str()));
+		CHECK(doc.firstChild().setName(s.c_str()));
 		CHECK(page_allocs == 2 && page_deallocs == 0);
 
 		// modify document (new page, old one should die)
 		s += s;
 
-		CHECK(doc.first_child().setName(s.c_str()));
+		CHECK(doc.firstChild().setName(s.c_str()));
 		CHECK(page_allocs == 3 && page_deallocs == 1);
 	}
 
@@ -103,12 +103,12 @@ TEST(memory_large_allocations)
 		CHECK(page_allocs > 0 && page_deallocs == 0);
 
 		// grow-prune loop
-		while (doc.first_child())
+		while (doc.firstChild())
 		{
 			XmlNode node;
 
 			// grow
-			for (node = doc.first_child(); node; node = node.next_sibling())
+			for (node = doc.firstChild(); node; node = node.nextSibling())
 			{
 				std::basic_string<char_t> s = node.value();
 
@@ -116,11 +116,11 @@ TEST(memory_large_allocations)
 			}
 
 			// prune
-			for (node = doc.first_child(); node; )
+			for (node = doc.firstChild(); node; )
 			{
-				XmlNode next = node.next_sibling().next_sibling();
+				XmlNode next = node.nextSibling().nextSibling();
 
-				node.parent().remove_child(node);
+				node.parent().removeChild(node);
 
 				node = next;
 			}
@@ -177,7 +177,7 @@ TEST(memory_page_management)
 		{
 			offset = (offset + prime) % nodes.size();
 
-			doc.remove_child(nodes[offset]);
+			doc.removeChild(nodes[offset]);
 
 			nodes[offset] = nodes.back();
 			nodes.pop_back();

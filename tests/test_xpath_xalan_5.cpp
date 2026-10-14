@@ -274,7 +274,7 @@ TEST_XML(xpath_xalan_select_18,
   CHECK_XPATH_NODESET(doc.child(STR("para")),
                       STR("/para/font[@color='green']")) %
       6;
-  CHECK_XPATH_NODESET(doc.child(STR("para")).last_child(),
+  CHECK_XPATH_NODESET(doc.child(STR("para")).lastChild(),
                       STR("/para/font[@color='green']")) %
       6;
 }

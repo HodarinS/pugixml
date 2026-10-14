@@ -111,13 +111,13 @@ TEST_XML(XPathVariables_type_node_set, "<node/>")
   CHECK(!var->set(true));
   CHECK(!var->set(1.0));
   CHECK(!var->set(STR("abc")));
-  CHECK(var->set(doc.select_nodes(STR("*"))));
+  CHECK(var->set(doc.selectNodes(STR("*"))));
 
   CHECK(var->toBool() == false);
   CHECK_DOUBLE_NAN(var->toNumber());
   CHECK_STRING(var->toString(), STR(""));
   CHECK(var->toNodeSet().size() == 1 &&
-        var->toNodeSet()[0] == doc.first_child());
+        var->toNodeSet()[0] == doc.firstChild());
 }
 
 TEST(XPathVariables_set_operations)
@@ -163,7 +163,7 @@ TEST_XML(XPathVariables_set_operations_set, "<node/>")
 
   CHECK(!set.set(STR("var1"), true));
 
-  CHECK(set.set(STR("var3"), doc.select_nodes(STR("*"))));
+  CHECK(set.set(STR("var3"), doc.selectNodes(STR("*"))));
 
   XPathVariable *v3 = set.get(STR("var3"));
 
@@ -202,7 +202,7 @@ TEST_XML(XPathVariables_evaluate, "<node/>")
   set.set(STR("var1"), true);
   set.set(STR("var2"), 0.5);
   set.set(STR("var3"), STR("value"));
-  set.set(STR("var4"), doc.select_nodes(STR("*")));
+  set.set(STR("var4"), doc.selectNodes(STR("*")));
 
   CHECK_XPATH_BOOLEAN_VAR(doc, STR("$var1"), &set, true);
   CHECK_XPATH_NUMBER_VAR(doc, STR("$var2"), &set, 0.5);
@@ -213,7 +213,7 @@ TEST_XML(XPathVariables_evaluate, "<node/>")
 TEST_XML(XPathVariables_evaluate_conversion, "<node>3</node>")
 {
   XPathVariableSet set;
-  set.set(STR("var"), doc.select_nodes(STR("*")));
+  set.set(STR("var"), doc.selectNodes(STR("*")));
 
   CHECK_XPATH_BOOLEAN_VAR(doc, STR("$var"), &set, true);
   CHECK_XPATH_NUMBER_VAR(doc, STR("$var"), &set, 3);
@@ -242,10 +242,10 @@ TEST(XPathVariables_multiple_documents)
   doc2.append_child().setName(STR("node"));
 
   XPathVariableSet set;
-  set.set(STR("var1"), doc1.select_nodes(STR("*")));
-  set.set(STR("var2"), doc2.select_nodes(STR("*")));
+  set.set(STR("var1"), doc1.selectNodes(STR("*")));
+  set.set(STR("var2"), doc2.selectNodes(STR("*")));
 
-  XPathNodeSet ns = doc.select_nodes(STR("$var1 | $var2 | node"), &set);
+  XPathNodeSet ns = doc.selectNodes(STR("$var1 | $var2 | node"), &set);
   ns.sort();
 
   CHECK(ns.size() == 3);
@@ -285,10 +285,10 @@ TEST_XML(XPathVariables_select, "<node attr='1'/><node attr='2'/>")
   XPathVariableSet set;
   set.set(STR("one"), 1.0);
 
-  XPathNodeSet ns = doc.select_nodes(STR("node[@attr=$one+1]"), &set);
-  CHECK(ns.size() == 1 && ns[0].node() == doc.last_child());
+  XPathNodeSet ns = doc.selectNodes(STR("node[@attr=$one+1]"), &set);
+  CHECK(ns.size() == 1 && ns[0].node() == doc.lastChild());
 
-  XPathNode n = doc.select_node(STR("node[@attr=$one+1]"), &set);
+  XPathNode n = doc.selectNode(STR("node[@attr=$one+1]"), &set);
   CHECK(n == ns[0]);
 }
 
@@ -321,15 +321,15 @@ TEST_XML(XPathVariables_inside_filter, "<node key='1' value='2'/><node key='2' "
   set.set(STR("one"), 1.0);
 
   XPathNodeSet ns =
-      doc.select_nodes(STR("(node[@key = $one])[@value = $one]"), &set);
-  CHECK(ns.size() == 1 && ns[0].node() == doc.last_child());
+      doc.selectNodes(STR("(node[@key = $one])[@value = $one]"), &set);
+  CHECK(ns.size() == 1 && ns[0].node() == doc.lastChild());
 }
 
 TEST_XML(XPathVariables_step,
          "<node><child/><child/><child><child/></child></node>")
 {
   XPathVariableSet set;
-  set.set(STR("root"), doc.select_nodes(STR("node")));
+  set.set(STR("root"), doc.selectNodes(STR("node")));
 
   CHECK_XPATH_NODESET_VAR(XmlNode(), STR("$root/child"), &set) % 3 % 4 % 5;
   CHECK_XPATH_NODESET_VAR(XmlNode(), STR("$root//child"), &set) % 3 % 4 % 5 % 6;
@@ -422,9 +422,9 @@ TEST_XML(XPathVariables_count_sum,
          "<node><c1>12</c1><c2>23</c2><c3>34</c3></node>")
 {
   XPathVariableSet set;
-  set.set(STR("c12"), doc.select_nodes(STR("node/c1 | node/c2")));
-  set.set(STR("c3"), doc.select_nodes(STR("node/c3")));
-  set.set(STR("c"), doc.select_nodes(STR("node/*")));
+  set.set(STR("c12"), doc.selectNodes(STR("node/c1 | node/c2")));
+  set.set(STR("c3"), doc.selectNodes(STR("node/c3")));
+  set.set(STR("c"), doc.selectNodes(STR("node/*")));
 
   CHECK_XPATH_NUMBER_VAR(XmlNode(), STR("sum($c12) * count($c) - sum($c3)"),
                          &set, 71);
@@ -436,7 +436,7 @@ TEST_XML(XPathVariables_copy, "<node />")
   set1.set(STR("a"), true);
   set1.set(STR("b"), 2.0);
   set1.set(STR("c"), STR("string"));
-  set1.set(STR("d"), doc.select_nodes(STR("//*")));
+  set1.set(STR("d"), doc.selectNodes(STR("//*")));
 
   CHECK_XPATH_STRING_VAR(XmlNode(), STR("substring($c, count($d[$a]) + $b)"),
                          &set1, STR("ring"));
@@ -481,7 +481,7 @@ TEST_XML(XPathVariables_copy_out_of_memory, "<node1 /><node2 />")
   set1.set(STR("a"), true);
   set1.set(STR("b"), 2.0);
   set1.set(STR("c"), STR("string"));
-  set1.set(STR("d"), doc.select_nodes(STR("//*")));
+  set1.set(STR("d"), doc.selectNodes(STR("//*")));
 
   XPathVariableSet set2 = set1;
 
@@ -526,7 +526,7 @@ TEST_XML(XPathVariables_move, "<node />")
   set.set(STR("a"), true);
   set.set(STR("b"), 2.0);
   set.set(STR("c"), STR("string"));
-  set.set(STR("d"), doc.select_nodes(STR("//*")));
+  set.set(STR("d"), doc.selectNodes(STR("//*")));
 
   XPathVariableSet copy = set;
   copy.set(STR("e"), 42.0);
@@ -651,7 +651,7 @@ TEST_XML(XPathVariables_evaluate_node_set_out_of_memory, "<node />")
   for (size_t i = 0; i < 600; ++i)
     doc.append_child(STR("node"));
 
-  XPathNodeSet ns = doc.select_nodes(STR("node"));
+  XPathNodeSet ns = doc.selectNodes(STR("node"));
   CHECK(ns.size() == 601);
 
   XPathVariableSet set;
@@ -671,7 +671,7 @@ TEST_XML(XPathVariables_type_conversion, "<node>15</node>")
   set.set(STR("a"), true);
   set.set(STR("b"), 42.0);
   set.set(STR("c"), STR("test"));
-  set.set(STR("d"), doc.select_nodes(STR("node")));
+  set.set(STR("d"), doc.selectNodes(STR("node")));
 
   CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("boolean($a) = true()"), &set, true);
   CHECK_XPATH_BOOLEAN_VAR(XmlNode(), STR("number($a) = 1"), &set, true);

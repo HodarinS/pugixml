@@ -558,8 +558,8 @@ TEST_XML(xpath_paths_predicate_boolean,
 {
   XmlNode n = doc.child(STR("node"))
                   .child(STR("chapter"))
-                  .next_sibling()
-                  .next_sibling();
+                  .nextSibling()
+                  .nextSibling();
 
   CHECK_XPATH_NODESET(n, STR("following-sibling::chapter[position()=1]")) % 6;
   CHECK_XPATH_NODESET(n, STR("following-sibling::chapter[position()=2]")) % 7;
@@ -572,8 +572,8 @@ TEST_XML(xpath_paths_predicate_number,
 {
   XmlNode n = doc.child(STR("node"))
                   .child(STR("chapter"))
-                  .next_sibling()
-                  .next_sibling();
+                  .nextSibling()
+                  .nextSibling();
 
   CHECK_XPATH_NODESET(n, STR("following-sibling::chapter[1]")) % 6;
   CHECK_XPATH_NODESET(n, STR("following-sibling::chapter[2]")) % 7;
@@ -600,8 +600,8 @@ TEST_XML(xpath_paths_predicate_number_out_of_range,
 {
   XmlNode n = doc.child(STR("node"))
                   .child(STR("chapter"))
-                  .next_sibling()
-                  .next_sibling();
+                  .nextSibling()
+                  .nextSibling();
 
   CHECK_XPATH_NODESET(n, STR("following-sibling::chapter[0]"));
   CHECK_XPATH_NODESET(n, STR("following-sibling::chapter[-1]"));
@@ -620,8 +620,8 @@ TEST_XML(xpath_paths_predicate_constant_boolean,
 {
   XmlNode n = doc.child(STR("node"))
                   .child(STR("chapter"))
-                  .next_sibling()
-                  .next_sibling();
+                  .nextSibling()
+                  .nextSibling();
 
   XPathVariableSet set;
   set.set(STR("true"), true);
@@ -665,8 +665,8 @@ TEST_XML(xpath_paths_predicate_filter_boolean,
 {
   XmlNode n = doc.child(STR("node"))
                   .child(STR("chapter"))
-                  .next_sibling()
-                  .next_sibling();
+                  .nextSibling()
+                  .nextSibling();
 
   CHECK_XPATH_NODESET(n, STR("(following-sibling::chapter)[position()=1]")) % 6;
   CHECK_XPATH_NODESET(n, STR("(following-sibling::chapter)[position()=2]")) % 7;
@@ -679,8 +679,8 @@ TEST_XML(xpath_paths_predicate_filter_number,
 {
   XmlNode n = doc.child(STR("node"))
                   .child(STR("chapter"))
-                  .next_sibling()
-                  .next_sibling();
+                  .nextSibling()
+                  .nextSibling();
 
   CHECK_XPATH_NODESET(n, STR("(following-sibling::chapter)[1]")) % 6;
   CHECK_XPATH_NODESET(n, STR("(following-sibling::chapter)[2]")) % 7;
@@ -804,7 +804,7 @@ TEST_XML(xpath_paths_unsorted_child, "<node><foo><bar/></foo><node><foo><bar/"
   CHECK_XPATH_NODESET(doc, STR("//node/foo")) % 3 % 6 % 8;
   CHECK_XPATH_NODESET(doc, STR("//node/foo/bar")) % 4 % 7 % 9;
 
-  XPathNodeSet ns = doc.select_nodes(STR("//node/foo/bar"));
+  XPathNodeSet ns = doc.selectNodes(STR("//node/foo/bar"));
   CHECK(ns.type() == XPathNodeSet::type_unsorted);
 
   XPathNodeSet nss = ns;
@@ -818,7 +818,7 @@ TEST_XML(xpath_paths_unsorted_child, "<node><foo><bar/></foo><node><foo><bar/"
 TEST_XML(xpath_paths_optimize_compare_attribute,
          "<node id='1' /><node id='2' /><node xmlns='3' />")
 {
-  XmlNode node = doc.first_child();
+  XmlNode node = doc.firstChild();
 
   CHECK_XPATH_NODESET(doc, STR("node[@id = '1']")) % 2;
   CHECK_XPATH_NODESET(doc, STR("node[@id = '2']")) % 4;
@@ -871,10 +871,10 @@ TEST_XML(xpath_paths_optimize_step_once,
 TEST_XML(xpath_paths_null_nodeset_entries, "<node attr='value'/>")
 {
   XPathNode nodes[] = {
-      XPathNode(doc.first_child()),
+      XPathNode(doc.firstChild()),
       XPathNode(XmlNode()),
-      XPathNode(doc.first_child().firstAttribute(), doc.first_child()),
-      XPathNode(XmlAttribute(), doc.first_child()),
+      XPathNode(doc.firstChild().firstAttribute(), doc.firstChild()),
+      XPathNode(XmlAttribute(), doc.firstChild()),
       XPathNode(XmlAttribute(), XmlNode()),
   };
 

@@ -65,13 +65,13 @@ TEST_XML_FLAGS(write_cdata_escape, "<![CDATA[value]]>", parse_cdata | parse_frag
 {
 	CHECK_NODE(doc, STR("<![CDATA[value]]>"));
 
-	doc.first_child().setValue(STR("1]]>2]]>3"));
+	doc.firstChild().setValue(STR("1]]>2]]>3"));
 	CHECK_NODE(doc, STR("<![CDATA[1]]]]><![CDATA[>2]]]]><![CDATA[>3]]>"));
 
-	doc.first_child().setValue(STR("1]"));
+	doc.firstChild().setValue(STR("1]"));
 	CHECK_NODE(doc, STR("<![CDATA[1]]]>"));
 
-	doc.first_child().setValue(STR("1]]"));
+	doc.firstChild().setValue(STR("1]]"));
 	CHECK_NODE(doc, STR("<![CDATA[1]]]]>"));
 }
 
@@ -187,7 +187,7 @@ TEST(write_doctype_null)
 TEST_XML(write_escape, "<node attr=''>text</node>")
 {
 	doc.child(STR("node")).attribute(STR("attr")) = STR("<>'\"&\x04\r\n\t");
-	doc.child(STR("node")).first_child().setValue(STR("<>'\"&\x04\r\n\t"));
+	doc.child(STR("node")).firstChild().setValue(STR("<>'\"&\x04\r\n\t"));
 
 	CHECK_NODE(doc, STR("<node attr=\"&lt;>'&quot;&amp;&#04;&#13;&#10;&#09;\">&lt;&gt;'\"&amp;&#04;\r\n\t</node>"));
 	CHECK_NODE_EX(doc, STR("<node attr='&lt;>&apos;\"&amp;&#04;&#13;&#10;&#09;'>&lt;&gt;'\"&amp;&#04;\r\n\t</node>"), STR(""), format_raw | format_attribute_single_quote);
@@ -196,7 +196,7 @@ TEST_XML(write_escape, "<node attr=''>text</node>")
 TEST_XML(write_escape_roundtrip, "<node attr=''>text</node>")
 {
 	doc.child(STR("node")).attribute(STR("attr")) = STR("<>'\"&\x04\r\n\t");
-	doc.child(STR("node")).first_child().setValue(STR("<>'\"&\x04\r\n\t"));
+	doc.child(STR("node")).firstChild().setValue(STR("<>'\"&\x04\r\n\t"));
 
 	std::string contents = write_narrow(doc, format_raw, encoding_utf8);
 
@@ -224,7 +224,7 @@ TEST_XML(write_escape_unicode, "<node attr='&#x3c00;'/>")
 TEST_XML(write_no_escapes, "<node attr=''>text</node>")
 {
 	doc.child(STR("node")).attribute(STR("attr")) = STR("<>'\"&\x04\r\n\t");
-	doc.child(STR("node")).first_child().setValue(STR("<>'\"&\x04\r\n\t"));
+	doc.child(STR("node")).firstChild().setValue(STR("<>'\"&\x04\r\n\t"));
 
 	CHECK_NODE_EX(doc, STR("<node attr=\"<>'\"&\x04\r\n\t\"><>'\"&\x04\r\n\t</node>"), STR(""), format_raw | format_no_escapes);
 }
@@ -509,7 +509,7 @@ TEST(write_no_name_attribute)
 {
 	XmlDocument doc;
 	doc.append_child().setName(STR("root"));
-	doc.child(STR("root")).append_attribute(STR(""));
+	doc.child(STR("root")).appendAttribute(STR(""));
 
 	CHECK_NODE(doc, STR("<root :anonymous=\"\"/>"));
 }
@@ -573,7 +573,7 @@ TEST(write_pcdata_null)
 	CHECK_NODE_EX(doc, STR("<node></node>"), STR("\t"), format_raw | format_no_empty_element_tags);
 	CHECK_NODE_EX(doc, STR("<node></node>\n"), STR("\t"), format_indent | format_no_empty_element_tags);
 
-	doc.first_child().append_child(node_pcdata);
+	doc.firstChild().append_child(node_pcdata);
 
 	CHECK_NODE(doc, STR("<node></node>"));
 	CHECK_NODE_EX(doc, STR("<node></node>\n"), STR("\t"), format_indent);
@@ -684,9 +684,9 @@ TEST(write_flush_coverage)
 	// this creates a node that uses short sequences of lengths 1-6 for output
 	XmlNode n = doc.append_child(STR("n"));
 
-	XmlAttribute a = n.append_attribute(STR("a"));
+	XmlAttribute a = n.appendAttribute(STR("a"));
 
-	XmlAttribute b = n.append_attribute(STR("b"));
+	XmlAttribute b = n.appendAttribute(STR("b"));
 	b.setValue(STR("<&\""));
 
 	n.append_child(node_comment);
@@ -744,10 +744,10 @@ TEST_XML(write_throw_encoding, "<node><child/></node>")
 
 TEST_XML(write_skip_control_chars, "<a>\f\t\n\x0F\x19</a>")
 {
-	CHECK_NODE_EX(doc.first_child(), STR("<a>\t\n</a>\n"), STR(""), pugi::format_default | pugi::format_skip_control_chars);
+	CHECK_NODE_EX(doc.firstChild(), STR("<a>\t\n</a>\n"), STR(""), pugi::format_default | pugi::format_skip_control_chars);
 }
 
 TEST_XML(write_keep_control_chars, "<a>\f\t\n\x0F\x19</a>")
 {
-	CHECK_NODE_EX(doc.first_child(), STR("<a>&#12;\t\n&#15;&#25;</a>\n"), STR(""), pugi::format_default);
+	CHECK_NODE_EX(doc.firstChild(), STR("<a>&#12;\t\n&#15;&#25;</a>\n"), STR(""), pugi::format_default);
 }

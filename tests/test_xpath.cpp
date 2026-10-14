@@ -8,7 +8,7 @@ static void load_document_copy(XmlDocument& doc, const char_t* text)
 	XmlDocument source;
 	CHECK(source.loadString(text));
 
-	doc.append_copy(source.first_child());
+	doc.appendCopy(source.firstChild());
 }
 
 template <typename T>
@@ -48,7 +48,7 @@ TEST(xpath_allocator_large_page)
 TEST_XML(xpath_sort_complex, "<node><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2></node>")
 {
 	// just some random union order, it should not matter probably?
-	XPathNodeSet ns = doc.child(STR("node")).select_nodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
+	XPathNodeSet ns = doc.child(STR("node")).selectNodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
 
 	ns.sort(false);
 	XPathNodeSet sorted = ns;
@@ -66,7 +66,7 @@ TEST(xpath_sort_complex_copy) // copy the document so that document order optimi
 	load_document_copy(doc, STR("<node><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2></node>"));
 
 	// just some random union order, it should not matter probably?
-	XPathNodeSet ns = doc.child(STR("node")).select_nodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
+	XPathNodeSet ns = doc.child(STR("node")).selectNodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
 
 	ns.sort(false);
 	XPathNodeSet sorted = ns;
@@ -80,7 +80,7 @@ TEST(xpath_sort_complex_copy) // copy the document so that document order optimi
 
 TEST_XML(xpath_sort_children, "<node><child><subchild id='1'/></child><child><subchild id='2'/></child></node>")
 {
-	XPathNodeSet ns = doc.child(STR("node")).select_nodes(STR("child/subchild[@id=1] | child/subchild[@id=2]"));
+	XPathNodeSet ns = doc.child(STR("node")).selectNodes(STR("child/subchild[@id=1] | child/subchild[@id=2]"));
 
 	ns.sort(false);
 	XPathNodeSet sorted = ns;
@@ -97,7 +97,7 @@ TEST(xpath_sort_children_copy) // copy the document so that document order optim
 	XmlDocument doc;
 	load_document_copy(doc, STR("<node><child><subchild id='1'/></child><child><subchild id='2'/></child></node>"));
 
-	XPathNodeSet ns = doc.child(STR("node")).select_nodes(STR("child/subchild[@id=1] | child/subchild[@id=2]"));
+	XPathNodeSet ns = doc.child(STR("node")).selectNodes(STR("child/subchild[@id=1] | child/subchild[@id=2]"));
 
 	ns.sort(false);
 	XPathNodeSet sorted = ns;
@@ -115,11 +115,11 @@ TEST_XML(xpath_sort_attributes, "<node/>")
 
 	// we need to insert attributes manually since unsorted node sets are (always?) sorted via pointers because of remove_duplicates,
 	// so we need to have different document and pointer order to cover all comparator cases
-	n.append_attribute(STR("attr2"));
-	n.append_attribute(STR("attr3"));
-	n.insert_attribute_before(STR("attr1"), n.attribute(STR("attr2")));
+	n.appendAttribute(STR("attr2"));
+	n.appendAttribute(STR("attr3"));
+	n.insertAttributeBefore(STR("attr1"), n.attribute(STR("attr2")));
 
-	XPathNodeSet ns = n.select_nodes(STR("@* | @*"));
+	XPathNodeSet ns = n.selectNodes(STR("@* | @*"));
 
 	ns.sort(true);
 	XPathNodeSet reverse_sorted = ns;
@@ -136,9 +136,9 @@ TEST_XML(xpath_sort_attributes_docorder, "<node attr1='' attr2='value' attr4='va
 	XmlNode n = doc.child(STR("node"));
 
 	n.firstAttribute().setName(STR("attribute1"));
-	n.insert_attribute_after(STR("attr3"), n.attribute(STR("attr2")));
+	n.insertAttributeAfter(STR("attr3"), n.attribute(STR("attr2")));
 
-	XPathNodeSet ns = n.select_nodes(STR("@* | @*"));
+	XPathNodeSet ns = n.selectNodes(STR("@* | @*"));
 
 	ns.sort(true);
 	XPathNodeSet reverse_sorted = ns;
@@ -159,7 +159,7 @@ TEST(xpath_sort_random_medium)
 		STR("<child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2>")
 		STR("</node>"));
 
-	XPathNodeSet ns = doc.select_nodes(STR("//node() | //@*"));
+	XPathNodeSet ns = doc.selectNodes(STR("//node() | //@*"));
 
 	std::vector<XPathNode> nsv(ns.begin(), ns.end());
 	random_shuffle(nsv);
@@ -188,7 +188,7 @@ TEST(xpath_sort_random_large)
 		STR("<child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2><child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2>")
 		STR("<child1 attr1='value1' attr2='value2'/><child2 attr1='value1'>test</child2></node>"));
 
-	XPathNodeSet ns = doc.select_nodes(STR("//node() | //@*"));
+	XPathNodeSet ns = doc.selectNodes(STR("//node() | //@*"));
 
 	std::vector<XPathNode> nsv(ns.begin(), ns.end());
 	random_shuffle(nsv);
@@ -344,15 +344,15 @@ TEST_XML(xpath_xsl_list_2, "<TR><TD id='1'>text1</TD><TD id='2'>text2</TD><TD id
 {
 	CHECK_XPATH_FAIL(STR(".[not(.=ancestor::TR/TD[15]/node())]"));
 
-	CHECK_XPATH_NODESET(doc.child(STR("TR")).find_child_by_attribute(STR("TD"), STR("id"), STR("1")).first_child(), STR("self::node()[not(.=ancestor::TR/TD[3]/node())]")) % 5;
-	CHECK_XPATH_NODESET(doc.child(STR("TR")).find_child_by_attribute(STR("TD"), STR("id"), STR("2")).first_child(), STR("self::node()[not(.=ancestor::TR/TD[3]/node())]")) % 8;
-	CHECK_XPATH_NODESET(doc.child(STR("TR")).find_child_by_attribute(STR("TD"), STR("id"), STR("3")).first_child(), STR("self::node()[not(.=ancestor::TR/TD[3]/node())]"));
-	CHECK_XPATH_NODESET(doc.child(STR("TR")).find_child_by_attribute(STR("TD"), STR("id"), STR("4")).first_child(), STR("self::node()[not(.=ancestor::TR/TD[3]/node())]")) % 14;
+	CHECK_XPATH_NODESET(doc.child(STR("TR")).findChildByAttribute(STR("TD"), STR("id"), STR("1")).firstChild(), STR("self::node()[not(.=ancestor::TR/TD[3]/node())]")) % 5;
+	CHECK_XPATH_NODESET(doc.child(STR("TR")).findChildByAttribute(STR("TD"), STR("id"), STR("2")).firstChild(), STR("self::node()[not(.=ancestor::TR/TD[3]/node())]")) % 8;
+	CHECK_XPATH_NODESET(doc.child(STR("TR")).findChildByAttribute(STR("TD"), STR("id"), STR("3")).firstChild(), STR("self::node()[not(.=ancestor::TR/TD[3]/node())]"));
+	CHECK_XPATH_NODESET(doc.child(STR("TR")).findChildByAttribute(STR("TD"), STR("id"), STR("4")).firstChild(), STR("self::node()[not(.=ancestor::TR/TD[3]/node())]")) % 14;
 
-	CHECK_XPATH_NODESET(doc.child(STR("TR")).find_child_by_attribute(STR("TD"), STR("id"), STR("1")), STR("node()[not(.=ancestor::TR/TD[3]/node())]")) % 5;
-	CHECK_XPATH_NODESET(doc.child(STR("TR")).find_child_by_attribute(STR("TD"), STR("id"), STR("2")), STR("node()[not(.=ancestor::TR/TD[3]/node())]")) % 8;
-	CHECK_XPATH_NODESET(doc.child(STR("TR")).find_child_by_attribute(STR("TD"), STR("id"), STR("3")), STR("node()[not(.=ancestor::TR/TD[3]/node())]"));
-	CHECK_XPATH_NODESET(doc.child(STR("TR")).find_child_by_attribute(STR("TD"), STR("id"), STR("4")), STR("node()[not(.=ancestor::TR/TD[3]/node())]")) % 14;
+	CHECK_XPATH_NODESET(doc.child(STR("TR")).findChildByAttribute(STR("TD"), STR("id"), STR("1")), STR("node()[not(.=ancestor::TR/TD[3]/node())]")) % 5;
+	CHECK_XPATH_NODESET(doc.child(STR("TR")).findChildByAttribute(STR("TD"), STR("id"), STR("2")), STR("node()[not(.=ancestor::TR/TD[3]/node())]")) % 8;
+	CHECK_XPATH_NODESET(doc.child(STR("TR")).findChildByAttribute(STR("TD"), STR("id"), STR("3")), STR("node()[not(.=ancestor::TR/TD[3]/node())]"));
+	CHECK_XPATH_NODESET(doc.child(STR("TR")).findChildByAttribute(STR("TD"), STR("id"), STR("4")), STR("node()[not(.=ancestor::TR/TD[3]/node())]")) % 14;
 }
 
 TEST_XML(xpath_star_token, "<node>0.5<section><child/><child/><child/><child/></section><section/></node>")
@@ -395,7 +395,7 @@ TEST(xpath_large_node_set)
 	XmlDocument doc;
 	CHECK(doc.loadFile("tests/data/large.xml"));
 
-	XPathNodeSet ns = doc.select_nodes(STR("//*"));
+	XPathNodeSet ns = doc.selectNodes(STR("//*"));
 
 	CHECK(ns.size() == 10001);
 }
@@ -482,7 +482,7 @@ TEST_XML(xpath_out_of_memory_evaluate_union, "<node />")
 	size_t count = sizeof(void*) == 4 ? 300 : 150;
 
 	for (size_t i = 0; i < count; ++i)
-		doc.first_child().append_child(STR("a"));
+		doc.firstChild().append_child(STR("a"));
 
 	XPathQuery q(STR("a|a"));
 
@@ -500,7 +500,7 @@ TEST_XML(xpath_out_of_memory_evaluate_union_hash, "<node />")
 	size_t count = sizeof(void*) == 4 ? 200 : 100;
 
 	for (size_t i = 0; i < count; ++i)
-		doc.first_child().append_child(STR("a"));
+		doc.firstChild().append_child(STR("a"));
 
 	XPathQuery q(STR("a|a"));
 
@@ -525,7 +525,7 @@ TEST_XML(xpath_out_of_memory_evaluate_normalize_space_0, "<node> a b c d e f g h
 
 	XPathQuery q(STR("concat(normalize-space(), normalize-space(), normalize-space(), normalize-space(), normalize-space(), normalize-space(), normalize-space(), normalize-space())"));
 
-	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, doc.first_child()) == 1));
+	CHECK_ALLOC_FAIL(CHECK(q.evaluate_string(0, 0, doc.firstChild()) == 1));
 }
 
 TEST_XML(xpath_out_of_memory_evaluate_normalize_space_1, "<node> a b c d e f g h i j k l m n o p q r s t u v w x y z a b c d e f g h i j k l m n o p q r s t u v w x y z a b c d e f g h i j k l m n o p q r s t u v w x y z a b c d e f g h i j k l m n o p q r s t u v w x y z a b c d e f g h i j k l m n o p q r s t u v w x y z a b c d e f g h i j k l m n o p q r s t u v w x y z a b c d e f g h i j k l m n o p q r s t u v w x y z a b c d e f g h i j k l m n o p q r s t u v w x y z a b c d e f g h i j k l m n o p q r s t u v w x y z a b c d e f g h i j k l m n o p q r s t u v w x y z </node>")
@@ -622,14 +622,14 @@ TEST_XML(xpath_sort_copy_share, "<node><child1 attr1='value1' attr2='value2'/><c
 	XmlNode child2 = node.child(STR("child2"));
 
 	// swap child1 & child2
-	node.prepend_copy(child2);
-	node.append_copy(child1);
+	node.prependCopy(child2);
+	node.appendCopy(child1);
 
-	node.remove_child(child1);
-	node.remove_child(child2);
+	node.removeChild(child1);
+	node.removeChild(child2);
 
 	// just some random union order, it should not matter probably?
-	XPathNodeSet ns = doc.child(STR("node")).select_nodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
+	XPathNodeSet ns = doc.child(STR("node")).selectNodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
 
 	ns.sort(false);
 	XPathNodeSet sorted = ns;
@@ -649,11 +649,11 @@ TEST_XML(xpath_sort_move_share, "<node><child1 attr1='value1' attr2='value2'/><c
 	XmlNode child2 = node.child(STR("child2"));
 
 	// swap child1 & child2
-	node.prepend_move(child2);
-	node.append_move(child1);
+	node.prependMove(child2);
+	node.appendMove(child1);
 
 	// just some random union order, it should not matter probably?
-	XPathNodeSet ns = doc.child(STR("node")).select_nodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
+	XPathNodeSet ns = doc.child(STR("node")).selectNodes(STR("child1 | child2 | child1/@* | . | child2/@* | child2/text()"));
 
 	ns.sort(false);
 	XPathNodeSet sorted = ns;
@@ -665,17 +665,17 @@ TEST_XML(xpath_sort_move_share, "<node><child1 attr1='value1' attr2='value2'/><c
 	XPathNodeSet_tester(reverse_sorted, "reverse sorted order failed") % 8 % 7 % 6 % 5 % 4 % 3 % 2;
 }
 
-TEST_XML(xpath_sort_append_buffer, "<node /><node />")
+TEST_XML(xpath_sort_appendBuffer, "<node /><node />")
 {
-	// append_buffer changes the relation between name/value data and document order, this can potentially make document order optimization invalid (silently)
+	// appendBuffer changes the relation between name/value data and document order, this can potentially make document order optimization invalid (silently)
 	const char* child1 = "<child1 attr1='value1' attr2='value2'/>";
 	const char* child2 = "<child2 attr1='value1'>test   </child2>";
 
-	doc.last_child().append_buffer(child2, strlen(child2));
-	doc.first_child().append_buffer(child1, strlen(child1));
+	doc.lastChild().appendBuffer(child2, strlen(child2));
+	doc.firstChild().appendBuffer(child1, strlen(child1));
 
 	// just some random union order, it should not matter probably?
-	XPathNodeSet ns = doc.select_nodes(STR("node/child1 | node/child2 | node/child1/@* | node/. | node/child2/@* | node/child2/text()"));
+	XPathNodeSet ns = doc.selectNodes(STR("node/child1 | node/child2 | node/child1/@* | node/. | node/child2/@* | node/child2/text()"));
 
 	ns.sort(false);
 	XPathNodeSet sorted = ns;
@@ -695,10 +695,10 @@ TEST(xpath_sort_crossdoc)
 	XmlDocument doc2;
 	CHECK(doc2.loadString(STR("<node />")));
 
-	XPathNodeSet ns1 = doc1.select_nodes(STR("*"));
+	XPathNodeSet ns1 = doc1.selectNodes(STR("*"));
 	CHECK(ns1.size() == 1);
 
-	XPathNodeSet ns2 = doc2.select_nodes(STR("*"));
+	XPathNodeSet ns2 = doc2.selectNodes(STR("*"));
 	CHECK(ns2.size() == 1);
 
 	XPathVariableSet set;
@@ -721,10 +721,10 @@ TEST(xpath_sort_crossdoc_dynamic)
 	XmlDocument doc2;
 	doc2.append_child(STR("node"));
 
-	XPathNodeSet ns1 = doc1.select_nodes(STR("*"));
+	XPathNodeSet ns1 = doc1.selectNodes(STR("*"));
 	CHECK(ns1.size() == 1);
 
-	XPathNodeSet ns2 = doc2.select_nodes(STR("*"));
+	XPathNodeSet ns2 = doc2.selectNodes(STR("*"));
 	CHECK(ns2.size() == 1);
 
 	XPathVariableSet set;
@@ -747,10 +747,10 @@ TEST(xpath_sort_crossdoc_different_depth)
 	XmlDocument doc2;
 	doc2.append_child(STR("node")).append_child(STR("node"));
 
-	XPathNodeSet ns1 = doc1.select_nodes(STR("*"));
+	XPathNodeSet ns1 = doc1.selectNodes(STR("*"));
 	CHECK(ns1.size() == 1);
 
-	XPathNodeSet ns2 = doc2.select_nodes(STR("*/*"));
+	XPathNodeSet ns2 = doc2.selectNodes(STR("*/*"));
 	CHECK(ns2.size() == 1);
 
 	XPathVariableSet set;
@@ -799,7 +799,7 @@ TEST(xpath_remove_duplicates)
 		doc.prepend_child(STR("node1"));
 	}
 
-	XPathNodeSet ns = doc.select_nodes(STR("/node2/preceding::* | //node1 | /node() | /* | /node1/following-sibling::*"));
+	XPathNodeSet ns = doc.selectNodes(STR("/node2/preceding::* | //node1 | /node() | /* | /node1/following-sibling::*"));
 
 	ns.sort();
 

@@ -468,7 +468,7 @@ TEST_XML(xpath_operators_union_order, "<node />")
   n.append_child(STR("d"));
   n.prepend_child(STR("a"));
 
-  XPathNodeSet ns = n.select_nodes(STR("d | d | b | c | b | a | c | d | b"));
+  XPathNodeSet ns = n.selectNodes(STR("d | d | b | c | b | a | c | d | b"));
 
   CHECK(ns.size() == 4);
   CHECK_STRING(ns[0].node().name(), STR("d"));

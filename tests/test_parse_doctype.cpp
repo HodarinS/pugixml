@@ -32,7 +32,7 @@ static bool test_doctype_wf(const char_t *decl)
   XmlDocument doc;
 
   // standalone
-  if (!load_concat(doc, decl) || !doc.first_child().empty())
+  if (!load_concat(doc, decl) || !doc.firstChild().empty())
     return false;
 
   // pcdata pre/postfix
@@ -539,13 +539,13 @@ TEST(parse_doctype_xmlconf_oasis_1)
   CHECK(doc.loadString(
             STR("<!--a <!DOCTYPE <?- ]]>-<[ CDATA [ \"- -'- -<doc>--> <!---->"),
             parse_full | parse_fragment) &&
-        doc.first_child().type() == node_comment &&
-        doc.last_child().type() == node_comment &&
-        doc.first_child().next_sibling() == doc.last_child());
+        doc.firstChild().type() == node_comment &&
+        doc.lastChild().type() == node_comment &&
+        doc.firstChild().nextSibling() == doc.lastChild());
   CHECK(doc.loadString(STR("<?xmla <!DOCTYPE <[ CDATA [</doc> &a%b&#c?>"),
                         parse_full | parse_fragment) &&
-        doc.first_child().type() == node_pi &&
-        doc.first_child() == doc.last_child());
+        doc.firstChild().type() == node_pi &&
+        doc.firstChild() == doc.lastChild());
 }
 
 TEST(parse_doctype_xmlconf_xmltest_1)
@@ -573,7 +573,7 @@ TEST_XML_FLAGS(parse_doctype_value,
                "\"<![CDATA[Tim & Michael]]>\"> ]>",
                parse_fragment | parse_doctype)
 {
-  XmlNode n = doc.first_child();
+  XmlNode n = doc.firstChild();
 
   CHECK(n.type() == node_doctype);
   CHECK_STRING(n.value(), STR("doc [ <!ELEMENT doc (#PCDATA)> <!ENTITY e "

@@ -11,6 +11,7 @@ pugixml is used by a lot of projects, both open-source and proprietary, for perf
 
 - C++ native module
 - C++23 minimum required 
+- Removed exeptions (only no exeption mode)
 - CamelCase
 - AdditionalFunctions
 - additional encoding support via iconv (iconv required)

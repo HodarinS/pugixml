@@ -167,7 +167,7 @@ TEST_XML(xpath_xalan_conditional, "<letters>b</letters>")
 	CHECK_XPATH_BOOLEAN(c, STR("'a'='a'"), true);
 	CHECK_XPATH_BOOLEAN(c, STR("2+2=4"), true);
 
-	XmlNode b = doc.child(STR("letters")).first_child();
+	XmlNode b = doc.child(STR("letters")).firstChild();
 
 	CHECK_XPATH_BOOLEAN(b, STR(".='b'"), true);
 	CHECK_XPATH_BOOLEAN(b, STR("name(..)='letters'"), true);

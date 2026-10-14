@@ -20,15 +20,15 @@ static void build_document_order(std::vector< pugi::XPathNode > &result,
     for (pugi::XmlAttribute a = cur.firstAttribute(); a; a = a.nextAttribute())
       result.push_back(pugi::XPathNode(a, cur));
 
-    if (cur.first_child())
-      cur = cur.first_child();
-    else if (cur.next_sibling())
-      cur = cur.next_sibling();
+    if (cur.firstChild())
+      cur = cur.firstChild();
+    else if (cur.nextSibling())
+      cur = cur.nextSibling();
     else
     {
-      while (cur && !cur.next_sibling())
+      while (cur && !cur.nextSibling())
         cur = cur.parent();
-      cur = cur.next_sibling();
+      cur = cur.nextSibling();
 
       if (!cur)
         break;

@@ -6,56 +6,55 @@
 
 using namespace pugi;
 
-TEST_XML(xpath_api_select_nodes, "<node><head/><foo/><foo/><tail/></node>")
+TEST_XML(xpath_api_selectNodes, "<node><head/><foo/><foo/><tail/></node>")
 {
-  XPathNodeSet ns1 = doc.select_nodes(STR("node/foo"));
+  XPathNodeSet ns1 = doc.selectNodes(STR("node/foo"));
 
   XPathQuery q(STR("node/foo"));
-  XPathNodeSet ns2 = doc.select_nodes(q);
+  XPathNodeSet ns2 = doc.selectNodes(q);
 
   XPathNodeSet_tester(ns1, "ns1") % 4 % 5;
   XPathNodeSet_tester(ns2, "ns2") % 4 % 5;
 }
 
-TEST_XML(xpath_api_select_node,
-         "<node><head/><foo id='1'/><foo/><tail/></node>")
+TEST_XML(xpath_api_selectNode, "<node><head/><foo id='1'/><foo/><tail/></node>")
 {
-  XPathNode n1 = doc.select_node(STR("node/foo"));
+  XPathNode n1 = doc.selectNode(STR("node/foo"));
 
   XPathQuery q(STR("node/foo"));
-  XPathNode n2 = doc.select_node(q);
+  XPathNode n2 = doc.selectNode(q);
 
-  CHECK(n1.node().attribute(STR("id")).as_int() == 1);
-  CHECK(n2.node().attribute(STR("id")).as_int() == 1);
+  CHECK(n1.node().attribute(STR("id")).toInt() == 1);
+  CHECK(n2.node().attribute(STR("id")).toInt() == 1);
 
-  XPathNode n3 = doc.select_node(STR("node/bar"));
+  XPathNode n3 = doc.selectNode(STR("node/bar"));
 
   CHECK(!n3);
 
-  XPathNode n4 = doc.select_node(STR("node/head/following-sibling::foo"));
-  XPathNode n5 = doc.select_node(STR("node/tail/preceding-sibling::foo"));
+  XPathNode n4 = doc.selectNode(STR("node/head/following-sibling::foo"));
+  XPathNode n5 = doc.selectNode(STR("node/tail/preceding-sibling::foo"));
 
-  CHECK(n4.node().attribute(STR("id")).as_int() == 1);
-  CHECK(n5.node().attribute(STR("id")).as_int() == 1);
+  CHECK(n4.node().attribute(STR("id")).toInt() == 1);
+  CHECK(n5.node().attribute(STR("id")).toInt() == 1);
 }
 
 TEST_XML(xpath_api_node_bool_ops, "<node attr='value'/>")
 {
-  generic_bool_ops_test(doc.select_node(STR("node")));
-  generic_bool_ops_test(doc.select_node(STR("node/@attr")));
+  generic_bool_ops_test(doc.selectNode(STR("node")));
+  generic_bool_ops_test(doc.selectNode(STR("node/@attr")));
 }
 
 TEST_XML(xpath_api_node_eq_ops, "<node attr='value'/>")
 {
-  generic_eq_ops_test(doc.select_node(STR("node")),
-                      doc.select_node(STR("node/@attr")));
+  generic_eq_ops_test(doc.selectNode(STR("node")),
+                      doc.selectNode(STR("node/@attr")));
 }
 
 TEST_XML(xpath_api_node_accessors, "<node attr='value'/>")
 {
   XPathNode null;
-  XPathNode node = doc.select_node(STR("node"));
-  XPathNode attr = doc.select_node(STR("node/@attr"));
+  XPathNode node = doc.selectNode(STR("node"));
+  XPathNode attr = doc.selectNode(STR("node/@attr"));
 
   CHECK(!null.node());
   CHECK(!null.attribute());
@@ -91,7 +90,7 @@ TEST_XML(xpath_api_nodeset_accessors, "<node><foo/><foo/></node>")
   CHECK(!null.first());
   CHECK(null.begin() == null.end());
 
-  XPathNodeSet set = doc.select_nodes(STR("node/foo"));
+  XPathNodeSet set = doc.selectNodes(STR("node/foo"));
   xpath_api_node_accessors_helper(set);
 
   XPathNodeSet copy = set;
@@ -107,7 +106,7 @@ TEST_XML(xpath_api_nodeset_accessors, "<node><foo/><foo/></node>")
 TEST_XML(xpath_api_nodeset_copy, "<node><foo/><foo/></node>")
 {
   XPathNodeSet empty;
-  XPathNodeSet set = doc.select_nodes(STR("node/foo"));
+  XPathNodeSet set = doc.selectNodes(STR("node/foo"));
 
   XPathNodeSet copy1 = set;
   CHECK(copy1.size() == 2);
@@ -312,8 +311,6 @@ TEST(xpath_api_query_result_fail)
   CHECK(result.offset == 13);
 }
 
-
-
 TEST(xpath_api_node_set_ctor_out_of_memory)
 {
   test_runner::_memory_fail_threshold = 1;
@@ -336,11 +333,11 @@ TEST(xpath_api_node_set_copy_ctor_out_of_memory)
 TEST_XML(xpath_api_node_set_assign_out_of_memory_preserve,
          "<node><a/><b/></node>")
 {
-  XPathNodeSet ns = doc.select_nodes(STR("node/*"));
+  XPathNodeSet ns = doc.selectNodes(STR("node/*"));
   CHECK(ns.size() == 2);
   CHECK(ns.type() == XPathNodeSet::type_sorted);
 
-  XPathNodeSet nsall = doc.select_nodes(STR("//*"));
+  XPathNodeSet nsall = doc.selectNodes(STR("//*"));
   nsall.sort(true);
   CHECK(nsall.size() == 3);
   CHECK(nsall.type() == XPathNodeSet::type_sorted_reverse);
@@ -366,7 +363,7 @@ TEST(xpath_api_empty)
 
 TEST_XML(xpath_api_nodeset_move_ctor, "<node><foo/><foo/><bar/></node>")
 {
-  XPathNodeSet set = doc.select_nodes(STR("node/bar/preceding::*"));
+  XPathNodeSet set = doc.selectNodes(STR("node/bar/preceding::*"));
 
   CHECK(set.size() == 2);
   CHECK(set.type() == XPathNodeSet::type_sorted_reverse);
@@ -380,12 +377,12 @@ TEST_XML(xpath_api_nodeset_move_ctor, "<node><foo/><foo/><bar/></node>")
 
   CHECK(move.size() == 2);
   CHECK(move.type() == XPathNodeSet::type_sorted_reverse);
-  CHECK(move[1] == doc.first_child().first_child());
+  CHECK(move[1] == doc.firstChild().firstChild());
 }
 
 TEST_XML(xpath_api_nodeset_move_ctor_single, "<node><foo/><foo/><bar/></node>")
 {
-  XPathNodeSet set = doc.select_nodes(STR("node/bar"));
+  XPathNodeSet set = doc.selectNodes(STR("node/bar"));
 
   CHECK(set.size() == 1);
   CHECK(set.type() == XPathNodeSet::type_sorted);
@@ -399,7 +396,7 @@ TEST_XML(xpath_api_nodeset_move_ctor_single, "<node><foo/><foo/><bar/></node>")
 
   CHECK(move.size() == 1);
   CHECK(move.type() == XPathNodeSet::type_sorted);
-  CHECK(move[0] == doc.first_child().last_child());
+  CHECK(move[0] == doc.firstChild().lastChild());
 }
 
 TEST(xpath_api_nodeset_move_ctor_empty)
@@ -423,7 +420,7 @@ TEST(xpath_api_nodeset_move_ctor_empty)
 
 TEST_XML(xpath_api_nodeset_move_assign, "<node><foo/><foo/><bar/></node>")
 {
-  XPathNodeSet set = doc.select_nodes(STR("node/bar/preceding::*"));
+  XPathNodeSet set = doc.selectNodes(STR("node/bar/preceding::*"));
 
   CHECK(set.size() == 2);
   CHECK(set.type() == XPathNodeSet::type_sorted_reverse);
@@ -442,18 +439,18 @@ TEST_XML(xpath_api_nodeset_move_assign, "<node><foo/><foo/><bar/></node>")
 
   CHECK(move.size() == 2);
   CHECK(move.type() == XPathNodeSet::type_sorted_reverse);
-  CHECK(move[1] == doc.first_child().first_child());
+  CHECK(move[1] == doc.firstChild().firstChild());
 }
 
 TEST_XML(xpath_api_nodeset_move_assign_destroy,
          "<node><foo/><foo/><bar/></node>")
 {
-  XPathNodeSet set = doc.select_nodes(STR("node/bar/preceding::*"));
+  XPathNodeSet set = doc.selectNodes(STR("node/bar/preceding::*"));
 
   CHECK(set.size() == 2);
   CHECK(set.type() == XPathNodeSet::type_sorted_reverse);
 
-  XPathNodeSet all = doc.select_nodes(STR("//*"));
+  XPathNodeSet all = doc.selectNodes(STR("//*"));
 
   CHECK(all.size() == 4);
 
@@ -466,13 +463,13 @@ TEST_XML(xpath_api_nodeset_move_assign_destroy,
 
   CHECK(all.size() == 2);
   CHECK(all.type() == XPathNodeSet::type_sorted_reverse);
-  CHECK(all[1] == doc.first_child().first_child());
+  CHECK(all[1] == doc.firstChild().firstChild());
 }
 
 TEST_XML(xpath_api_nodeset_move_assign_single,
          "<node><foo/><foo/><bar/></node>")
 {
-  XPathNodeSet set = doc.select_nodes(STR("node/bar"));
+  XPathNodeSet set = doc.selectNodes(STR("node/bar"));
 
   CHECK(set.size() == 1);
   CHECK(set.type() == XPathNodeSet::type_sorted);
@@ -491,7 +488,7 @@ TEST_XML(xpath_api_nodeset_move_assign_single,
 
   CHECK(move.size() == 1);
   CHECK(move.type() == XPathNodeSet::type_sorted);
-  CHECK(move[0] == doc.first_child().last_child());
+  CHECK(move[0] == doc.firstChild().lastChild());
 }
 
 TEST(xpath_api_nodeset_move_assign_empty)
@@ -520,7 +517,7 @@ TEST(xpath_api_nodeset_move_assign_empty)
 
 TEST_XML(xpath_api_nodeset_move_assign_self, "<node><foo/><foo/><bar/></node>")
 {
-  XPathNodeSet set = doc.select_nodes(STR("node/bar"));
+  XPathNodeSet set = doc.selectNodes(STR("node/bar"));
 
   CHECK(set.size() == 1);
   CHECK(set.type() == XPathNodeSet::type_sorted);

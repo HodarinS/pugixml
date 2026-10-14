@@ -57,7 +57,8 @@ namespace pugi
 {
 
 // Tree node types
-export enum XmlNodeType {
+export enum XmlNodeType
+{
   node_null,        // Empty (null) node handle
   node_document,    // A document tree's absolute root
   node_element,     // Element tag, i.e. '<node/>'
@@ -161,7 +162,8 @@ export {
                                          parse_doctype;
 }
 // These flags determine the encoding of input data for XML document
-export enum XmlEncoding {
+export enum XmlEncoding
+{
   encoding_auto, // Auto-detect input encoding using BOM or < / <? detection;
                  // use UTF8 if BOM is not found
   encoding_utf8, // UTF8 encoding
@@ -326,7 +328,6 @@ export class PUGIXML_CLASS XmlAttribute
 private:
   XmlAttributeStruct *_attr;
 
-
 public:
   // Default constructor. Constructs an empty attribute.
   XmlAttribute();
@@ -353,16 +354,16 @@ public:
 
   // Get attribute value as a number, or the default value if conversion did
   // not succeed or attribute is empty
-  int as_int(int def = 0) const;
-  unsigned int as_uint(unsigned int def = 0) const;
-  double as_double(double def = 0) const;
-  float as_float(float def = 0) const;
-  long long as_llong(long long def = 0) const;
-  unsigned long long as_ullong(unsigned long long def = 0) const;
+  int toInt(int def = 0) const;
+  unsigned int toUInt(unsigned int def = 0) const;
+  double toDouble(double def = 0) const;
+  float toFloat(float def = 0) const;
+  long long toLongLong(long long def = 0) const;
+  unsigned long long toULongLong(unsigned long long def = 0) const;
 
   // Get attribute value as bool (returns true if first character is in
   // '1tTyY' set), or the default value if attribute is empty
-  bool as_bool(bool def = false) const;
+  bool toBool(bool def = false) const;
 
   // Set attribute name/value (returns false if attribute is empty or there is
   // not enough memory)
@@ -404,6 +405,7 @@ public:
   XmlAttribute nextAttribute() const;
   XmlAttribute previousAttribute() const;
 
+  // keep it snake-case
   // Get hash value (unique for handles to the same object)
   size_t hash_value() const;
 
@@ -420,7 +422,6 @@ class PUGIXML_CLASS XmlNode
 
 protected:
   XmlNodeStruct *_root;
-
 
 public:
   // Default constructor. Constructs an empty node.
@@ -451,7 +452,7 @@ public:
 
   // Get node value, or "" if node is empty or it has no value
   // Note: For <node>text</node> node.value() does not return "text"! Use
-  // child_value() or text() methods to access text inside nodes.
+  // childValue() or text() methods to access text inside nodes.
   const char_t *value() const;
 
   // Get attribute list
@@ -459,12 +460,12 @@ public:
   XmlAttribute lastAttribute() const;
 
   // Get children list
-  XmlNode first_child() const;
-  XmlNode last_child() const;
+  XmlNode firstChild() const;
+  XmlNode lastChild() const;
 
   // Get next/previous sibling in the children list of the parent node
-  XmlNode next_sibling() const;
-  XmlNode previous_sibling() const;
+  XmlNode nextSibling() const;
+  XmlNode previousSibling() const;
 
   // Get parent node
   XmlNode parent() const;
@@ -478,12 +479,12 @@ public:
   // Get child, attribute or next/previous sibling with the specified name
   XmlNode child(const char_t *name) const;
   XmlAttribute attribute(const char_t *name) const;
-  XmlNode next_sibling(const char_t *name) const;
-  XmlNode previous_sibling(const char_t *name) const;
+  XmlNode nextSibling(const char_t *name) const;
+  XmlNode previousSibling(const char_t *name) const;
   XmlNode child(string_view_t name) const;
   XmlAttribute attribute(string_view_t name) const;
-  XmlNode next_sibling(string_view_t name) const;
-  XmlNode previous_sibling(string_view_t name) const;
+  XmlNode nextSibling(string_view_t name) const;
+  XmlNode previousSibling(string_view_t name) const;
 
   // Get attribute, starting the search from a hint (and updating hint so that
   // searching for a sequence of attributes is fast)
@@ -492,11 +493,11 @@ public:
 
   // Get child value of current node; that is, value of the first child node
   // of type PCDATA/CDATA
-  const char_t *child_value() const;
+  const char_t *childValue() const;
 
   // Get child value of child with specified name. Equivalent to
-  // child(name).child_value().
-  const char_t *child_value(const char_t *name) const;
+  // child(name).childValue().
+  const char_t *childValue(const char_t *name) const;
 
   // Set node name/value (returns false if node is empty, there is not enough
   // memory, or node can not have name/value)
@@ -509,32 +510,32 @@ public:
 
   // Add attribute with specified name. Returns added attribute, or empty
   // attribute on errors.
-  XmlAttribute append_attribute(const char_t *name);
-  XmlAttribute prepend_attribute(const char_t *name);
-  XmlAttribute insert_attribute_after(const char_t *name,
-                                      const XmlAttribute &attr);
-  XmlAttribute insert_attribute_before(const char_t *name,
-                                       const XmlAttribute &attr);
-  XmlAttribute append_attribute(string_view_t name);
-  XmlAttribute prepend_attribute(string_view_t name);
-  XmlAttribute insert_attribute_after(string_view_t name,
-                                      const XmlAttribute &attr);
-  XmlAttribute insert_attribute_before(string_view_t name,
-                                       const XmlAttribute &attr);
+  XmlAttribute appendAttribute(const char_t *name);
+  XmlAttribute prependAttribute(const char_t *name);
+  XmlAttribute insertAttributeAfter(const char_t *name,
+                                    const XmlAttribute &attr);
+  XmlAttribute insertAttributeBefore(const char_t *name,
+                                     const XmlAttribute &attr);
+  XmlAttribute appendAttribute(string_view_t name);
+  XmlAttribute prependAttribute(string_view_t name);
+  XmlAttribute insertAttributeAfter(string_view_t name,
+                                    const XmlAttribute &attr);
+  XmlAttribute insertAttributeBefore(string_view_t name,
+                                     const XmlAttribute &attr);
 
   // Get attribute with specified name, adding one if it does not exist.
   // Returns the existing or added attribute, or empty attribute on errors.
-  XmlAttribute ensure_attribute(const char_t *name);
-  XmlAttribute ensure_attribute(string_view_t name);
+  XmlAttribute ensureAttribute(const char_t *name);
+  XmlAttribute ensureAttribute(string_view_t name);
 
   // Add a copy of the specified attribute. Returns added attribute, or empty
   // attribute on errors.
-  XmlAttribute append_copy(const XmlAttribute &proto);
-  XmlAttribute prepend_copy(const XmlAttribute &proto);
-  XmlAttribute insert_copy_after(const XmlAttribute &proto,
-                                 const XmlAttribute &attr);
-  XmlAttribute insert_copy_before(const XmlAttribute &proto,
-                                  const XmlAttribute &attr);
+  XmlAttribute appendCopy(const XmlAttribute &proto);
+  XmlAttribute prependCopy(const XmlAttribute &proto);
+  XmlAttribute insertCopyAfter(const XmlAttribute &proto,
+                               const XmlAttribute &attr);
+  XmlAttribute insertCopyBefore(const XmlAttribute &proto,
+                                const XmlAttribute &attr);
 
   // Add child node with specified type. Returns added node, or empty node on
   // errors.
@@ -561,47 +562,47 @@ public:
 
   // Add a copy of the specified node as a child. Returns added node, or empty
   // node on errors.
-  XmlNode append_copy(const XmlNode &proto);
-  XmlNode prepend_copy(const XmlNode &proto);
-  XmlNode insert_copy_after(const XmlNode &proto, const XmlNode &node);
-  XmlNode insert_copy_before(const XmlNode &proto, const XmlNode &node);
+  XmlNode appendCopy(const XmlNode &proto);
+  XmlNode prependCopy(const XmlNode &proto);
+  XmlNode insertCopyAfter(const XmlNode &proto, const XmlNode &node);
+  XmlNode insertCopyBefore(const XmlNode &proto, const XmlNode &node);
 
   // Move the specified node to become a child of this node. Returns moved
   // node, or empty node on errors.
-  XmlNode append_move(const XmlNode &moved);
-  XmlNode prepend_move(const XmlNode &moved);
-  XmlNode insert_move_after(const XmlNode &moved, const XmlNode &node);
-  XmlNode insert_move_before(const XmlNode &moved, const XmlNode &node);
+  XmlNode appendMove(const XmlNode &moved);
+  XmlNode prependMove(const XmlNode &moved);
+  XmlNode insertMoveAfter(const XmlNode &moved, const XmlNode &node);
+  XmlNode insertMoveBefore(const XmlNode &moved, const XmlNode &node);
 
   // Remove specified attribute
-  bool remove_attribute(const XmlAttribute &a);
-  bool remove_attribute(const char_t *name);
-  bool remove_attribute(string_view_t name);
+  bool removeAttribute(const XmlAttribute &a);
+  bool removeAttribute(const char_t *name);
+  bool removeAttribute(string_view_t name);
 
   // Remove all attributes
-  bool remove_attributes();
+  bool removeAttributes();
 
   // Remove specified child
-  bool remove_child(const XmlNode &n);
-  bool remove_child(const char_t *name);
-  bool remove_child(string_view_t name);
+  bool removeChild(const XmlNode &n);
+  bool removeChild(const char_t *name);
+  bool removeChild(string_view_t name);
 
   // Remove all children
-  bool remove_children();
+  bool removeChildren();
 
   // Parses buffer as an XML document fragment and appends all nodes as
   // children of the current node. Copies/converts the buffer, so it may be
   // deleted or changed after the function returns. Note: append_buffer
   // allocates memory that has the lifetime of the owning document; removing
   // the appended nodes does not immediately reclaim that memory.
-  XmlParseResult append_buffer(const void *contents, size_t size,
-                               unsigned int options = parse_default,
-                               XmlEncoding encoding = encoding_auto);
+  XmlParseResult appendBuffer(const void *contents, size_t size,
+                              unsigned int options = parse_default,
+                              XmlEncoding encoding = encoding_auto);
 
   // Find attribute using predicate. Returns first attribute for which
   // predicate returned true.
   template < typename Predicate >
-  XmlAttribute find_attribute(Predicate pred) const
+  XmlAttribute findAttribute(Predicate pred) const
   {
     if (!_root)
       return XmlAttribute();
@@ -616,12 +617,12 @@ public:
 
   // Find child node using predicate. Returns first child for which predicate
   // returned true.
-  template < typename Predicate > XmlNode find_child(Predicate pred) const
+  template < typename Predicate > XmlNode findChild(Predicate pred) const
   {
     if (!_root)
       return XmlNode();
 
-    for (XmlNode node = first_child(); node; node = node.next_sibling())
+    for (XmlNode node = firstChild(); node; node = node.nextSibling())
       if (pred(node))
         return node;
 
@@ -630,29 +631,29 @@ public:
 
   // Find node from subtree using predicate. Returns first node from subtree
   // (depth-first), for which predicate returned true.
-  template < typename Predicate > XmlNode find_node(Predicate pred) const
+  template < typename Predicate > XmlNode findNode(Predicate pred) const
   {
     if (!_root)
       return XmlNode();
 
-    XmlNode cur = first_child();
+    XmlNode cur = firstChild();
 
     while (cur._root && cur._root != _root)
     {
       if (pred(cur))
         return cur;
 
-      if (cur.first_child())
-        cur = cur.first_child();
-      else if (cur.next_sibling())
-        cur = cur.next_sibling();
+      if (cur.firstChild())
+        cur = cur.firstChild();
+      else if (cur.nextSibling())
+        cur = cur.nextSibling();
       else
       {
-        while (!cur.next_sibling() && cur._root != _root)
+        while (!cur.nextSibling() && cur._root != _root)
           cur = cur.parent();
 
         if (cur._root != _root)
-          cur = cur.next_sibling();
+          cur = cur.nextSibling();
       }
     }
 
@@ -660,31 +661,30 @@ public:
   }
 
   // Find child node by attribute name/value
-  XmlNode find_child_by_attribute(const char_t *name, const char_t *attr_name,
-                                  const char_t *attr_value) const;
-  XmlNode find_child_by_attribute(const char_t *attr_name,
-                                  const char_t *attr_value) const;
+  XmlNode findChildByAttribute(const char_t *name, const char_t *attr_name,
+                               const char_t *attr_value) const;
+  XmlNode findChildByAttribute(const char_t *attr_name,
+                               const char_t *attr_value) const;
 
   // Get the absolute node path from root as a text string.
   string_t path(char_t delimiter = '/') const;
 
   // Search for a node by path consisting of node names and . or .. elements.
-  XmlNode first_element_by_path(const char_t *path,
-                                char_t delimiter = '/') const;
+  XmlNode firstElementByPath(const char_t *path, char_t delimiter = '/') const;
 
   // Recursively traverse subtree with XmlTreeWalker
   bool traverse(XmlTreeWalker &walker);
 
   // Select single node by evaluating XPath query. Returns first node from the
   // resulting node set.
-  XPathNode select_node(const char_t *query,
-                        XPathVariableSet *variables = nullptr) const;
-  XPathNode select_node(const XPathQuery &query) const;
+  XPathNode selectNode(const char_t *query,
+                       XPathVariableSet *variables = nullptr) const;
+  XPathNode selectNode(const XPathQuery &query) const;
 
   // Select node set by evaluating XPath query
-  XPathNodeSet select_nodes(const char_t *query,
-                            XPathVariableSet *variables = nullptr) const;
-  XPathNodeSet select_nodes(const XPathQuery &query) const;
+  XPathNodeSet selectNodes(const char_t *query,
+                           XPathVariableSet *variables = nullptr) const;
+  XPathNodeSet selectNodes(const XPathQuery &query) const;
 
   // Print subtree using a writer object
   void print(XmlWriter &writer, const char_t *indent = "\t",
@@ -721,8 +721,9 @@ public:
   // be careful with passing temporaries!
   XmlObjectRange< XmlNamedNodeIterator > children(const char_t *name) const;
 
-  // Get node offset in parsed file/string (in char_t units) for debugging
-  // purposes
+  // keep snake_case
+  //  Get node offset in parsed file/string (in char_t units) for debugging
+  //  purposes
   ptrdiff_t offset_debug() const;
 
   // Get hash value (unique for handles to the same object)
@@ -759,16 +760,16 @@ public:
 
   // Get text as a number, or the default value if conversion did not succeed
   // or object is empty
-  int as_int(int def = 0) const;
-  unsigned int as_uint(unsigned int def = 0) const;
-  double as_double(double def = 0) const;
-  float as_float(float def = 0) const;
-  long long as_llong(long long def = 0) const;
-  unsigned long long as_ullong(unsigned long long def = 0) const;
+  int toInt(int def = 0) const;
+  unsigned int toUInt(unsigned int def = 0) const;
+  double toDouble(double def = 0) const;
+  float toFloat(float def = 0) const;
+  long long toLongLong(long long def = 0) const;
+  unsigned long long toULongLong(unsigned long long def = 0) const;
 
   // Get text as bool (returns true if first character is in '1tTyY' set), or
   // the default value if object is empty
-  bool as_bool(bool def = false) const;
+  bool toBool(bool def = false) const;
 
   // Set text (returns false if object is empty or there is not enough memory)
   bool set(const char_t *rhs);
@@ -1057,37 +1058,37 @@ public:
   // Load document from zero-terminated string. No encoding conversions are
   // applied.
   XmlParseResult loadString(const char_t *contents,
-                             unsigned int options = parse_default);
+                            unsigned int options = parse_default);
 
   // Load document from file
   XmlParseResult loadFile(const char *path,
-                           unsigned int options = parse_default,
-                           XmlEncoding encoding = encoding_auto);
+                          unsigned int options = parse_default,
+                          XmlEncoding encoding = encoding_auto);
   XmlParseResult loadFile(const wchar_t *path,
-                           unsigned int options = parse_default,
-                           XmlEncoding encoding = encoding_auto);
+                          unsigned int options = parse_default,
+                          XmlEncoding encoding = encoding_auto);
 
   // Load document from buffer. Copies/converts the buffer, so it may be
   // deleted or changed after the function returns.
   XmlParseResult loadBuffer(const void *contents, size_t size,
-                             unsigned int options = parse_default,
-                             XmlEncoding encoding = encoding_auto);
+                            unsigned int options = parse_default,
+                            XmlEncoding encoding = encoding_auto);
 
   // Load document from buffer, using the buffer for in-place parsing (the
   // buffer is modified and used for storage of document data). You should
   // ensure that buffer data will persist throughout the document's lifetime,
   // and free the buffer memory manually once document is destroyed.
   XmlParseResult loadBufferInplace(void *contents, size_t size,
-                                     unsigned int options = parse_default,
-                                     XmlEncoding encoding = encoding_auto);
+                                   unsigned int options = parse_default,
+                                   XmlEncoding encoding = encoding_auto);
 
   // Load document from buffer, using the buffer for in-place parsing (the
   // buffer is modified and used for storage of document data). You should
   // allocate the buffer with pugixml allocation function; document will free
   // the buffer when it is no longer needed (you can't use it anymore).
   XmlParseResult loadBufferInplaceOwn(void *contents, size_t size,
-                                         unsigned int options = parse_default,
-                                         XmlEncoding encoding = encoding_auto);
+                                      unsigned int options = parse_default,
+                                      XmlEncoding encoding = encoding_auto);
 
   // Save XML document to writer (semantics is slightly different from
   // XmlNode::print, see documentation for details).
@@ -1105,11 +1106,11 @@ public:
 
   // Save XML to file
   bool saveFile(const char *path, const char_t *indent = "\t",
-                 unsigned int flags = format_default,
-                 XmlEncoding encoding = encoding_auto) const;
+                unsigned int flags = format_default,
+                XmlEncoding encoding = encoding_auto) const;
   bool saveFile(const wchar_t *path, const char_t *indent = "\t",
-                 unsigned int flags = format_default,
-                 XmlEncoding encoding = encoding_auto) const;
+                unsigned int flags = format_default,
+                XmlEncoding encoding = encoding_auto) const;
 
   // Get document element
   XmlNode documentElement() const;
@@ -1297,7 +1298,6 @@ public:
 
   // Safe bool conversion operator
   explicit operator bool() const;
-
 };
 
 // XPath node class (either XmlNode or XmlAttribute)
@@ -1426,5 +1426,6 @@ export void PUGIXML_FUNCTION set_memory_management_functions(
 
 // Get current memory management functions
 export allocation_function PUGIXML_FUNCTION get_memory_allocation_function();
-export deallocation_function PUGIXML_FUNCTION get_memory_deallocation_function();
+export deallocation_function PUGIXML_FUNCTION
+get_memory_deallocation_function();
 } // namespace pugi
