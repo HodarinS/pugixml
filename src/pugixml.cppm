@@ -44,11 +44,11 @@ using char_t = char;
 
 // String type used for operations that work with STL string; depends on
 // PUGIXML_WCHAR_MODE
-using string_t = std::basic_string< char >;
+using string_t = std::basic_string< char_t >;
 
 // String view type used for operations that can work with a length delimited
 // string; depends on PUGIXML_WCHAR_MODE
-using string_view_t = std::basic_string_view< char >;
+using string_view_t = std::basic_string_view< char_t >;
 } // namespace pugi
 
 export constexpr short PUGIXML_VERSION = 1160;
