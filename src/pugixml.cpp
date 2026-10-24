@@ -2262,7 +2262,7 @@ XmlEncoding get_buffer_encoding(XmlEncoding encoding, const void *contents,
   // replace utf32 encoding with utf32 with specific endianness
   if (encoding == encoding_utf32)
     return is_little_endian() ? encoding_utf32_le : encoding_utf32_be;
-
+  
   // only do autodetection if no explicit encoding is requested
   if (encoding != encoding_auto)
     return encoding;

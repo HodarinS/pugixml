@@ -167,7 +167,7 @@ export {
   using XmlEncoding = string_t;
   // Auto-detect input encoding using BOM or < / <? detection;
   // use UTF8 if BOM is not found
-  constexpr string_t encoding_auto = "UTF-8";
+  constexpr string_t encoding_auto = {};
   // UTF8 encoding
   constexpr string_t encoding_utf8 = "UTF-8";
   // Little-endian UTF16
@@ -1438,3 +1438,17 @@ export allocation_function PUGIXML_FUNCTION get_memory_allocation_function();
 export deallocation_function PUGIXML_FUNCTION
 get_memory_deallocation_function();
 } // namespace pugi
+
+export namespace std
+{
+template <> struct formatter< pugi::XmlNode > : public std::formatter< pugi::string_t >
+{
+  template < typename FmtContext >
+  FmtContext::iterator format(pugi::XmlNode const &node, FmtContext &ctx) const
+  {
+    std::basic_ostringstream< pugi::string_t::value_type > text_node_stream;
+    node.print(text_node_stream);
+    return std::formatter< pugi::string_t >::format(text_node_stream.str(), ctx);
+  }
+};
+} // namespace std

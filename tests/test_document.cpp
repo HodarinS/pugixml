@@ -1088,6 +1088,10 @@ TEST(document_loadFile_convert_specific)
       else
       {
         // should not get past first tag
+        std::println("{}", doc);
+        std::println("encoding {}", encoding);
+        std::println("res {}", res.encoding);
+        std::println("res {}", res.description());
         CHECK(!doc.firstChild());
       }
     }
