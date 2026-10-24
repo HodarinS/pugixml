@@ -162,20 +162,29 @@ export {
                                          parse_doctype;
 }
 // These flags determine the encoding of input data for XML document
-export enum XmlEncoding
-{
-  encoding_auto, // Auto-detect input encoding using BOM or < / <? detection;
-                 // use UTF8 if BOM is not found
-  encoding_utf8, // UTF8 encoding
-  encoding_utf16_le, // Little-endian UTF16
-  encoding_utf16_be, // Big-endian UTF16
-  encoding_utf16,    // UTF16 with native endianness
-  encoding_utf32_le, // Little-endian UTF32
-  encoding_utf32_be, // Big-endian UTF32
-  encoding_utf32,    // UTF32 with native endianness
-  encoding_wchar,    // The same encoding wchar_t has (either UTF16 or UTF32)
-  encoding_latin1    // Latin1 encoding (ISO-8859-1)
-};
+// These flags determine the encoding of input data for XML document
+export using XmlEncoding = string_t;
+// Auto-detect input encoding using BOM or < / <? detection;
+// use UTF8 if BOM is not found
+export constexpr string_t encoding_auto = "UTF-8";
+// UTF8 encoding
+export constexpr string_t encoding_utf8 = "UTF-8";
+// Little-endian UTF16
+export constexpr string_t encoding_utf16_le = "UTF-16LE";
+// Big-endian UTF16
+export constexpr string_t encoding_utf16_be = "UTF-16BE";
+// UTF16 with native endianness
+export constexpr string_t encoding_utf16 = "UTF-16";
+// Little-endian UTF32
+export constexpr string_t encoding_utf32_le = "UTF-32LE";
+// Big-endian UTF32
+export constexpr string_t encoding_utf32_be = "UTF-32BE";
+// UTF32 with native endianness
+export constexpr string_t encoding_utf32 = "UTF-32";
+// The same encoding wchar_t has (either UTF16 or UTF32)
+export constexpr string_t encoding_wchar = "UTF-32";
+export constexpr string_t encoding_latin1 = "latin1";
+
 
 // Formatting flags
 export {
