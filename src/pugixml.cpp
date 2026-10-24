@@ -5906,53 +5906,6 @@ PUGI_IMPL_NS_END
 
 namespace pugi
 {
-XmlWriter::~XmlWriter()
-{
-}
-
-XmlWriterFile::XmlWriterFile(void *file_)
-    : file(file_)
-{
-}
-
-void XmlWriterFile::write(const void *data, size_t size)
-{
-  size_t result = fwrite(data, 1, size, static_cast< FILE * >(file));
-  (void)!result; // unfortunately we can't do proper error handling here
-}
-
-#ifndef PUGIXML_NO_STL
-
-XmlWriterStream::XmlWriterStream(std::basic_ostream< char > &stream)
-    : narrow_stream(&stream),
-      wide_stream(NULL)
-{
-}
-
-XmlWriterStream::XmlWriterStream(std::basic_ostream< wchar_t > &stream)
-    : narrow_stream(NULL),
-      wide_stream(&stream)
-{
-}
-
-void XmlWriterStream::write(const void *data, size_t size)
-{
-  if (narrow_stream)
-  {
-    assert(!wide_stream);
-    narrow_stream->write(reinterpret_cast< const char * >(data),
-                         static_cast< std::streamsize >(size));
-  }
-  else
-  {
-    assert(wide_stream);
-    assert(size % sizeof(wchar_t) == 0);
-
-    wide_stream->write(reinterpret_cast< const wchar_t * >(data),
-                       static_cast< std::streamsize >(size / sizeof(wchar_t)));
-  }
-}
-#endif
 
 XmlTreeWalker::XmlTreeWalker()
     : _depth(0)
@@ -5990,7 +5943,7 @@ XmlAttribute::XmlAttribute(XmlAttributeStruct *attr)
 
 XmlAttribute::operator bool() const
 {
-  return _attr ? true : false;
+  return _attr != nullptr;
 }
 
 bool XmlAttribute::operator==(const XmlAttribute &r) const

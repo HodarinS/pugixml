@@ -33,8 +33,10 @@ module;
 #endif
 
 export module pugixml;
+export import pugixml.wrtier;
 import std;
 import std.compat;
+
 // Character type used for all internal storage and operations; depends on
 // PUGIXML_WCHAR_MODE
 export namespace pugi
@@ -290,44 +292,6 @@ private:
   It _begin, _end;
 };
 
-// Writer interface for node printing (see XmlNode::print)
-export class PUGIXML_CLASS XmlWriter
-{
-public:
-  virtual ~XmlWriter();
-
-  // Write memory chunk into stream/file/whatever
-  virtual void write(const void *data, size_t size) = 0;
-};
-
-// XmlWriter implementation for FILE*
-export class PUGIXML_CLASS XmlWriterFile : public XmlWriter
-{
-public:
-  // Construct writer from a FILE* object; void* is used to avoid header
-  // dependencies on stdio
-  XmlWriterFile(void *file);
-
-  virtual void write(const void *data, size_t size) override;
-
-private:
-  void *file;
-};
-
-// XmlWriter implementation for streams
-export class PUGIXML_CLASS XmlWriterStream : public XmlWriter
-{
-public:
-  // Construct writer from an output stream object
-  XmlWriterStream(std::basic_ostream< char > &stream);
-  XmlWriterStream(std::basic_ostream< wchar_t > &stream);
-
-  virtual void write(const void *data, size_t size) override;
-
-private:
-  std::basic_ostream< char > *narrow_stream;
-  std::basic_ostream< wchar_t > *wide_stream;
-};
 
 // A light-weight handle for manipulating attributes in DOM tree
 export class PUGIXML_CLASS XmlAttribute
