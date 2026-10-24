@@ -1991,9 +1991,8 @@ struct wchar_decoder
   {
     using decoder = wchar_selector< sizeof(wchar_t) >::decoder;
 
-    return decoder::process(
-        reinterpret_cast< const  decoder::type * >(data), size, result,
-        traits);
+    return decoder::process(reinterpret_cast< const decoder::type * >(data),
+                            size, result, traits);
   }
 };
 
@@ -7114,7 +7113,7 @@ XmlAttribute XmlNode::insertCopyBefore(const XmlAttribute &proto,
   return a;
 }
 
-XmlNode XmlNode::append_child(XmlNodeType type_)
+XmlNode XmlNode::appendChild(XmlNodeType type_)
 {
   if (!impl::allow_insert_child(type(), type_))
     return XmlNode();
@@ -7135,7 +7134,7 @@ XmlNode XmlNode::append_child(XmlNodeType type_)
   return n;
 }
 
-XmlNode XmlNode::prepend_child(XmlNodeType type_)
+XmlNode XmlNode::prependChild(XmlNodeType type_)
 {
   if (!impl::allow_insert_child(type(), type_))
     return XmlNode();
@@ -7156,7 +7155,7 @@ XmlNode XmlNode::prepend_child(XmlNodeType type_)
   return n;
 }
 
-XmlNode XmlNode::insert_child_before(XmlNodeType type_, const XmlNode &node)
+XmlNode XmlNode::insertChildBefore(XmlNodeType type_, const XmlNode &node)
 {
   if (!impl::allow_insert_child(type(), type_))
     return XmlNode();
@@ -7179,7 +7178,7 @@ XmlNode XmlNode::insert_child_before(XmlNodeType type_, const XmlNode &node)
   return n;
 }
 
-XmlNode XmlNode::insert_child_after(XmlNodeType type_, const XmlNode &node)
+XmlNode XmlNode::insertChildAfter(XmlNodeType type_, const XmlNode &node)
 {
   if (!impl::allow_insert_child(type(), type_))
     return XmlNode();
@@ -7202,90 +7201,90 @@ XmlNode XmlNode::insert_child_after(XmlNodeType type_, const XmlNode &node)
   return n;
 }
 
-XmlNode XmlNode::append_child(const char_t *name_)
+XmlNode XmlNode::appendChild(const char_t *name_)
 {
-  XmlNode result = append_child(node_element);
+  XmlNode result = appendChild(node_element);
 
   result.setName(name_);
 
   return result;
 }
 
-XmlNode XmlNode::prepend_child(const char_t *name_)
+XmlNode XmlNode::prependChild(const char_t *name_)
 {
-  XmlNode result = prepend_child(node_element);
+  XmlNode result = prependChild(node_element);
 
   result.setName(name_);
 
   return result;
 }
 
-XmlNode XmlNode::insert_child_after(const char_t *name_, const XmlNode &node)
+XmlNode XmlNode::insertChildAfter(const char_t *name_, const XmlNode &node)
 {
-  XmlNode result = insert_child_after(node_element, node);
+  XmlNode result = insertChildAfter(node_element, node);
 
   result.setName(name_);
 
   return result;
 }
 
-XmlNode XmlNode::insert_child_before(const char_t *name_, const XmlNode &node)
+XmlNode XmlNode::insertChildBefore(const char_t *name_, const XmlNode &node)
 {
-  XmlNode result = insert_child_before(node_element, node);
+  XmlNode result = insertChildBefore(node_element, node);
 
   result.setName(name_);
 
   return result;
 }
 
-XmlNode XmlNode::append_child(string_view_t name_)
+XmlNode XmlNode::appendChild(string_view_t name_)
 {
-  XmlNode result = append_child(node_element);
+  XmlNode result = appendChild(node_element);
 
   result.setName(name_);
 
   return result;
 }
 
-XmlNode XmlNode::prepend_child(string_view_t name_)
+XmlNode XmlNode::prependChild(string_view_t name_)
 {
-  XmlNode result = prepend_child(node_element);
+  XmlNode result = prependChild(node_element);
 
   result.setName(name_);
 
   return result;
 }
 
-XmlNode XmlNode::insert_child_after(string_view_t name_, const XmlNode &node)
+XmlNode XmlNode::insertChildAfter(string_view_t name_, const XmlNode &node)
 {
-  XmlNode result = insert_child_after(node_element, node);
+  XmlNode result = insertChildAfter(node_element, node);
 
   result.setName(name_);
 
   return result;
 }
 
-XmlNode XmlNode::insert_child_before(string_view_t name_, const XmlNode &node)
+XmlNode XmlNode::insertChildBefore(string_view_t name_, const XmlNode &node)
 {
-  XmlNode result = insert_child_before(node_element, node);
+  XmlNode result = insertChildBefore(node_element, node);
 
   result.setName(name_);
 
   return result;
 }
 
-XmlNode XmlNode::ensure_child(const char_t *name_)
+XmlNode XmlNode::ensureChild(const char_t *name_)
 {
   XmlNode result = child(name_);
 
-  return result ? result : append_child(name_);
+  return result ? result : appendChild(name_);
 }
 
-XmlNode XmlNode::ensure_child(string_view_t name_)
+XmlNode XmlNode::ensureChild(string_view_t name_)
 {
   XmlNode result = child(name_);
 
-  return result ? result : append_child(name_);
+  return result ? result : appendChild(name_);
 }
 
 XmlNode XmlNode::appendCopy(const XmlNode &proto)
@@ -7910,7 +7909,7 @@ XmlNodeStruct *XmlText::_data_new()
   if (d)
     return d;
 
-  return XmlNode(_root).append_child(node_pcdata).internal_object();
+  return XmlNode(_root).appendChild(node_pcdata).internal_object();
 }
 
 XmlText::XmlText()

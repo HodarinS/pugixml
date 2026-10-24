@@ -442,7 +442,7 @@ TEST_XML(dom_node_iterator_invalidate, "<node><node1><child1/></node1><node2><ch
 	CHECK_STRING(it1->name(), STR("child1"));
 
 	// adding attr2 back, it3 is still past-the-end!
-	XmlNodeIterator it2new = node2.append_child();
+	XmlNodeIterator it2new = node2.appendChild();
 	it2new->setName(STR("child2-new"));
 
 	CHECK(node2.end() == it3);
@@ -712,10 +712,10 @@ TEST_XML(dom_node_findChildByAttribute, "<node><stub attr='value3' /><child1 att
 TEST(dom_node_findChildByAttribute_null)
 {
 	XmlDocument doc;
-	XmlNode node0 = doc.append_child();
-	XmlNode node1 = doc.append_child(STR("a"));
-	XmlNode node2 = doc.append_child(STR("a"));
-	XmlNode node3 = doc.append_child(STR("a"));
+	XmlNode node0 = doc.appendChild();
+	XmlNode node1 = doc.appendChild(STR("a"));
+	XmlNode node2 = doc.appendChild(STR("a"));
+	XmlNode node3 = doc.appendChild(STR("a"));
 
 	(void)node0;
 
@@ -824,7 +824,7 @@ TEST_XML(dom_node_path, "<node><child1>text<child2/></child1></node>")
 
 	CHECK(doc.child(STR("node")).child(STR("child1")).path('\\') == STR("\\node\\child1"));
 
-	doc.append_child(node_element);
+	doc.appendChild(node_element);
 	CHECK(doc.lastChild().path() == STR("/"));
 }
 #endif
@@ -1033,8 +1033,8 @@ TEST(dom_offset_debug_encoding)
 TEST_XML(dom_offset_debug_append, "<node/>")
 {
 	XmlNode c1 = doc.firstChild();
-	XmlNode c2 = doc.append_child(STR("node"));
-	XmlNode c3 = doc.append_child(node_pcdata);
+	XmlNode c2 = doc.appendChild(STR("node"));
+	XmlNode c3 = doc.appendChild(node_pcdata);
 
 	CHECK(doc.offset_debug() == 0);
 	CHECK(c1.offset_debug() == 1);
@@ -1407,9 +1407,9 @@ TEST_XML(dom_toInt_plus, "<node attr1='+1' attr2='+0xa' />")
 TEST(dom_node_anonymous)
 {
 	XmlDocument doc;
-	doc.append_child(node_element);
-	doc.append_child(node_element);
-	doc.append_child(node_pcdata);
+	doc.appendChild(node_element);
+	doc.appendChild(node_element);
+	doc.appendChild(node_pcdata);
 
 	CHECK(doc.child(STR("node")) == XmlNode());
 	CHECK(doc.firstChild().nextSibling(STR("node")) == XmlNode());

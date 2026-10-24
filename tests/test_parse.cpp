@@ -999,7 +999,7 @@ TEST(parse_out_of_memory_allocator_state_sync)
 	test_runner::_memory_fail_threshold = 0;
 
 	for (unsigned int j = 0; j < count; ++j)
-		CHECK(doc.append_child(STR("n")));
+		CHECK(doc.appendChild(STR("n")));
 }
 
 static bool test_offset(const char_t* contents, unsigned int options, XmlParseStatus status, ptrdiff_t offset)
@@ -1337,7 +1337,7 @@ TEST(parse_merge_pcdata_whitespace)
 TEST(parse_merge_pcdata_append)
 {
 	XmlDocument doc;
-	doc.append_child(STR("node")).append_child(node_pcdata);
+	doc.appendChild(STR("node")).appendChild(node_pcdata);
 	XmlParseResult res = doc.child(STR("node")).appendBuffer("hello <!--comment-->world", 25, parse_merge_pcdata | parse_fragment);
 
 	CHECK(res.status == status_append_invalid_root);

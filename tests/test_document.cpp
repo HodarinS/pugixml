@@ -59,7 +59,7 @@ TEST(document_create_empty)
 TEST(document_create)
 {
   XmlDocument doc;
-  doc.append_child().setName(STR("node"));
+  doc.appendChild().setName(STR("node"));
   CHECK_NODE(doc, STR("<node/>"));
 }
 
@@ -743,7 +743,7 @@ TEST(document_save_declaration_empty)
 
 TEST_XML(document_save_declaration_present_first, "<node/>")
 {
-  doc.insert_child_before(node_declaration, doc.firstChild())
+  doc.insertChildBefore(node_declaration, doc.firstChild())
       .appendAttribute(STR("encoding")) = STR("utf8");
 
   xml_writer_string writer;
@@ -755,9 +755,9 @@ TEST_XML(document_save_declaration_present_first, "<node/>")
 
 TEST_XML(document_save_declaration_present_second, "<node/>")
 {
-  doc.insert_child_before(node_declaration, doc.firstChild())
+  doc.insertChildBefore(node_declaration, doc.firstChild())
       .appendAttribute(STR("encoding")) = STR("utf8");
-  doc.insert_child_before(node_comment, doc.firstChild()).setValue(STR("text"));
+  doc.insertChildBefore(node_comment, doc.firstChild()).setValue(STR("text"));
 
   xml_writer_string writer;
 
@@ -769,7 +769,7 @@ TEST_XML(document_save_declaration_present_second, "<node/>")
 
 TEST_XML(document_save_declaration_present_last, "<node/>")
 {
-  doc.append_child(node_declaration).appendAttribute(STR("encoding")) =
+  doc.appendChild(node_declaration).appendAttribute(STR("encoding")) =
       STR("utf8");
 
   xml_writer_string writer;
@@ -1798,7 +1798,7 @@ TEST(document_move_appendBuffer)
           "attr1=\"value1\"><node2/><node3/><node4/><node5/><node6/></node1>"));
 }
 
-TEST(document_move_append_child)
+TEST(document_move_appendChild)
 {
   XmlDocument *doc = new XmlDocument();
   CHECK(doc->loadString(STR("<node1 attr1='value1'><node2/></node1>")));
@@ -1807,7 +1807,7 @@ TEST(document_move_append_child)
   delete doc;
 
   for (int i = 0; i < 3000; ++i)
-    other.child(STR("node1")).append_child(STR("node"));
+    other.child(STR("node1")).appendChild(STR("node"));
 
   for (int i = 0; i < 3000; ++i)
     other.child(STR("node1"))
@@ -1831,10 +1831,10 @@ TEST(document_move_large)
 {
   XmlDocument *doc = new XmlDocument();
 
-  XmlNode dn = doc->append_child(STR("node"));
+  XmlNode dn = doc->appendChild(STR("node"));
 
   for (int i = 0; i < 3000; ++i)
-    dn.append_child(STR("child"));
+    dn.appendChild(STR("child"));
 
   XmlDocument other = std::move(*doc);
   delete doc;
@@ -1856,13 +1856,13 @@ TEST_XML(document_move_buffer, "<node1/><node2/>")
   CHECK(other.child(STR("node2")).offset_debug() == 9);
 }
 
-TEST_XML(document_move_append_child_zero_alloc, "<node1/><node2/>")
+TEST_XML(document_move_appendChild_zero_alloc, "<node1/><node2/>")
 {
   test_runner::_memory_fail_threshold = 1;
 
   XmlDocument other = std::move(doc);
 
-  CHECK(other.append_child(STR("node3")));
+  CHECK(other.appendChild(STR("node3")));
 
   CHECK_NODE(other, STR("<node1/><node2/><node3/>"));
 }
@@ -1925,10 +1925,10 @@ TEST(document_move_compact_fail)
 TEST(document_move_assign_empty)
 {
   XmlDocument doc;
-  doc.append_child(STR("node"));
+  doc.appendChild(STR("node"));
 
   doc = XmlDocument();
-  doc.append_child(STR("node2"));
+  doc.appendChild(STR("node2"));
 
   CHECK_NODE(doc, STR("<node2/>"));
 }

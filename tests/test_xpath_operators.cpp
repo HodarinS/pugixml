@@ -463,10 +463,10 @@ TEST_XML(xpath_operators_union_order, "<node />")
 {
   XmlNode n = doc.child(STR("node"));
 
-  n.append_child(STR("c"));
-  n.prepend_child(STR("b"));
-  n.append_child(STR("d"));
-  n.prepend_child(STR("a"));
+  n.appendChild(STR("c"));
+  n.prependChild(STR("b"));
+  n.appendChild(STR("d"));
+  n.prependChild(STR("a"));
 
   XPathNodeSet ns = n.selectNodes(STR("d | d | b | c | b | a | c | d | b"));
 

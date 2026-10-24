@@ -71,7 +71,7 @@ static void replace_memory_management()
   // create some document to touch original functions
   {
     pugi::XmlDocument doc;
-    auto node = doc.append_child();
+    auto node = doc.appendChild();
     node.setName("node");
   }
   // replace functions

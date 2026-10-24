@@ -233,13 +233,13 @@ TEST(XPathVariables_evaluate_node_set_fail)
 TEST(XPathVariables_multiple_documents)
 {
   XmlDocument doc;
-  doc.append_child().setName(STR("node"));
+  doc.appendChild().setName(STR("node"));
 
   XmlDocument doc1;
-  doc1.append_child().setName(STR("node"));
+  doc1.appendChild().setName(STR("node"));
 
   XmlDocument doc2;
-  doc2.append_child().setName(STR("node"));
+  doc2.appendChild().setName(STR("node"));
 
   XPathVariableSet set;
   set.set(STR("var1"), doc1.selectNodes(STR("*")));
@@ -649,7 +649,7 @@ TEST(XPathVariables_copy_big_value_out_of_memory)
 TEST_XML(XPathVariables_evaluate_node_set_out_of_memory, "<node />")
 {
   for (size_t i = 0; i < 600; ++i)
-    doc.append_child(STR("node"));
+    doc.appendChild(STR("node"));
 
   XPathNodeSet ns = doc.selectNodes(STR("node"));
   CHECK(ns.size() == 601);

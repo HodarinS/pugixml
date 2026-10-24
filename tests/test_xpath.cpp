@@ -482,7 +482,7 @@ TEST_XML(xpath_out_of_memory_evaluate_union, "<node />")
 	size_t count = sizeof(void*) == 4 ? 300 : 150;
 
 	for (size_t i = 0; i < count; ++i)
-		doc.firstChild().append_child(STR("a"));
+		doc.firstChild().appendChild(STR("a"));
 
 	XPathQuery q(STR("a|a"));
 
@@ -500,7 +500,7 @@ TEST_XML(xpath_out_of_memory_evaluate_union_hash, "<node />")
 	size_t count = sizeof(void*) == 4 ? 200 : 100;
 
 	for (size_t i = 0; i < count; ++i)
-		doc.firstChild().append_child(STR("a"));
+		doc.firstChild().appendChild(STR("a"));
 
 	XPathQuery q(STR("a|a"));
 
@@ -590,10 +590,10 @@ TEST(xpath_out_of_memory_evaluate_number_to_string)
 TEST(xpath_memory_concat_massive)
 {
 	XmlDocument doc;
-	XmlNode node = doc.append_child(STR("node"));
+	XmlNode node = doc.appendChild(STR("node"));
 
 	for (int i = 0; i < 5000; ++i)
-		node.append_child(STR("c")).text().set(i % 10);
+		node.appendChild(STR("c")).text().set(i % 10);
 
 	XPathQuery q(STR("/"));
 	size_t size = q.evaluate_string(0, 0, node);
@@ -716,10 +716,10 @@ TEST(xpath_sort_crossdoc)
 TEST(xpath_sort_crossdoc_dynamic)
 {
 	XmlDocument doc1;
-	doc1.append_child(STR("node"));
+	doc1.appendChild(STR("node"));
 
 	XmlDocument doc2;
-	doc2.append_child(STR("node"));
+	doc2.appendChild(STR("node"));
 
 	XPathNodeSet ns1 = doc1.selectNodes(STR("*"));
 	CHECK(ns1.size() == 1);
@@ -742,10 +742,10 @@ TEST(xpath_sort_crossdoc_dynamic)
 TEST(xpath_sort_crossdoc_different_depth)
 {
 	XmlDocument doc1;
-	doc1.append_child(STR("node"));
+	doc1.appendChild(STR("node"));
 
 	XmlDocument doc2;
-	doc2.append_child(STR("node")).append_child(STR("node"));
+	doc2.appendChild(STR("node")).appendChild(STR("node"));
 
 	XPathNodeSet ns1 = doc1.selectNodes(STR("*"));
 	CHECK(ns1.size() == 1);
@@ -795,8 +795,8 @@ TEST(xpath_remove_duplicates)
 
 	for (int i = 0; i < 20; ++i)
 	{
-		doc.append_child(STR("node2"));
-		doc.prepend_child(STR("node1"));
+		doc.appendChild(STR("node2"));
+		doc.prependChild(STR("node1"));
 	}
 
 	XPathNodeSet ns = doc.selectNodes(STR("/node2/preceding::* | //node1 | /node() | /* | /node1/following-sibling::*"));
@@ -814,8 +814,8 @@ TEST(xpath_remove_duplicates)
 TEST(xpath_anonymous_nodes)
 {
 	XmlDocument doc;
-	doc.append_child(node_element);
-	doc.append_child(node_pi);
+	doc.appendChild(node_element);
+	doc.appendChild(node_pi);
 
 	CHECK_XPATH_NODESET(doc, STR("/name"));
 	CHECK_XPATH_NODESET(doc, STR("/processing-instruction('a')"));

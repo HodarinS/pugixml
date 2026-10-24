@@ -532,7 +532,6 @@ public:
                                     const XmlAttribute &attr);
   XmlAttribute insertAttributeBefore(string_view_t name,
                                      const XmlAttribute &attr);
-
   // Get attribute with specified name, adding one if it does not exist.
   // Returns the existing or added attribute, or empty attribute on errors.
   XmlAttribute ensureAttribute(const char_t *name);
@@ -549,26 +548,26 @@ public:
 
   // Add child node with specified type. Returns added node, or empty node on
   // errors.
-  XmlNode append_child(XmlNodeType type = node_element);
-  XmlNode prepend_child(XmlNodeType type = node_element);
-  XmlNode insert_child_after(XmlNodeType type, const XmlNode &node);
-  XmlNode insert_child_before(XmlNodeType type, const XmlNode &node);
+  XmlNode appendChild(XmlNodeType type = node_element);
+  XmlNode prependChild(XmlNodeType type = node_element);
+  XmlNode insertChildAfter(XmlNodeType type, const XmlNode &node);
+  XmlNode insertChildBefore(XmlNodeType type, const XmlNode &node);
 
   // Add child element with specified name. Returns added node, or empty node
   // on errors.
-  XmlNode append_child(const char_t *name);
-  XmlNode prepend_child(const char_t *name);
-  XmlNode insert_child_after(const char_t *name, const XmlNode &node);
-  XmlNode insert_child_before(const char_t *name, const XmlNode &node);
-  XmlNode append_child(string_view_t name);
-  XmlNode prepend_child(string_view_t name);
-  XmlNode insert_child_after(string_view_t name, const XmlNode &node);
-  XmlNode insert_child_before(string_view_t name, const XmlNode &node);
+  XmlNode appendChild(const char_t *name);
+  XmlNode prependChild(const char_t *name);
+  XmlNode insertChildAfter(const char_t *name, const XmlNode &node);
+  XmlNode insertChildBefore(const char_t *name, const XmlNode &node);
+  XmlNode appendChild(string_view_t name);
+  XmlNode prependChild(string_view_t name);
+  XmlNode insertChildAfter(string_view_t name, const XmlNode &node);
+  XmlNode insertChildBefore(string_view_t name, const XmlNode &node);
 
   // Get child with specified name, adding one if it does not exist. Returns
   // the existing or added node, or empty node on errors.
-  XmlNode ensure_child(const char_t *name);
-  XmlNode ensure_child(string_view_t name);
+  XmlNode ensureChild(const char_t *name);
+  XmlNode ensureChild(string_view_t name);
 
   // Add a copy of the specified node as a child. Returns added node, or empty
   // node on errors.
