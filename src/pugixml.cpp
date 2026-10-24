@@ -133,6 +133,7 @@ using uint32_t = unsigned __int32;
 #endif
 
 module pugixml;
+import pugixml.iconv;
 
 // Memory allocation
 PUGI_IMPL_NS_BEGIN

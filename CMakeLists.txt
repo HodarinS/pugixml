@@ -41,6 +41,7 @@ separate_arguments(PUGIXML_BUILD_DEFINES)
 set(PUGIXML_MODULES
   ${PROJECT_SOURCE_DIR}/src/pugixml.cppm
   ${PROJECT_SOURCE_DIR}/src/pugixml.writer.cppm
+  ${PROJECT_SOURCE_DIR}/src/pugixml.iconv.cppm
 )
 
 set(PUGIXML_SOURCE ${PROJECT_SOURCE_DIR}/src/pugixml.cpp)
