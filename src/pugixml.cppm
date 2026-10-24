@@ -263,8 +263,8 @@ export class XPathVariableSet;
 export template < typename It > class XmlObjectRange
 {
 public:
-  typedef It const_iterator;
-  typedef It iterator;
+  using const_iterator = It;
+  using iterator = It;
 
   XmlObjectRange(It b, It e)
       : _begin(b),
@@ -904,11 +904,11 @@ class PUGIXML_CLASS XmlNamedNodeIterator
 
 public:
   // Iterator traits
-  typedef ptrdiff_t difference_type;
-  typedef XmlNode value_type;
-  typedef XmlNode *pointer;
-  typedef XmlNode &reference;
-  typedef std::bidirectional_iterator_tag iterator_category;
+  using difference_type = ptrdiff_t;
+  using value_type = XmlNode;
+  using pointer = XmlNode *;
+  using reference = XmlNode &;
+  using iterator_category = std::bidirectional_iterator_tag;
 
   // Default constructor
   XmlNamedNodeIterator();
@@ -1353,11 +1353,11 @@ public:
   };
 
   // Constant iterator type
-  typedef const XPathNode *const_iterator;
+  using const_iterator = const XPathNode *;
 
   // We define non-constant iterator to be the same as constant iterator so
   // that various generic algorithms (i.e. boost foreach) work
-  typedef const XPathNode *iterator;
+  using iterator = const XPathNode *;
 
   // Default constructor. Constructs empty set.
   XPathNodeSet();
