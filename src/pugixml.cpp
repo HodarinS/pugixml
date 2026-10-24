@@ -121,12 +121,12 @@ module;
 namespace pugi
 {
 #ifndef _UINTPTR_T_DEFINED
-typedef size_t uintptr_t;
+using uintptr_t = size_t;
 #endif
 
-typedef unsigned __int8 uint8_t;
-typedef unsigned __int16 uint16_t;
-typedef unsigned __int32 uint32_t;
+using uint8_t = unsigned __int8;
+using uint16_t = unsigned __int16;
+using uint32_t = unsigned __int32;
 } // namespace pugi
 #else
 #include <stdint.h>
@@ -162,7 +162,7 @@ template < typename T >
 deallocation_function xml_memory_management_function_storage< T >::deallocate =
     default_deallocate;
 
-typedef xml_memory_management_function_storage< int > xml_memory;
+using xml_memory = xml_memory_management_function_storage< int >;
 PUGI_IMPL_NS_END
 
 // String utilities
@@ -240,7 +240,7 @@ PUGI_IMPL_NS_END
 PUGI_IMPL_NS_BEGIN
 template < typename T > struct auto_deleter
 {
-  typedef void (*D)(T *);
+  using D = void (*)(T *);
 
   T *data;
   D deleter;
@@ -1596,7 +1596,7 @@ inline uint32_t endian_swap(uint32_t value)
 
 struct utf8_counter
 {
-  typedef size_t value_type;
+  using value_type = size_t;
 
   static value_type low(value_type result, uint32_t ch)
   {
@@ -1620,7 +1620,7 @@ struct utf8_counter
 
 struct utf8_writer
 {
-  typedef uint8_t *value_type;
+  using value_type = uint8_t *;
 
   static value_type low(value_type result, uint32_t ch)
   {
@@ -1665,7 +1665,7 @@ struct utf8_writer
 
 struct utf16_counter
 {
-  typedef size_t value_type;
+  using value_type = size_t;
 
   static value_type low(value_type result, uint32_t)
   {
@@ -1680,7 +1680,7 @@ struct utf16_counter
 
 struct utf16_writer
 {
-  typedef uint16_t *value_type;
+  using value_type = uint16_t *;
 
   static value_type low(value_type result, uint32_t ch)
   {
@@ -1708,7 +1708,7 @@ struct utf16_writer
 
 struct utf32_counter
 {
-  typedef size_t value_type;
+  using value_type = size_t;
 
   static value_type low(value_type result, uint32_t)
   {
@@ -1723,7 +1723,7 @@ struct utf32_counter
 
 struct utf32_writer
 {
-  typedef uint32_t *value_type;
+  using value_type = uint32_t *;
 
   static value_type low(value_type result, uint32_t ch)
   {
@@ -1749,7 +1749,7 @@ struct utf32_writer
 
 struct latin1_writer
 {
-  typedef uint8_t *value_type;
+  using value_type = uint8_t *;
 
   static value_type low(value_type result, uint32_t ch)
   {
@@ -1770,7 +1770,7 @@ struct latin1_writer
 
 struct utf8_decoder
 {
-  typedef uint8_t type;
+  using type = uint8_t;
 
   template < typename Traits >
   static inline typename Traits::value_type
@@ -1853,7 +1853,7 @@ struct utf8_decoder
 
 template < typename opt_swap > struct utf16_decoder
 {
-  typedef uint16_t type PUGI_IMPL_UNALIGNED;
+  using type PUGI_IMPL_UNALIGNED = uint16_t;
 
   template < typename Traits >
   static inline typename Traits::value_type
@@ -1909,7 +1909,7 @@ template < typename opt_swap > struct utf16_decoder
 
 template < typename opt_swap > struct utf32_decoder
 {
-  typedef uint32_t type PUGI_IMPL_UNALIGNED;
+  using type PUGI_IMPL_UNALIGNED = uint32_t;
 
   template < typename Traits >
   static inline typename Traits::value_type
@@ -1942,7 +1942,7 @@ template < typename opt_swap > struct utf32_decoder
 
 struct latin1_decoder
 {
-  typedef uint8_t type;
+  using type = uint8_t;
 
   template < typename Traits >
   static inline typename Traits::value_type
@@ -1964,36 +1964,35 @@ template < size_t size > struct wchar_selector;
 
 template <> struct wchar_selector< 2 >
 {
-  typedef uint16_t type;
-  typedef utf16_counter counter;
-  typedef utf16_writer writer;
-  typedef utf16_decoder< opt_false > decoder;
+  using type = uint16_t;
+  using counter = utf16_counter;
+  using writer = utf16_writer;
+  using decoder = utf16_decoder< opt_false >;
 };
 
 template <> struct wchar_selector< 4 >
 {
-  typedef uint32_t type;
-  typedef utf32_counter counter;
-  typedef utf32_writer writer;
-  typedef utf32_decoder< opt_false > decoder;
+  using type = uint32_t;
+  using counter = utf32_counter;
+  using writer = utf32_writer;
+  using decoder = utf32_decoder< opt_false >;
 };
 
-typedef wchar_selector< sizeof(wchar_t) >::counter wchar_counter;
-typedef wchar_selector< sizeof(wchar_t) >::writer wchar_writer;
+using wchar_counter = wchar_selector< sizeof(wchar_t) >::counter;
+using wchar_writer = wchar_selector< sizeof(wchar_t) >::writer;
 
 struct wchar_decoder
 {
-  typedef wchar_t type;
+  using type = wchar_t;
 
   template < typename Traits >
-  static inline typename Traits::value_type
-  process(const wchar_t *data, size_t size, typename Traits::value_type result,
-          Traits traits)
+  static Traits::value_type process(const wchar_t *data, size_t size,
+                                    Traits::value_type result, Traits traits)
   {
-    typedef wchar_selector< sizeof(wchar_t) >::decoder decoder;
+    using decoder = wchar_selector< sizeof(wchar_t) >::decoder;
 
     return decoder::process(
-        reinterpret_cast< const typename decoder::type * >(data), size, result,
+        reinterpret_cast< const  decoder::type * >(data), size, result,
         traits);
   }
 };
@@ -3043,7 +3042,7 @@ char_t *strconv_cdata(char_t *s, char_t endch)
   }
 }
 
-typedef char_t *(*strconv_pcdata_t)(char_t *);
+using strconv_pcdata_t = char_t *(*)(char_t *);
 
 template < typename opt_trim, typename opt_eol, typename opt_escape >
 struct strconv_pcdata_impl
@@ -3132,7 +3131,7 @@ strconv_pcdata_t get_strconv_pcdata(unsigned int optmask)
   }
 }
 
-typedef char_t *(*strconv_attribute_t)(char_t *, char_t);
+using strconv_attribute_t = char_t *(*)(char_t *, char_t);
 
 template < typename opt_escape > struct strconv_attribute_impl
 {
@@ -9904,7 +9903,7 @@ double gen_nan()
     ((FLT_RADIX - 0 == 2) && (FLT_MAX_EXP - 0 == 128) &&                       \
      (FLT_MANT_DIG - 0 == 24))
   PUGI_IMPL_STATIC_ASSERT(sizeof(float) == sizeof(uint32_t));
-  typedef uint32_t UI; // BCC5 workaround
+  using UI = uint32_t; // BCC5 workaround
   union
   {
     float f;
@@ -15108,7 +15107,7 @@ XPathQuery::operator bool() const
 }
 
 XPathNode XmlNode::selectNode(const char_t *query,
-                               XPathVariableSet *variables) const
+                              XPathVariableSet *variables) const
 {
   XPathQuery q(query, variables);
   return q.evaluate_node(*this);
@@ -15120,7 +15119,7 @@ XPathNode XmlNode::selectNode(const XPathQuery &query) const
 }
 
 XPathNodeSet XmlNode::selectNodes(const char_t *query,
-                                   XPathVariableSet *variables) const
+                                  XPathVariableSet *variables) const
 {
   XPathQuery q(query, variables);
   return q.evaluate_node_set(*this);
