@@ -9,6 +9,7 @@
  * See LICENSE.md or notice at the end of this file.
  */
 module;
+#include <cerrno>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -2263,7 +2264,7 @@ XmlEncoding get_buffer_encoding(XmlEncoding encoding, const void *contents,
   // replace utf32 encoding with utf32 with specific endianness
   if (encoding == encoding_utf32)
     return is_little_endian() ? encoding_utf32_le : encoding_utf32_be;
-  
+
   // only do autodetection if no explicit encoding is requested
   if (encoding != encoding_auto)
     return encoding;
@@ -2560,7 +2561,28 @@ bool convert_buffer(char_t *&out_buffer, size_t &out_length,
   if (encoding == encoding_latin1)
     return convert_buffer_latin1(out_buffer, out_length, contents, size,
                                  is_mutable);
+  iconv_t cd_ = iconv_open(encoding_utf8.c_str(), encoding.c_str());
+  if (cd_ != (iconv_t)-1)
+  {
+    char *in_buffer =
+        const_cast< char * >(static_cast< const char * >(contents));
+    size_t in_bytes = size;
+    out_length = size + 1;
+    out_buffer = new char[out_length];
+    char *out_ptr = out_buffer;
+    size_t out_bytes_remaining = out_length;
+    size_t result =
+        iconv(cd_, &in_buffer, &in_bytes, &out_ptr, &out_bytes_remaining);
+    iconv_close(cd_);
+    if (result == -1)
+    {
+      delete[] out_buffer;
+      // assert(false);
+      return false;
+    }
 
+    return true;
+  }
   assert(false && "Invalid encoding"); // unreachable
   return false;
 }

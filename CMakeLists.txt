@@ -70,6 +70,7 @@ if(APPLE)
   option(PUGIXML_BUILD_APPLE_FRAMEWORK "Build as Apple Frameworks" OFF)
 endif()
 
+
 set(PUGIXML_PUBLIC_DEFINITIONS
   $<$<BOOL:${PUGIXML_WCHAR_MODE}>:PUGIXML_WCHAR_MODE>
   $<$<BOOL:${PUGIXML_COMPACT}>:PUGIXML_COMPACT>
@@ -115,6 +116,7 @@ if(BUILD_SHARED_LIBS)
   add_library(pugixml-shared SHARED
     ${PROJECT_SOURCE_DIR}/scripts/pugixml_dll.rc
     ${PUGIXML_SOURCE})
+  set(TARGET pugixml-shared)
   target_sources(pugixml-shared PUBLIC FILE_SET CXX_MODULES FILES ${PUGIXML_MODULES})
   add_library(pugixml::shared ALIAS pugixml-shared)
   list(APPEND libs pugixml-shared)
@@ -144,6 +146,8 @@ if(BUILD_SHARED_LIBS)
     PRIVATE
     cxx_std_23
   )
+  find_package(Iconv REQUIRED)
+  target_link_libraries(pugixml-shared PRIVATE Iconv::Iconv)
 endif()
 
 if(NOT BUILD_SHARED_LIBS OR PUGIXML_BUILD_SHARED_AND_STATIC_LIBS)
@@ -172,6 +176,8 @@ if(NOT BUILD_SHARED_LIBS OR PUGIXML_BUILD_SHARED_AND_STATIC_LIBS)
     PRIVATE
     cxx_std_23
   )
+  find_package(Iconv REQUIRED)
+  target_link_libraries(pugixml-static PRIVATE Iconv::Iconv)
 endif()
 
 if(BUILD_SHARED_LIBS)
@@ -191,6 +197,9 @@ set_target_properties(${libs}
   SOVERSION ${PROJECT_VERSION_MAJOR}
   VERSION ${PROJECT_VERSION}
   OUTPUT_NAME pugixml)
+
+
+
 
 set_target_properties(${libs}
   PROPERTIES
