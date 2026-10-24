@@ -163,28 +163,29 @@ export {
 }
 // These flags determine the encoding of input data for XML document
 // These flags determine the encoding of input data for XML document
-export using XmlEncoding = string_t;
-// Auto-detect input encoding using BOM or < / <? detection;
-// use UTF8 if BOM is not found
-export constexpr string_t encoding_auto = "UTF-8";
-// UTF8 encoding
-export constexpr string_t encoding_utf8 = "UTF-8";
-// Little-endian UTF16
-export constexpr string_t encoding_utf16_le = "UTF-16LE";
-// Big-endian UTF16
-export constexpr string_t encoding_utf16_be = "UTF-16BE";
-// UTF16 with native endianness
-export constexpr string_t encoding_utf16 = "UTF-16";
-// Little-endian UTF32
-export constexpr string_t encoding_utf32_le = "UTF-32LE";
-// Big-endian UTF32
-export constexpr string_t encoding_utf32_be = "UTF-32BE";
-// UTF32 with native endianness
-export constexpr string_t encoding_utf32 = "UTF-32";
-// The same encoding wchar_t has (either UTF16 or UTF32)
-export constexpr string_t encoding_wchar = "UTF-32";
-export constexpr string_t encoding_latin1 = "latin1";
-
+export {
+  using XmlEncoding = string_t;
+  // Auto-detect input encoding using BOM or < / <? detection;
+  // use UTF8 if BOM is not found
+  constexpr string_t encoding_auto = "UTF-8";
+  // UTF8 encoding
+  constexpr string_t encoding_utf8 = "UTF-8";
+  // Little-endian UTF16
+  constexpr string_t encoding_utf16_le = "UTF-16LE";
+  // Big-endian UTF16
+  constexpr string_t encoding_utf16_be = "UTF-16BE";
+  // UTF16 with native endianness
+  constexpr string_t encoding_utf16 = "UTF-16";
+  // Little-endian UTF32
+  constexpr string_t encoding_utf32_le = "UTF-32LE";
+  // Big-endian UTF32
+  constexpr string_t encoding_utf32_be = "UTF-32BE";
+  // UTF32 with native endianness
+  constexpr string_t encoding_utf32 = "UTF-32";
+  // The same encoding wchar_t has (either UTF16 or UTF32)
+  constexpr string_t encoding_wchar = "UTF-32";
+  constexpr string_t encoding_latin1 = "latin1";
+}
 
 // Formatting flags
 export {
@@ -710,13 +711,13 @@ public:
              unsigned int flags = format_default, unsigned int depth = 0) const;
 
   // Child nodes iterators
-  typedef XmlNodeIterator iterator;
+  using iterator = XmlNodeIterator;
 
   iterator begin() const;
   iterator end() const;
 
   // Attribute iterators
-  typedef XmlAttributeIterator attribute_iterator;
+  using attribute_iterator = XmlAttributeIterator;
 
   attribute_iterator attributes_begin() const;
   attribute_iterator attributes_end() const;
@@ -830,11 +831,11 @@ private:
 
 public:
   // Iterator traits
-  typedef ptrdiff_t difference_type;
-  typedef XmlNode value_type;
-  typedef XmlNode *pointer;
-  typedef XmlNode &reference;
-  typedef std::bidirectional_iterator_tag iterator_category;
+  using difference_type = ptrdiff_t;
+  using value_type = XmlNode;
+  using pointer = XmlNode *;
+  using reference = XmlNode &;
+  using iterator_category = std::bidirectional_iterator_tag;
 
   // Default constructor
   XmlNodeIterator();
@@ -870,11 +871,11 @@ private:
 
 public:
   // Iterator traits
-  typedef ptrdiff_t difference_type;
-  typedef XmlAttribute value_type;
-  typedef XmlAttribute *pointer;
-  typedef XmlAttribute &reference;
-  typedef std::bidirectional_iterator_tag iterator_category;
+  using difference_type = ptrdiff_t;
+  using value_type = XmlAttribute;
+  using pointer = XmlAttribute *;
+  using reference = XmlAttribute &;
+  using iterator_category = std::bidirectional_iterator_tag;
 
   // Default constructor
   XmlAttributeIterator();
@@ -1423,10 +1424,10 @@ export std::basic_string< wchar_t >
 
 // Memory allocation function interface; returns pointer to allocated memory
 // or NULL on failure
-export typedef void *(*allocation_function)(size_t size);
+export using allocation_function = void *(*)(size_t size);
 
 // Memory deallocation function interface
-export typedef void (*deallocation_function)(void *ptr);
+export using deallocation_function = void (*)(void *ptr);
 
 // Override default memory management functions. All subsequent
 // allocations/deallocations will be performed via supplied functions.

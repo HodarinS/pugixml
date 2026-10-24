@@ -4,8 +4,8 @@
 import pugixml;
 import std;
 import std.compat;
+#include <csetjmp>
 
-#include <setjmp.h>
 
 struct test_runner
 {
